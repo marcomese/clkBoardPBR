@@ -1,3 +1,4 @@
+#Simulator xsim
 #Aggiunto manualmente: Init.sh non ha catturato il fileset sim_1
 clkBoardPBR.srcs/sim_1/new/tb_dataBuilder.vhd
 clkBoardPBR.srcs/sim_1/new/tb_edgeDetectors.vhd
