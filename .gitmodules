@@ -3,4 +3,4 @@
 	url = https://gitlab.com/hog-cern/Hog.git
 [submodule "meseIP"]
 	path = meseIP
-	url = git@github.com:marcomese/meseIP.git
+	url = ../meseIP.git
