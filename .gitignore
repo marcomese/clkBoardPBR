@@ -102,3 +102,38 @@ _info
 **.qpg
 **.qtl
 **.xsa
+
+## Legacy pre-Hog Vivado project artifacts (clkBoardPBR) - rigenerati da Do CREATE in Projects/
+## Rimuovi questo blocco quando cancelli il vecchio progetto .xpr alla radice del repo
+## NOTA: clkBoardPBR.srcs/ NON va ignorato: contiene i sorgenti veri (vhd, xdc, .bd, testbench)
+clkBoardPBR.runs/
+clkBoardPBR.sim/
+clkBoardPBR.cache/
+clkBoardPBR.hw/
+clkBoardPBR.ip_user_files/
+clkBoardPBR.tmp/
+clkBoardPBR.xpr
+*.wcfg
+clkBoardPBR.srcs/utils_1/
+## rxFifo.xcix/txFifo.xcix/UART/SPI: moduli non piu' usati, confermato dall'utente
+clkBoardPBR.srcs/sources_1/ip/
+clkBoardPBR.srcs/sources_1/imports/imports/
+
+## clkBoardPBR.gen/ contiene per lo piu' prodotti derivati del block design;
+## l'unico file sorgente vero e' hdl/design_1_wrapper.vhd (riferito dai list file)
+clkBoardPBR.gen/sources_1/bd/design_1/ip/
+clkBoardPBR.gen/sources_1/bd/design_1/ipshared/
+clkBoardPBR.gen/sources_1/bd/design_1/hw_handoff/
+clkBoardPBR.gen/sources_1/bd/design_1/ui/
+clkBoardPBR.gen/sources_1/bd/design_1/sim/
+clkBoardPBR.gen/sources_1/bd/design_1/synth/
+clkBoardPBR.gen/sources_1/bd/design_1/*.bda
+clkBoardPBR.gen/sources_1/bd/design_1/*.bmj
+clkBoardPBR.gen/sources_1/bd/design_1/*.bxml
+clkBoardPBR.gen/sources_1/bd/design_1/*_bmstub.v
+clkBoardPBR.gen/sources_1/bd/design_1/*_ooc.xdc
+## mref: pacchettizzazione automatica dei moduli VHDL referenziati nel BD, rigenerata da Vivado
+clkBoardPBR.gen/sources_1/bd/mref/
+clkBoardPBR.srcs/sources_1/bd/design_1/*.bda
+clkBoardPBR.srcs/sources_1/bd/design_1/ip/
+clkBoardPBR.srcs/sources_1/bd/design_1/ui/
