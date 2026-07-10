@@ -324,35 +324,35 @@ set_property PACKAGE_PIN AB21 [get_ports GTU_CLK_IN_N]
 set_property IOSTANDARD LVDS_25 [get_ports GTU_CLK_IN_P]
 set_property IOSTANDARD LVDS_25 [get_ports GTU_CLK_IN_N]
 
-# 1PPS_IN7 [INPUT] B34_L17
+# 1PPS_IN7 [INPUT] B34_L17 ok
 set_property PACKAGE_PIN R20 [get_ports PPS_IN_P]
 set_property PACKAGE_PIN R21 [get_ports PPS_IN_N]
 set_property IOSTANDARD LVDS_25 [get_ports PPS_IN_P]
 set_property IOSTANDARD LVDS_25 [get_ports PPS_IN_N]
 
-# TRIG_L1_OUT[7] [OUTPUT] B33_L4
+# TRIG_L1_OUT[7] [OUTPUT] B33_L4 ok
 set_property PACKAGE_PIN W20 [get_ports TRIG_L1_OUT_P[0]]
 set_property PACKAGE_PIN W21 [get_ports TRIG_L1_OUT_N[0]]
 set_property IOSTANDARD LVDS_25 [get_ports TRIG_L1_OUT_P[0]]
 set_property IOSTANDARD LVDS_25 [get_ports TRIG_L1_OUT_N[0]]
 
-# BUSY_OUT[7] [OUTPUT] B33_L14 (SRCC)
+# BUSY_OUT[7] [OUTPUT] B33_L14 (SRCC) ok
 set_property PACKAGE_PIN W16 [get_ports BUSY_OUT_P[0]]
 set_property PACKAGE_PIN Y16 [get_ports BUSY_OUT_N[0]]
 set_property IOSTANDARD LVDS_25 [get_ports BUSY_OUT_P[0]]
 set_property IOSTANDARD LVDS_25 [get_ports BUSY_OUT_N[0]]
 
-# EXT_TRIG_IN7 [INPUT] B34_L15 (DQS)
+# EXT_TRIG_IN7 [INPUT] B34_L15 (DQS) ok
 set_property PACKAGE_PIN M21 [get_ports EXT_TRIG_IN_P[0]]
 set_property PACKAGE_PIN M22 [get_ports EXT_TRIG_IN_N[0]]
 set_property IOSTANDARD LVDS_25 [get_ports EXT_TRIG_IN_P[0]]
 set_property IOSTANDARD LVDS_25 [get_ports EXT_TRIG_IN_N[0]]
 
 # CLK40_IN7 [INPUT] B33_L7
-set_property PACKAGE_PIN AA22 [get_ports CLK40_IN_P]
-set_property PACKAGE_PIN AB22 [get_ports CLK40_IN_N]
-set_property IOSTANDARD LVDS_25 [get_ports CLK40_IN_P]
-set_property IOSTANDARD LVDS_25 [get_ports CLK40_IN_N]
+#set_property PACKAGE_PIN AA22 [get_ports CLK40_IN_P]
+#set_property PACKAGE_PIN AB22 [get_ports CLK40_IN_N]
+#set_property IOSTANDARD LVDS_25 [get_ports CLK40_IN_P]
+#set_property IOSTANDARD LVDS_25 [get_ports CLK40_IN_N]
 
 set_property BITSTREAM.CONFIG.UNUSEDPIN PULLUP [current_design]
 set_property BITSTREAM.GENERAL.COMPRESS TRUE [current_design]

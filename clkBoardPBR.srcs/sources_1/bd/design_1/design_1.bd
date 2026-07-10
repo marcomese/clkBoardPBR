@@ -7,13 +7,11 @@
       "name": "design_1",
       "rev_ctrl_bd_flag": "RevCtrlBdOff",
       "synth_flow_mode": "Hierarchical",
-      "tool_version": "2024.2.2",
-      "validated": "true"
+      "tool_version": "2024.2.2"
     },
     "design_tree": {
       "processing_system7_0": "",
       "rst_ps7_0_100M": "",
-      "gtuGenerator_0": "",
       "interruptConcat": "",
       "dataBuilder_0": "",
       "axi_mem_intercon": {
@@ -95,9 +93,11 @@
         "ppsInBUFDS": "",
         "trgInEdge": "",
         "extTrgEdge": "",
-        "ppsEdge": ""
+        "ppsEdge": "",
+        "extGtuEdge": ""
       },
-      "axi_smc": ""
+      "axi_smc": "",
+      "gtuCtrl_0": ""
     },
     "interface_ports": {
       "DDR": {
@@ -279,209 +279,49 @@
         "type": "clk",
         "direction": "O",
         "left": "3",
-        "right": "0",
-        "parameters": {
-          "FREQ_HZ": {
-            "value": "100000000",
-            "value_src": "default"
-          },
-          "FREQ_TOLERANCE_HZ": {
-            "value": "0",
-            "value_src": "default"
-          },
-          "INSERT_VIP": {
-            "value": "0",
-            "value_src": "default"
-          },
-          "PHASE": {
-            "value": "0.0",
-            "value_src": "default"
-          }
-        }
+        "right": "0"
       },
       "GTU_CLK_OUT_P": {
         "type": "clk",
         "direction": "O",
         "left": "3",
-        "right": "0",
-        "parameters": {
-          "FREQ_HZ": {
-            "value": "100000000",
-            "value_src": "default"
-          },
-          "FREQ_TOLERANCE_HZ": {
-            "value": "0",
-            "value_src": "default"
-          },
-          "INSERT_VIP": {
-            "value": "0",
-            "value_src": "default"
-          },
-          "PHASE": {
-            "value": "0.0",
-            "value_src": "default"
-          }
-        }
+        "right": "0"
       },
       "EXT_TRIG_OUT_N": {
         "type": "clk",
         "direction": "O",
         "left": "3",
-        "right": "0",
-        "parameters": {
-          "FREQ_HZ": {
-            "value": "100000000",
-            "value_src": "default"
-          },
-          "FREQ_TOLERANCE_HZ": {
-            "value": "0",
-            "value_src": "default"
-          },
-          "INSERT_VIP": {
-            "value": "0",
-            "value_src": "default"
-          },
-          "PHASE": {
-            "value": "0.0",
-            "value_src": "default"
-          }
-        }
+        "right": "0"
       },
       "EXT_TRIG_OUT_P": {
         "type": "clk",
         "direction": "O",
         "left": "3",
-        "right": "0",
-        "parameters": {
-          "FREQ_HZ": {
-            "value": "100000000",
-            "value_src": "default"
-          },
-          "FREQ_TOLERANCE_HZ": {
-            "value": "0",
-            "value_src": "default"
-          },
-          "INSERT_VIP": {
-            "value": "0",
-            "value_src": "default"
-          },
-          "PHASE": {
-            "value": "0.0",
-            "value_src": "default"
-          }
-        }
+        "right": "0"
       },
       "TRIG_L1_IN_N": {
         "type": "clk",
         "direction": "I",
         "left": "3",
-        "right": "0",
-        "parameters": {
-          "CLK_DOMAIN": {
-            "value": "design_1_TRIG_L1_IN_N",
-            "value_src": "default"
-          },
-          "FREQ_HZ": {
-            "value": "100000000",
-            "value_src": "default"
-          },
-          "FREQ_TOLERANCE_HZ": {
-            "value": "0",
-            "value_src": "default"
-          },
-          "INSERT_VIP": {
-            "value": "0",
-            "value_src": "default"
-          },
-          "PHASE": {
-            "value": "0.0",
-            "value_src": "default"
-          }
-        }
+        "right": "0"
       },
       "TRIG_L1_IN_P": {
         "type": "clk",
         "direction": "I",
         "left": "3",
-        "right": "0",
-        "parameters": {
-          "CLK_DOMAIN": {
-            "value": "design_1_TRIG_L1_IN_P",
-            "value_src": "default"
-          },
-          "FREQ_HZ": {
-            "value": "100000000",
-            "value_src": "default"
-          },
-          "FREQ_TOLERANCE_HZ": {
-            "value": "0",
-            "value_src": "default"
-          },
-          "INSERT_VIP": {
-            "value": "0",
-            "value_src": "default"
-          },
-          "PHASE": {
-            "value": "0.0",
-            "value_src": "default"
-          }
-        }
+        "right": "0"
       },
       "BUSY_IN_N": {
         "type": "clk",
         "direction": "I",
         "left": "3",
-        "right": "0",
-        "parameters": {
-          "CLK_DOMAIN": {
-            "value": "design_1_BUSY_IN_N",
-            "value_src": "default"
-          },
-          "FREQ_HZ": {
-            "value": "100000000",
-            "value_src": "default"
-          },
-          "FREQ_TOLERANCE_HZ": {
-            "value": "0",
-            "value_src": "default"
-          },
-          "INSERT_VIP": {
-            "value": "0",
-            "value_src": "default"
-          },
-          "PHASE": {
-            "value": "0.0",
-            "value_src": "default"
-          }
-        }
+        "right": "0"
       },
       "BUSY_IN_P": {
         "type": "clk",
         "direction": "I",
         "left": "3",
-        "right": "0",
-        "parameters": {
-          "CLK_DOMAIN": {
-            "value": "design_1_BUSY_IN_P",
-            "value_src": "default"
-          },
-          "FREQ_HZ": {
-            "value": "100000000",
-            "value_src": "default"
-          },
-          "FREQ_TOLERANCE_HZ": {
-            "value": "0",
-            "value_src": "default"
-          },
-          "INSERT_VIP": {
-            "value": "0",
-            "value_src": "default"
-          },
-          "PHASE": {
-            "value": "0.0",
-            "value_src": "default"
-          }
-        }
+        "right": "0"
       },
       "gps_1pps_ext": {
         "direction": "I",
@@ -492,273 +332,61 @@
         "type": "clk",
         "direction": "O",
         "left": "3",
-        "right": "0",
-        "parameters": {
-          "FREQ_HZ": {
-            "value": "100000000",
-            "value_src": "default"
-          },
-          "FREQ_TOLERANCE_HZ": {
-            "value": "0",
-            "value_src": "default"
-          },
-          "INSERT_VIP": {
-            "value": "0",
-            "value_src": "default"
-          },
-          "PHASE": {
-            "value": "0.0",
-            "value_src": "default"
-          }
-        }
+        "right": "0"
       },
       "PPS_OUT_P": {
         "type": "clk",
         "direction": "O",
         "left": "3",
-        "right": "0",
-        "parameters": {
-          "FREQ_HZ": {
-            "value": "100000000",
-            "value_src": "default"
-          },
-          "FREQ_TOLERANCE_HZ": {
-            "value": "0",
-            "value_src": "default"
-          },
-          "INSERT_VIP": {
-            "value": "0",
-            "value_src": "default"
-          },
-          "PHASE": {
-            "value": "0.0",
-            "value_src": "default"
-          }
-        }
+        "right": "0"
       },
       "CLK40_OUT0_N": {
         "type": "clk",
         "direction": "O",
         "left": "0",
-        "right": "0",
-        "parameters": {
-          "CLK_DOMAIN": {
-            "value": "design_1_processing_system7_0_0_FCLK_CLK1",
-            "value_src": "ip_prop"
-          },
-          "FREQ_HZ": {
-            "value": "40000000",
-            "value_src": "ip_prop"
-          },
-          "FREQ_TOLERANCE_HZ": {
-            "value": "0",
-            "value_src": "default"
-          },
-          "INSERT_VIP": {
-            "value": "0",
-            "value_src": "default"
-          },
-          "PHASE": {
-            "value": "0.0",
-            "value_src": "ip_prop"
-          }
-        }
+        "right": "0"
       },
       "CLK40_OUT0_P": {
         "type": "clk",
         "direction": "O",
         "left": "0",
-        "right": "0",
-        "parameters": {
-          "CLK_DOMAIN": {
-            "value": "design_1_processing_system7_0_0_FCLK_CLK1",
-            "value_src": "ip_prop"
-          },
-          "FREQ_HZ": {
-            "value": "40000000",
-            "value_src": "ip_prop"
-          },
-          "FREQ_TOLERANCE_HZ": {
-            "value": "0",
-            "value_src": "default"
-          },
-          "INSERT_VIP": {
-            "value": "0",
-            "value_src": "default"
-          },
-          "PHASE": {
-            "value": "0.0",
-            "value_src": "ip_prop"
-          }
-        }
+        "right": "0"
       },
       "CLK40_OUT3_N": {
         "type": "clk",
         "direction": "O",
         "left": "0",
-        "right": "0",
-        "parameters": {
-          "CLK_DOMAIN": {
-            "value": "design_1_processing_system7_0_0_FCLK_CLK1",
-            "value_src": "ip_prop"
-          },
-          "FREQ_HZ": {
-            "value": "40000000",
-            "value_src": "ip_prop"
-          },
-          "FREQ_TOLERANCE_HZ": {
-            "value": "0",
-            "value_src": "default"
-          },
-          "INSERT_VIP": {
-            "value": "0",
-            "value_src": "default"
-          },
-          "PHASE": {
-            "value": "0.0",
-            "value_src": "ip_prop"
-          }
-        }
+        "right": "0"
       },
       "CLK40_OUT2_P": {
         "type": "clk",
         "direction": "O",
         "left": "0",
-        "right": "0",
-        "parameters": {
-          "CLK_DOMAIN": {
-            "value": "design_1_processing_system7_0_0_FCLK_CLK1",
-            "value_src": "ip_prop"
-          },
-          "FREQ_HZ": {
-            "value": "40000000",
-            "value_src": "ip_prop"
-          },
-          "FREQ_TOLERANCE_HZ": {
-            "value": "0",
-            "value_src": "default"
-          },
-          "INSERT_VIP": {
-            "value": "0",
-            "value_src": "default"
-          },
-          "PHASE": {
-            "value": "0.0",
-            "value_src": "ip_prop"
-          }
-        }
+        "right": "0"
       },
       "CLK40_OUT2_N": {
         "type": "clk",
         "direction": "O",
         "left": "0",
-        "right": "0",
-        "parameters": {
-          "CLK_DOMAIN": {
-            "value": "design_1_processing_system7_0_0_FCLK_CLK1",
-            "value_src": "ip_prop"
-          },
-          "FREQ_HZ": {
-            "value": "40000000",
-            "value_src": "ip_prop"
-          },
-          "FREQ_TOLERANCE_HZ": {
-            "value": "0",
-            "value_src": "default"
-          },
-          "INSERT_VIP": {
-            "value": "0",
-            "value_src": "default"
-          },
-          "PHASE": {
-            "value": "0.0",
-            "value_src": "ip_prop"
-          }
-        }
+        "right": "0"
       },
       "CLK40_OUT1_P": {
         "type": "clk",
         "direction": "O",
         "left": "0",
-        "right": "0",
-        "parameters": {
-          "CLK_DOMAIN": {
-            "value": "design_1_processing_system7_0_0_FCLK_CLK1",
-            "value_src": "ip_prop"
-          },
-          "FREQ_HZ": {
-            "value": "40000000",
-            "value_src": "ip_prop"
-          },
-          "FREQ_TOLERANCE_HZ": {
-            "value": "0",
-            "value_src": "default"
-          },
-          "INSERT_VIP": {
-            "value": "0",
-            "value_src": "default"
-          },
-          "PHASE": {
-            "value": "0.0",
-            "value_src": "ip_prop"
-          }
-        }
+        "right": "0"
       },
       "CLK40_OUT1_N": {
         "type": "clk",
         "direction": "O",
         "left": "0",
-        "right": "0",
-        "parameters": {
-          "CLK_DOMAIN": {
-            "value": "design_1_processing_system7_0_0_FCLK_CLK1",
-            "value_src": "ip_prop"
-          },
-          "FREQ_HZ": {
-            "value": "40000000",
-            "value_src": "ip_prop"
-          },
-          "FREQ_TOLERANCE_HZ": {
-            "value": "0",
-            "value_src": "default"
-          },
-          "INSERT_VIP": {
-            "value": "0",
-            "value_src": "default"
-          },
-          "PHASE": {
-            "value": "0.0",
-            "value_src": "ip_prop"
-          }
-        }
+        "right": "0"
       },
       "CLK40_OUT3_P": {
         "type": "clk",
         "direction": "O",
         "left": "0",
-        "right": "0",
-        "parameters": {
-          "CLK_DOMAIN": {
-            "value": "design_1_processing_system7_0_0_FCLK_CLK1",
-            "value_src": "ip_prop"
-          },
-          "FREQ_HZ": {
-            "value": "40000000",
-            "value_src": "ip_prop"
-          },
-          "FREQ_TOLERANCE_HZ": {
-            "value": "0",
-            "value_src": "default"
-          },
-          "INSERT_VIP": {
-            "value": "0",
-            "value_src": "default"
-          },
-          "PHASE": {
-            "value": "0.0",
-            "value_src": "ip_prop"
-          }
-        }
+        "right": "0"
       },
       "gps_rxd": {
         "direction": "I",
@@ -768,221 +396,55 @@
       "gps_txd": {
         "direction": "O",
         "left": "1",
-        "right": "0",
-        "parameters": {
-          "PortWidth": {
-            "value": "2",
-            "value_src": "ip_prop"
-          }
-        }
+        "right": "0"
       },
       "PPS_IN_N": {
         "type": "clk",
         "direction": "I",
         "left": "0",
-        "right": "0",
-        "parameters": {
-          "CLK_DOMAIN": {
-            "value": "design_1_PPS_IN_N",
-            "value_src": "default"
-          },
-          "FREQ_HZ": {
-            "value": "100000000",
-            "value_src": "default"
-          },
-          "FREQ_TOLERANCE_HZ": {
-            "value": "0",
-            "value_src": "default"
-          },
-          "INSERT_VIP": {
-            "value": "0",
-            "value_src": "default"
-          },
-          "PHASE": {
-            "value": "0.0",
-            "value_src": "default"
-          }
-        }
+        "right": "0"
       },
       "PPS_IN_P": {
         "type": "clk",
         "direction": "I",
         "left": "0",
-        "right": "0",
-        "parameters": {
-          "CLK_DOMAIN": {
-            "value": "design_1_PPS_IN_P",
-            "value_src": "default"
-          },
-          "FREQ_HZ": {
-            "value": "100000000",
-            "value_src": "default"
-          },
-          "FREQ_TOLERANCE_HZ": {
-            "value": "0",
-            "value_src": "default"
-          },
-          "INSERT_VIP": {
-            "value": "0",
-            "value_src": "default"
-          },
-          "PHASE": {
-            "value": "0.0",
-            "value_src": "default"
-          }
-        }
+        "right": "0"
       },
       "BUSY_OUT_N": {
         "type": "clk",
         "direction": "O",
         "left": "0",
-        "right": "0",
-        "parameters": {
-          "FREQ_HZ": {
-            "value": "100000000",
-            "value_src": "default"
-          },
-          "FREQ_TOLERANCE_HZ": {
-            "value": "0",
-            "value_src": "default"
-          },
-          "INSERT_VIP": {
-            "value": "0",
-            "value_src": "default"
-          },
-          "PHASE": {
-            "value": "0.0",
-            "value_src": "default"
-          }
-        }
+        "right": "0"
       },
       "BUSY_OUT_P": {
         "type": "clk",
         "direction": "O",
         "left": "0",
-        "right": "0",
-        "parameters": {
-          "FREQ_HZ": {
-            "value": "100000000",
-            "value_src": "default"
-          },
-          "FREQ_TOLERANCE_HZ": {
-            "value": "0",
-            "value_src": "default"
-          },
-          "INSERT_VIP": {
-            "value": "0",
-            "value_src": "default"
-          },
-          "PHASE": {
-            "value": "0.0",
-            "value_src": "default"
-          }
-        }
+        "right": "0"
       },
       "TRIG_L1_OUT_N": {
         "type": "clk",
         "direction": "O",
         "left": "0",
-        "right": "0",
-        "parameters": {
-          "FREQ_HZ": {
-            "value": "100000000",
-            "value_src": "default"
-          },
-          "FREQ_TOLERANCE_HZ": {
-            "value": "0",
-            "value_src": "default"
-          },
-          "INSERT_VIP": {
-            "value": "0",
-            "value_src": "default"
-          },
-          "PHASE": {
-            "value": "0.0",
-            "value_src": "default"
-          }
-        }
+        "right": "0"
       },
       "TRIG_L1_OUT_P": {
         "type": "clk",
         "direction": "O",
         "left": "0",
-        "right": "0",
-        "parameters": {
-          "FREQ_HZ": {
-            "value": "100000000",
-            "value_src": "default"
-          },
-          "FREQ_TOLERANCE_HZ": {
-            "value": "0",
-            "value_src": "default"
-          },
-          "INSERT_VIP": {
-            "value": "0",
-            "value_src": "default"
-          },
-          "PHASE": {
-            "value": "0.0",
-            "value_src": "default"
-          }
-        }
+        "right": "0"
       },
       "EXT_TRIG_IN_N": {
         "type": "clk",
         "direction": "I",
         "left": "1",
-        "right": "0",
-        "parameters": {
-          "CLK_DOMAIN": {
-            "value": "design_1_EXT_TRIG_IN_N",
-            "value_src": "default"
-          },
-          "FREQ_HZ": {
-            "value": "100000000",
-            "value_src": "default"
-          },
-          "FREQ_TOLERANCE_HZ": {
-            "value": "0",
-            "value_src": "default"
-          },
-          "INSERT_VIP": {
-            "value": "0",
-            "value_src": "default"
-          },
-          "PHASE": {
-            "value": "0.0",
-            "value_src": "default"
-          }
-        }
+        "right": "0"
       },
       "EXT_TRIG_IN_P": {
         "type": "clk",
         "direction": "I",
         "left": "1",
-        "right": "0",
-        "parameters": {
-          "CLK_DOMAIN": {
-            "value": "design_1_EXT_TRIG_IN_P",
-            "value_src": "default"
-          },
-          "FREQ_HZ": {
-            "value": "100000000",
-            "value_src": "default"
-          },
-          "FREQ_TOLERANCE_HZ": {
-            "value": "0",
-            "value_src": "default"
-          },
-          "INSERT_VIP": {
-            "value": "0",
-            "value_src": "default"
-          },
-          "PHASE": {
-            "value": "0.0",
-            "value_src": "default"
-          }
-        }
+        "right": "0"
       }
     },
     "components": {
@@ -1983,61 +1445,6 @@
         "xci_path": "ip\\design_1_rst_ps7_0_100M_0\\design_1_rst_ps7_0_100M_0.xci",
         "inst_hier_path": "rst_ps7_0_100M"
       },
-      "gtuGenerator_0": {
-        "vlnv": "xilinx.com:module_ref:gtuGenerator:1.0",
-        "ip_revision": "1",
-        "xci_name": "design_1_gtuGenerator_0_0",
-        "xci_path": "ip\\design_1_gtuGenerator_0_0\\design_1_gtuGenerator_0_0.xci",
-        "inst_hier_path": "gtuGenerator_0",
-        "parameters": {
-          "clkPeriodNs": {
-            "value": "10"
-          },
-          "gtuPeriodNs": {
-            "value": "1050"
-          }
-        },
-        "reference_info": {
-          "ref_type": "hdl",
-          "ref_name": "gtuGenerator",
-          "boundary_crc": "0x0"
-        },
-        "ports": {
-          "clk": {
-            "type": "clk",
-            "direction": "I",
-            "parameters": {
-              "ASSOCIATED_RESET": {
-                "value": "rst",
-                "value_src": "constant"
-              },
-              "FREQ_HZ": {
-                "value": "100000000",
-                "value_src": "user_prop"
-              },
-              "CLK_DOMAIN": {
-                "value": "design_1_processing_system7_0_0_FCLK_CLK0",
-                "value_src": "default_prop"
-              }
-            }
-          },
-          "rst": {
-            "type": "rst",
-            "direction": "I",
-            "parameters": {
-              "POLARITY": {
-                "value": "ACTIVE_HIGH"
-              }
-            }
-          },
-          "gtuClock": {
-            "direction": "O"
-          },
-          "gtuTick": {
-            "direction": "O"
-          }
-        }
-      },
       "interruptConcat": {
         "vlnv": "xilinx.com:inline_hdl:ilconcat:1.0",
         "parameters": {
@@ -2528,6 +1935,9 @@
           },
           "configure_GPS": {
             "direction": "O"
+          },
+          "gtu_sel": {
+            "direction": "O"
           }
         },
         "components": {
@@ -2780,14 +2190,6 @@
                   "ASSOCIATED_RESET": {
                     "value": "rst",
                     "value_src": "constant"
-                  },
-                  "FREQ_HZ": {
-                    "value": "100000000",
-                    "value_src": "user_prop"
-                  },
-                  "CLK_DOMAIN": {
-                    "value": "design_1_processing_system7_0_0_FCLK_CLK0",
-                    "value_src": "default_prop"
                   }
                 }
               },
@@ -2858,6 +2260,9 @@
                 "direction": "O",
                 "left": "1",
                 "right": "0"
+              },
+              "gtu_sel": {
+                "direction": "O"
               },
               "trg_command": {
                 "direction": "O"
@@ -3047,6 +2452,12 @@
             "ports": [
               "command_decoder_0/pps_en",
               "pps_en"
+            ]
+          },
+          "command_decoder_0_gtu_sel": {
+            "ports": [
+              "command_decoder_0/gtu_sel",
+              "gtu_sel"
             ]
           },
           "command_decoder_0_pps_trg": {
@@ -5680,6 +5091,14 @@
             "direction": "I",
             "left": "1",
             "right": "0"
+          },
+          "extGtuSync": {
+            "direction": "O"
+          },
+          "sigOut": {
+            "direction": "O",
+            "left": "0",
+            "right": "0"
           }
         },
         "components": {
@@ -5744,97 +5163,33 @@
             "ports": {
               "clk": {
                 "type": "clk",
-                "direction": "I",
-                "parameters": {
-                  "FREQ_HZ": {
-                    "value": "100000000",
-                    "value_src": "user_prop"
-                  },
-                  "CLK_DOMAIN": {
-                    "value": "design_1_processing_system7_0_0_FCLK_CLK0",
-                    "value_src": "default_prop"
-                  }
-                }
+                "direction": "I"
+              },
+              "extGtuIn": {
+                "direction": "I"
               },
               "trgIn": {
                 "direction": "I",
                 "left": "3",
-                "right": "0",
-                "parameters": {
-                  "FREQ_HZ": {
-                    "value": "100000000",
-                    "value_src": "ip_prop"
-                  },
-                  "PHASE": {
-                    "value": "0.0",
-                    "value_src": "ip_prop"
-                  },
-                  "CLK_DOMAIN": {
-                    "value": "design_1_TRIG_L1_IN_N",
-                    "value_src": "ip_prop"
-                  }
-                }
+                "right": "0"
               },
               "busyIn": {
                 "direction": "I",
                 "left": "3",
-                "right": "0",
-                "parameters": {
-                  "FREQ_HZ": {
-                    "value": "100000000",
-                    "value_src": "ip_prop"
-                  },
-                  "PHASE": {
-                    "value": "0.0",
-                    "value_src": "ip_prop"
-                  },
-                  "CLK_DOMAIN": {
-                    "value": "design_1_BUSY_IN_N",
-                    "value_src": "ip_prop"
-                  }
-                }
+                "right": "0"
               },
               "ppsIn": {
                 "direction": "I",
                 "left": "2",
-                "right": "0",
-                "parameters": {
-                  "PortWidth": {
-                    "value": "3",
-                    "value_src": "ip_prop"
-                  },
-                  "FREQ_HZ": {
-                    "value": "NULL:100000000",
-                    "value_src": "ip_prop"
-                  },
-                  "PHASE": {
-                    "value": "NULL:0.0",
-                    "value_src": "ip_prop"
-                  },
-                  "PortType": {
-                    "value": "clk",
-                    "value_src": "ip_prop"
-                  }
-                }
+                "right": "0"
               },
               "extTrgIn": {
                 "direction": "I",
                 "left": "1",
-                "right": "0",
-                "parameters": {
-                  "FREQ_HZ": {
-                    "value": "100000000",
-                    "value_src": "ip_prop"
-                  },
-                  "PHASE": {
-                    "value": "0.0",
-                    "value_src": "ip_prop"
-                  },
-                  "CLK_DOMAIN": {
-                    "value": "design_1_EXT_TRIG_IN_N",
-                    "value_src": "ip_prop"
-                  }
-                }
+                "right": "0"
+              },
+              "extGtuSync": {
+                "direction": "O"
               },
               "trgSync": {
                 "direction": "O",
@@ -6059,6 +5414,57 @@
                 "right": "0"
               }
             }
+          },
+          "extGtuEdge": {
+            "vlnv": "xilinx.com:module_ref:edgeDetectors:1.0",
+            "ip_revision": "1",
+            "xci_name": "design_1_edgeDetectors_0_2",
+            "xci_path": "ip\\design_1_edgeDetectors_0_2\\design_1_edgeDetectors_0_2.xci",
+            "inst_hier_path": "inBuffers/extGtuEdge",
+            "parameters": {
+              "sigNum": {
+                "value": "1"
+              },
+              "sigRst": {
+                "value": "1"
+              }
+            },
+            "reference_info": {
+              "ref_type": "hdl",
+              "ref_name": "edgeDetectors",
+              "boundary_crc": "0x0"
+            },
+            "ports": {
+              "clk": {
+                "type": "clk",
+                "direction": "I",
+                "parameters": {
+                  "ASSOCIATED_RESET": {
+                    "value": "rst",
+                    "value_src": "constant"
+                  }
+                }
+              },
+              "rst": {
+                "type": "rst",
+                "direction": "I",
+                "parameters": {
+                  "POLARITY": {
+                    "value": "ACTIVE_HIGH"
+                  }
+                }
+              },
+              "sigIn": {
+                "direction": "I",
+                "left": "0",
+                "right": "0"
+              },
+              "sigOut": {
+                "direction": "O",
+                "left": "0",
+                "right": "0"
+              }
+            }
           }
         },
         "nets": {
@@ -6119,10 +5525,11 @@
           "clk_1": {
             "ports": [
               "clk",
-              "synchronizers_0/clk",
               "trgInEdge/clk",
               "extTrgEdge/clk",
-              "ppsEdge/clk"
+              "ppsEdge/clk",
+              "synchronizers_0/clk",
+              "extGtuEdge/clk"
             ]
           },
           "edgeDetectors_0_sigOut": {
@@ -6141,6 +5548,12 @@
             "ports": [
               "extTrgEdge/sigOut",
               "extTrgSync"
+            ]
+          },
+          "extGtuEdge_sigOut": {
+            "ports": [
+              "extGtuEdge/sigOut",
+              "sigOut"
             ]
           },
           "extTrgInBUFDS_IBUF_OUT": {
@@ -6172,13 +5585,21 @@
               "rst",
               "trgInEdge/rst",
               "extTrgEdge/rst",
-              "ppsEdge/rst"
+              "ppsEdge/rst",
+              "extGtuEdge/rst"
             ]
           },
           "synchronizers_0_busySync": {
             "ports": [
               "synchronizers_0/busySync",
               "busySync"
+            ]
+          },
+          "synchronizers_0_extGtuSync": {
+            "ports": [
+              "synchronizers_0/extGtuSync",
+              "extGtuEdge/sigIn",
+              "extGtuSync"
             ]
           },
           "synchronizers_0_extTrgSync": {
@@ -6420,6 +5841,54 @@
             }
           }
         }
+      },
+      "gtuCtrl_0": {
+        "vlnv": "xilinx.com:module_ref:gtuCtrl:1.0",
+        "ip_revision": "1",
+        "xci_name": "design_1_gtuCtrl_0_0",
+        "xci_path": "ip\\design_1_gtuCtrl_0_0\\design_1_gtuCtrl_0_0.xci",
+        "inst_hier_path": "gtuCtrl_0",
+        "reference_info": {
+          "ref_type": "hdl",
+          "ref_name": "gtuCtrl",
+          "boundary_crc": "0x0"
+        },
+        "ports": {
+          "clk": {
+            "type": "clk",
+            "direction": "I",
+            "parameters": {
+              "ASSOCIATED_RESET": {
+                "value": "rst",
+                "value_src": "constant"
+              }
+            }
+          },
+          "rst": {
+            "type": "rst",
+            "direction": "I",
+            "parameters": {
+              "POLARITY": {
+                "value": "ACTIVE_HIGH"
+              }
+            }
+          },
+          "gtuSel": {
+            "direction": "I"
+          },
+          "extGtuClock": {
+            "direction": "I"
+          },
+          "extGtuTick": {
+            "direction": "I"
+          },
+          "gtuClockOut": {
+            "direction": "O"
+          },
+          "gtuTickOut": {
+            "direction": "O"
+          }
+        }
       }
     },
     "interface_nets": {
@@ -6558,12 +6027,6 @@
           "inBuffers/BUSY_IN_P"
         ]
       },
-      "Net": {
-        "ports": [
-          "gtuGenerator_0/gtuClock",
-          "outBuffers/In1"
-        ]
-      },
       "PPS_1": {
         "ports": [
           "ppsPresAndCtrl/ppsEdgeOut",
@@ -6681,6 +6144,12 @@
           "interruptConcat/In5"
         ]
       },
+      "cmdAndRunCtrl_gtu_sel": {
+        "ports": [
+          "cmdAndRunCtrl/gtu_sel",
+          "gtuCtrl_0/gtuSel"
+        ]
+      },
       "cmdAndRunCtrl_ready": {
         "ports": [
           "cmdAndRunCtrl/ready",
@@ -6796,9 +6265,15 @@
           "gpsUART/gps_rxd"
         ]
       },
+      "gtuCtrl_0_gtuClockOut": {
+        "ports": [
+          "gtuCtrl_0/gtuClockOut",
+          "outBuffers/In1"
+        ]
+      },
       "gtuGenerator_0_gtuTick": {
         "ports": [
-          "gtuGenerator_0/gtuTick",
+          "gtuCtrl_0/gtuTickOut",
           "cmdAndRunCtrl/gtuTick",
           "counters/gtuTick"
         ]
@@ -6825,6 +6300,18 @@
         "ports": [
           "outBuffers/GPS_EN",
           "GPS_EN"
+        ]
+      },
+      "inBuffers_extGtuSync": {
+        "ports": [
+          "inBuffers/extGtuSync",
+          "gtuCtrl_0/extGtuClock"
+        ]
+      },
+      "inBuffers_sigOut": {
+        "ports": [
+          "inBuffers/sigOut",
+          "gtuCtrl_0/extGtuTick"
         ]
       },
       "outBuffers_OBUF_DS_N_0": {
@@ -6881,7 +6368,6 @@
           "axi_mem_intercon/S00_ACLK",
           "axi_mem_intercon/ACLK",
           "axi_mem_intercon/M00_ACLK",
-          "gtuGenerator_0/clk",
           "cmdAndRunCtrl/clk",
           "counters/clk",
           "fifoDMA/m_axi_s2mm_aclk",
@@ -6894,7 +6380,8 @@
           "axi_smc/aclk",
           "processing_system7_0/M_AXI_GP0_ACLK",
           "processing_system7_0/S_AXI_ACP_ACLK",
-          "rst_ps7_0_100M/slowest_sync_clk"
+          "rst_ps7_0_100M/slowest_sync_clk",
+          "gtuCtrl_0/clk"
         ]
       },
       "processing_system7_0_FCLK_CLK1": {
@@ -6974,13 +6461,13 @@
       "rst_ps7_0_100M_peripheral_reset": {
         "ports": [
           "rst_ps7_0_100M/peripheral_reset",
-          "gtuGenerator_0/rst",
           "cmdAndRunCtrl/rst",
           "counters/rst",
           "ppsPresAndCtrl/rst",
           "dataBuilder_0/rst",
           "inBuffers/rst",
-          "outBuffers/rst"
+          "outBuffers/rst",
+          "gtuCtrl_0/rst"
         ]
       },
       "run_control_fsm_0_busy": {
