@@ -87,8 +87,8 @@ constant MSG_GPS2_NO         : std_logic_vector(31 downto 0) := X"3CC33CC3";
 constant MSG_CLKPPS_NO       : std_logic_vector(31 downto 0) := X"3333CCCC";
 constant MSG_GPS_AUTO_ON     : std_logic_vector(31 downto 0) := X"69966996";
 constant MSG_GPS_AUTO_NO     : std_logic_vector(31 downto 0) := X"96699669";
-constant MSG_GTU_INTERNAL_ON : std_logic_vector(31 downto 0) := X"";
-constant MSG_GTU_INTERNAL_NO : std_logic_vector(31 downto 0) := X"";
+constant MSG_GTU_INTERNAL_ON : std_logic_vector(31 downto 0) := X"FFFF0000";
+constant MSG_GTU_INTERNAL_NO : std_logic_vector(31 downto 0) := X"0000FFFF";
 
 constant STATUS_USED         : integer := 11 + extTrgNum + 2*ppsNum + 2*zynqNum;
 constant STATUS_PAD          : integer := 32 - STATUS_USED;

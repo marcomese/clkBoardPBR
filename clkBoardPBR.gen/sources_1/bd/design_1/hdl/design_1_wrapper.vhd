@@ -2,7 +2,7 @@
 --Copyright 2022-2025 Advanced Micro Devices, Inc. All Rights Reserved.
 ----------------------------------------------------------------------------------
 --Tool Version: Vivado v.2024.2.2 (win64) Build 6060944 Thu Mar 06 19:10:01 MST 2025
---Date        : Thu Jul  9 16:08:01 2026
+--Date        : Fri Jul 10 16:19:14 2026
 --Host        : MARCOMPUTER running 64-bit major release  (build 9200)
 --Command     : generate_target design_1_wrapper.bd
 --Design      : design_1_wrapper
@@ -52,6 +52,8 @@ entity design_1_wrapper is
     FIXED_IO_ps_porb : inout STD_LOGIC;
     FIXED_IO_ps_srstb : inout STD_LOGIC;
     GPS_EN : out STD_LOGIC_VECTOR ( 1 downto 0 );
+    GTU_CLK_IN_N : in STD_LOGIC_VECTOR ( 0 to 0 );
+    GTU_CLK_IN_P : in STD_LOGIC_VECTOR ( 0 to 0 );
     GTU_CLK_OUT_N : out STD_LOGIC_VECTOR ( 3 downto 0 );
     GTU_CLK_OUT_P : out STD_LOGIC_VECTOR ( 3 downto 0 );
     PPS_IN_N : in STD_LOGIC_VECTOR ( 0 to 0 );
@@ -121,7 +123,9 @@ architecture STRUCTURE of design_1_wrapper is
     TRIG_L1_OUT_N : out STD_LOGIC_VECTOR ( 0 to 0 );
     TRIG_L1_OUT_P : out STD_LOGIC_VECTOR ( 0 to 0 );
     EXT_TRIG_IN_N : in STD_LOGIC_VECTOR ( 1 downto 0 );
-    EXT_TRIG_IN_P : in STD_LOGIC_VECTOR ( 1 downto 0 )
+    EXT_TRIG_IN_P : in STD_LOGIC_VECTOR ( 1 downto 0 );
+    GTU_CLK_IN_N : in STD_LOGIC_VECTOR ( 0 to 0 );
+    GTU_CLK_IN_P : in STD_LOGIC_VECTOR ( 0 to 0 )
   );
   end component design_1;
 begin
@@ -165,6 +169,8 @@ design_1_i: component design_1
       FIXED_IO_ps_porb => FIXED_IO_ps_porb,
       FIXED_IO_ps_srstb => FIXED_IO_ps_srstb,
       GPS_EN(1 downto 0) => GPS_EN(1 downto 0),
+      GTU_CLK_IN_N(0) => GTU_CLK_IN_N(0),
+      GTU_CLK_IN_P(0) => GTU_CLK_IN_P(0),
       GTU_CLK_OUT_N(3 downto 0) => GTU_CLK_OUT_N(3 downto 0),
       GTU_CLK_OUT_P(3 downto 0) => GTU_CLK_OUT_P(3 downto 0),
       PPS_IN_N(0) => PPS_IN_N(0),
