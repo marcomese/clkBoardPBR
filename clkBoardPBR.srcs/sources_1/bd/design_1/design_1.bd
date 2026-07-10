@@ -27,7 +27,8 @@
         "nGtuConst": "",
         "trgFlagBuilder_0": "",
         "command_decoder_0": "",
-        "pulseExtender_0": ""
+        "pulseExtender_0": "",
+        "trgConcat": ""
       },
       "counters": {
         "reg_event_number_0": "",
@@ -934,7 +935,7 @@
         "right": "0",
         "parameters": {
           "CLK_DOMAIN": {
-            "value": "design_1_IBUF_DS_N_0",
+            "value": "design_1_EXT_TRIG_IN_N",
             "value_src": "default"
           },
           "FREQ_HZ": {
@@ -962,7 +963,7 @@
         "right": "0",
         "parameters": {
           "CLK_DOMAIN": {
-            "value": "design_1_IBUF_DS_P_0",
+            "value": "design_1_EXT_TRIG_IN_P",
             "value_src": "default"
           },
           "FREQ_HZ": {
@@ -1709,6 +1710,9 @@
           "PCW_MIO_TREE_SIGNALS": {
             "value": "gpio[0]#qspi0_ss_b#qspi0_io[0]#qspi0_io[1]#qspi0_io[2]#qspi0_io[3]/HOLD_B#qspi0_sclk#gpio[7]#qspi_fbclk#gpio[9]#scl#sda#tx#rx#rx#tx#tx_clk#txd[0]#txd[1]#txd[2]#txd[3]#tx_ctl#rx_clk#rxd[0]#rxd[1]#rxd[2]#rxd[3]#rx_ctl#gpio[28]#gpio[29]#gpio[30]#gpio[31]#gpio[32]#gpio[33]#gpio[34]#gpio[35]#gpio[36]#gpio[37]#gpio[38]#gpio[39]#clk#cmd#data[0]#data[1]#data[2]#data[3]#data[0]#cmd#clk#data[1]#data[2]#data[3]#mdc#mdio"
           },
+          "PCW_PERIPHERAL_BOARD_PRESET": {
+            "value": "part0"
+          },
           "PCW_PRESET_BANK0_VOLTAGE": {
             "value": "LVCMOS 3.3V"
           },
@@ -2083,7 +2087,7 @@
             "value": "6"
           },
           "trgNum": {
-            "value": "4"
+            "value": "6"
           }
         },
         "reference_info": {
@@ -2137,7 +2141,7 @@
           },
           "trgFlag": {
             "direction": "I",
-            "left": "3",
+            "left": "5",
             "right": "0"
           },
           "trgFRdy": {
@@ -2471,7 +2475,7 @@
           },
           "triggerFlags": {
             "direction": "O",
-            "left": "3",
+            "left": "5",
             "right": "0"
           },
           "send_nack": {
@@ -2675,7 +2679,7 @@
             "inst_hier_path": "cmdAndRunCtrl/trgFlagBuilder_0",
             "parameters": {
               "trgNum": {
-                "value": "4"
+                "value": "6"
               }
             },
             "reference_info": {
@@ -2719,7 +2723,7 @@
               },
               "trgIn": {
                 "direction": "I",
-                "left": "3",
+                "left": "5",
                 "right": "0",
                 "parameters": {
                   "FREQ_HZ": {
@@ -2741,7 +2745,7 @@
               },
               "triggerFlags": {
                 "direction": "O",
-                "left": "3",
+                "left": "5",
                 "right": "0"
               }
             }
@@ -2805,11 +2809,6 @@
                 "direction": "I"
               },
               "fsmState": {
-                "direction": "I",
-                "left": "3",
-                "right": "0"
-              },
-              "trigger_flag": {
                 "direction": "I",
                 "left": "3",
                 "right": "0"
@@ -2915,7 +2914,7 @@
             "inst_hier_path": "cmdAndRunCtrl/pulseExtender_0",
             "parameters": {
               "sigNum": {
-                "value": "4"
+                "value": "6"
               },
               "sigWidth": {
                 "value": "10"
@@ -2956,12 +2955,18 @@
               },
               "sigIn": {
                 "direction": "I",
-                "left": "3",
-                "right": "0"
+                "left": "5",
+                "right": "0",
+                "parameters": {
+                  "PortWidth": {
+                    "value": "6",
+                    "value_src": "ip_prop"
+                  }
+                }
               },
               "sigOut": {
                 "direction": "O",
-                "left": "3",
+                "left": "5",
                 "right": "0",
                 "parameters": {
                   "FREQ_HZ": {
@@ -2977,6 +2982,24 @@
                     "value_src": "ip_prop"
                   }
                 }
+              }
+            }
+          },
+          "trgConcat": {
+            "vlnv": "xilinx.com:inline_hdl:ilconcat:1.0",
+            "parameters": {
+              "IN0_WIDTH": {
+                "value": "4",
+                "value_src": "propagated",
+                "value_mode": "auto"
+              },
+              "IN1_WIDTH": {
+                "value": "2",
+                "value_src": "propagated",
+                "value_mode": "auto"
+              },
+              "NUM_PORTS": {
+                "value": "2"
               }
             }
           }
@@ -3128,9 +3151,9 @@
             "ports": [
               "clk",
               "run_control_fsm_0/clock",
-              "command_decoder_0/clk",
               "pulseExtender_0/clk",
-              "trgFlagBuilder_0/clk"
+              "trgFlagBuilder_0/clk",
+              "command_decoder_0/clk"
             ]
           },
           "pulseExtender_0_sigOut": {
@@ -3143,9 +3166,9 @@
             "ports": [
               "rst",
               "run_control_fsm_0/reset",
-              "command_decoder_0/rst",
               "pulseExtender_0/rst",
-              "trgFlagBuilder_0/rst"
+              "trgFlagBuilder_0/rst",
+              "command_decoder_0/rst"
             ]
           },
           "run_control_fsm_0_busy": {
@@ -3184,13 +3207,20 @@
           "synchronizers_0_extTrgSync": {
             "ports": [
               "trigger_ext",
-              "run_control_fsm_0/trigger_ext"
+              "run_control_fsm_0/trigger_ext",
+              "trgConcat/In1"
             ]
           },
           "synchronizers_0_trgSync": {
             "ports": [
               "trigger_in",
               "run_control_fsm_0/trigger_in",
+              "trgConcat/In0"
+            ]
+          },
+          "trgConcat_dout": {
+            "ports": [
+              "trgConcat/dout",
               "pulseExtender_0/sigIn"
             ]
           },
@@ -3203,8 +3233,7 @@
           "trgFlagBuilder_0_triggerFlags": {
             "ports": [
               "trgFlagBuilder_0/triggerFlags",
-              "triggerFlags",
-              "command_decoder_0/trigger_flag"
+              "triggerFlags"
             ]
           }
         }
@@ -4557,11 +4586,11 @@
           "pulseExtender_0_sigOut": {
             "ports": [
               "pulseExtender_0/sigOut",
-              "l1TrigOut_OBUFDS/OBUF_IN",
               "extTrgOutConcat/In0",
               "extTrgOutConcat/In1",
               "extTrgOutConcat/In2",
-              "extTrgOutConcat/In3"
+              "extTrgOutConcat/In3",
+              "l1TrigOut_OBUFDS/OBUF_IN"
             ]
           },
           "rst_1": {
@@ -5366,7 +5395,7 @@
           },
           "In0": {
             "direction": "I",
-            "left": "3",
+            "left": "5",
             "right": "0"
           }
         },
@@ -5403,12 +5432,12 @@
             "vlnv": "xilinx.com:inline_hdl:ilconcat:1.0",
             "parameters": {
               "IN0_WIDTH": {
-                "value": "4",
+                "value": "6",
                 "value_src": "propagated",
                 "value_mode": "auto"
               },
               "IN1_WIDTH": {
-                "value": "28",
+                "value": "26",
                 "value_src": "propagated",
                 "value_mode": "auto"
               }
@@ -5421,7 +5450,7 @@
                 "value": "0"
               },
               "CONST_WIDTH": {
-                "value": "28"
+                "value": "26"
               }
             }
           }
@@ -5802,7 +5831,7 @@
                     "value_src": "ip_prop"
                   },
                   "CLK_DOMAIN": {
-                    "value": "design_1_IBUF_DS_N_0",
+                    "value": "design_1_EXT_TRIG_IN_N",
                     "value_src": "ip_prop"
                   }
                 }
@@ -6852,9 +6881,6 @@
           "axi_mem_intercon/S00_ACLK",
           "axi_mem_intercon/ACLK",
           "axi_mem_intercon/M00_ACLK",
-          "processing_system7_0/M_AXI_GP0_ACLK",
-          "rst_ps7_0_100M/slowest_sync_clk",
-          "processing_system7_0/S_AXI_ACP_ACLK",
           "gtuGenerator_0/clk",
           "cmdAndRunCtrl/clk",
           "counters/clk",
@@ -6862,10 +6888,13 @@
           "gpsUART/s_axi_aclk",
           "ppsPresAndCtrl/clk",
           "axiPLRegs/s00_axi_aclk",
-          "axi_smc/aclk",
           "inBuffers/clk",
           "dataBuilder_0/clk",
-          "outBuffers/clk"
+          "outBuffers/clk",
+          "axi_smc/aclk",
+          "processing_system7_0/M_AXI_GP0_ACLK",
+          "processing_system7_0/S_AXI_ACP_ACLK",
+          "rst_ps7_0_100M/slowest_sync_clk"
         ]
       },
       "processing_system7_0_FCLK_CLK1": {

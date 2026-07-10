@@ -26,7 +26,6 @@ port(
     command_in         : in  std_logic_vector(31 downto 0);
     data_received      : in  std_logic;
     fsmState           : in  std_logic_vector(3 downto 0);
-    trigger_flag       : in  std_logic_vector(zynqNum-1 downto 0);
     ppsPres            : in  std_logic_vector(ppsNum-1 downto 0);
     fifoFull           : in  std_logic;
     busy               : in  std_logic_vector(zynqNum-1 downto 0);
@@ -88,7 +87,7 @@ constant MSG_CLKPPS_NO       : std_logic_vector(31 downto 0) := X"3333CCCC";
 constant MSG_GPS_AUTO_ON     : std_logic_vector(31 downto 0) := X"69966996";
 constant MSG_GPS_AUTO_NO     : std_logic_vector(31 downto 0) := X"96699669";
 
-constant STATUS_USED         : integer := 12 + extTrgNum + 2*ppsNum + 3*zynqNum;
+constant STATUS_USED         : integer := 11 + extTrgNum + 2*ppsNum + 2*zynqNum;
 constant STATUS_PAD          : integer := 32 - STATUS_USED;
 
 signal dataRecv,
@@ -113,13 +112,11 @@ pps_trg    <= pps_trg_s;
 ext_trg_en <= ext_trg_en_s;
 
 status_register <=  std_logic_vector(to_unsigned(0, STATUS_PAD)) &
-                    trigger_flag    &   -- zynqNum   bit
                     busy            &   -- zynqNum   bit
                     zynq_en_s       &   -- zynqNum   bit
                     ppsPres         &   -- ppsNum    bit
                     pps_en_s        &   -- ppsNum    bit
                     ext_trg_en_s    &   -- extTrgNum bit
-                    '0'             &   -- 1 bit  -> 11 (reserved)
                     fsmState        &   -- 4 bit  -> 10..7
                     pps_auto_s      &   -- 1 bit  -> 6
                     pps_trg_s       &   -- 1 bit  -> 5
