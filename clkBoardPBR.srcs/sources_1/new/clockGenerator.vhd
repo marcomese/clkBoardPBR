@@ -24,6 +24,7 @@ generic(
 port(
     clk            : in  std_logic;
     rst            : in  std_logic;
+    enable         : in  std_logic;
     clkOut         : out std_logic;
     clkRisingEdge  : out std_logic;
     clkFallingEdge : out std_logic
@@ -47,7 +48,7 @@ clkOut <= clkSig;
 clkCntInst: process(clk)
 begin
     if rising_edge(clk) then
-        if rst = '1' then
+        if rst = '1' or enable = '0' then
             clkCnt         <= to_unsigned(cntMax-1, clkCnt'length);
             clkSig         <= '0';
             clkRisingEdge  <= '0';

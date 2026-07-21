@@ -20,12 +20,12 @@ port(
     rst        : in  std_logic;
     rstAll     : in  std_logic;
     rstGtu     : in  std_logic;
-    rstTrgN    : in  std_logic;
-    rstEvtN    : in  std_logic;
+    rstTrg     : in  std_logic;
+    rstEvt     : in  std_logic;
     rstFromRun : in  std_logic;
     rstGtuOut  : out std_logic;
-    rstTrgNOut : out std_logic;
-    rstEvtNOut : out std_logic
+    rstTrgOut  : out std_logic;
+    rstEvtOut  : out std_logic
 );
 end counterRstCtrl;
 
@@ -37,13 +37,13 @@ rstProc: process(clk)
 begin
     if rising_edge(clk) then
         if rst = '1' then
-            rstGtuOut  <= '0';
-            rstTrgNOut <= '0';
-            rstEvtNOut <= '0';
+            rstGtuOut <= '0';
+            rstTrgOut <= '0';
+            rstEvtOut <= '0';
         else
-            rstGtuOut  <= rstAll or rstGtu;
-            rstTrgNOut <= rstAll or rstFromRun or rstTrgN;
-            rstEvtNOut <= rstAll or rstFromRun or rstEvtN;
+            rstGtuOut <= rstAll or rstGtu;
+            rstTrgOut <= rstAll or rstFromRun or rstTrg;
+            rstEvtOut <= rstAll or rstFromRun or rstEvt;
         end if;
     end if;
 end process;

@@ -12,6 +12,7 @@ constant trgNum        : integer  := 4;
 constant extTrgNum     : positive := 2;
 constant gpsNum        : positive := 2;
 constant nGtuLen       : positive := 4;
+constant nClkTOut      : positive := 100;
 constant sigWidth      : positive := 10;
 
 signal clk             : std_logic := '1';
@@ -39,6 +40,8 @@ signal fifoFull        : std_logic := '0';
 signal trigger_out     : std_logic := '0';
 signal busy            : std_logic := '0';
 signal reset_counters  : std_logic := '0';
+signal timeout         : std_logic;
+signal timeoutFlag     : std_logic_vector(trgNum-1 downto 0);
 
 begin
 
@@ -69,7 +72,7 @@ generic map(
 port map(
     clk          => clk,
     rst          => rst,
-    running      => run_val,
+    running      => running,
     trg_out      => trigger_out,
     trgIn        => trgExtended,
     ready        => ready,
@@ -93,7 +96,8 @@ generic map(
     extTrgNum => extTrgNum,
     zynqNum   => trgNum,
     gpsNum    => gpsNum,
-    nGtuLen   => nGtuLen
+    nGtuLen   => nGtuLen,
+    nClkTOut  => nClkTOut
 )
 port map(
     reset           => rst,
@@ -115,7 +119,10 @@ port map(
     fifoFull        => fifoFull,
     trigger_out     => trigger_out,
     busy            => busy,
-    reset_counters  => reset_counters
+    reset_counters  => reset_counters,
+    timeout         => timeout,
+    timeoutFlag     => timeoutFlag,
+    running         => running
 );
 
 end Behavioral;

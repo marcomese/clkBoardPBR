@@ -31,8 +31,6 @@ end trgFlagBuilder;
 
 architecture Behavioral of trgFlagBuilder is
 
-signal  trgInDelayed : std_logic_vector(trgNum-1 downto 0);
-
 begin
 
 trgFlagReg: process(clk, rst)

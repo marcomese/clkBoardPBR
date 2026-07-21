@@ -30,6 +30,9 @@ port(
     fifoFull           : in  std_logic;
     busy               : in  std_logic_vector(zynqNum-1 downto 0);
     runCtrlBusy        : in  std_logic;
+    running            : in  std_logic;
+    timeout            : in  std_logic;
+    timeoutFlag        : in  std_logic_vector(zynqNum-1 downto 0);
     plToAxiSBusy       : in  std_logic;
     -- level outputs
     run                : out std_logic;
@@ -90,15 +93,17 @@ constant MSG_GPS_AUTO_NO     : std_logic_vector(31 downto 0) := X"96699669";
 constant MSG_GTU_INTERNAL_ON : std_logic_vector(31 downto 0) := X"FFFF0000";
 constant MSG_GTU_INTERNAL_NO : std_logic_vector(31 downto 0) := X"0000FFFF";
 
-constant STATUS_USED         : integer := 11 + extTrgNum + 2*ppsNum + 2*zynqNum;
+constant STATUS_USED         : integer := 12 + extTrgNum + 2*ppsNum + 2*zynqNum + zynqNum;
 constant STATUS_PAD          : integer := 32 - STATUS_USED;
 
-signal dataRecv,
-       dataRecvFF,
+signal dataRecvFF,
+       dataRecvFall,
        run_s,
        cmd_busy_s,
        pps_auto_s,
-       pps_trg_s    : std_logic;
+       pps_trg_s,
+       timeOutFF,
+       timeOutRise  : std_logic;
 
 signal ext_trg_en_s : std_logic_vector(extTrgNum-1 downto 0) := (others => '0');
 signal zynq_en_s    : std_logic_vector(zynqNum-1 downto 0)   := (others => '0');
@@ -106,13 +111,15 @@ signal pps_en_s     : std_logic_vector(ppsNum-1 downto 0)    := (others => '0');
 
 begin
 
-run        <= run_s;
-cmd_busy   <= cmd_busy_s;
-zynq_en    <= zynq_en_s;
-pps_en     <= pps_en_s;
-pps_auto   <= pps_auto_s;
-pps_trg    <= pps_trg_s;
-ext_trg_en <= ext_trg_en_s;
+run          <= run_s;
+cmd_busy     <= cmd_busy_s;
+zynq_en      <= zynq_en_s;
+pps_en       <= pps_en_s;
+pps_auto     <= pps_auto_s;
+pps_trg      <= pps_trg_s;
+ext_trg_en   <= ext_trg_en_s;
+dataRecvFall <= dataRecvFF and not data_received;
+timeOutRise  <= timeOut and not timeOutFF;
 
 status_register <=  std_logic_vector(to_unsigned(0, STATUS_PAD)) &
                     busy            &   -- zynqNum   bit
@@ -120,6 +127,8 @@ status_register <=  std_logic_vector(to_unsigned(0, STATUS_PAD)) &
                     ppsPres         &   -- ppsNum    bit
                     pps_en_s        &   -- ppsNum    bit
                     ext_trg_en_s    &   -- extTrgNum bit
+                    timeoutFlag     &   -- zynqNum   bit
+                    timeout         &   -- 1 bit  -> 11
                     fsmState        &   -- 4 bit  -> 10..7
                     pps_auto_s      &   -- 1 bit  -> 6
                     pps_trg_s       &   -- 1 bit  -> 5
@@ -127,7 +136,7 @@ status_register <=  std_logic_vector(to_unsigned(0, STATUS_PAD)) &
                     fifoFull        &   -- 1 bit  -> 3
                     plToAxiSBusy    &   -- 1 bit  -> 2
                     runCtrlBusy     &   -- 1 bit  -> 1
-                    run_s;              -- 1 bit  -> 0
+                    running;            -- 1 bit  -> 0
 
 assert STATUS_USED <= 32
     report "status_register overflow: ridurre extTrgNum/zynqNum/ppsNum"
@@ -146,7 +155,6 @@ begin
 
         if rst = '1' then
             dataRecvFF   <= '0';
-            dataRecv     <= '0';
             run_s        <= '0';
             cmd_busy_s   <= '0';
             zynq_en_s    <= (others => '0');
@@ -155,11 +163,16 @@ begin
             pps_trg_s    <= '0';
             ext_trg_en_s <= (others => '0');
             gtu_sel      <= '0';
+            timeOutFF    <= '0';
         else
             dataRecvFF <= data_received;
-            dataRecv   <= dataRecvFF;
+            timeOutFF  <= timeOut;
 
-            if dataRecvFF = '1' and dataRecv = '0' then
+            if timeoutRise = '1' then
+                run_s <= '0';
+            end if;
+
+            if dataRecvFall = '1' then
                 case command_in is
                     when MSG_START_RUN       => run_s              <= '1';
                     when MSG_STOP_RUN        => run_s              <= '0';

@@ -42,23 +42,20 @@
       },
       "outBuffers": {
         "gtuClockConcat": "",
-        "clk40Out_ODDR2": "",
         "util_ds_buf_0": "",
-        "clk40Out_ODDR3": "",
         "gtuClock_OBUFDS": "",
         "extTrgOutConcat": "",
         "clk40Out_OBUFDS0": "",
         "extTrg_OBUFDS": "",
         "gpsEnConst": "",
         "clk40Out_OBUFDS1": "",
-        "clk40Out_ODDR0": "",
         "clk40Out_OBUFDS2": "",
         "clk40Out_OBUFDS3": "",
-        "clk40Out_ODDR1": "",
         "ppsOutConcat": "",
         "pulseExtender_0": "",
         "busy_OBUFDS": "",
-        "l1TrigOut_OBUFDS": ""
+        "l1TrigOut_OBUFDS": "",
+        "clk40Out_BUFGCE": ""
       },
       "fifoDMA": {
         "fifoRstAnd": "",
@@ -993,7 +990,7 @@
         "right": "0",
         "parameters": {
           "CLK_DOMAIN": {
-            "value": "design_1_IBUF_DS_N_0",
+            "value": "design_1_GTU_CLK_IN_N",
             "value_src": "default"
           },
           "FREQ_HZ": {
@@ -1021,7 +1018,7 @@
         "right": "0",
         "parameters": {
           "CLK_DOMAIN": {
-            "value": "design_1_IBUF_DS_P_0",
+            "value": "design_1_GTU_CLK_IN_P",
             "value_src": "default"
           },
           "FREQ_HZ": {
@@ -2550,6 +2547,9 @@
               "gpsNum": {
                 "value": "2"
               },
+              "nClkTOut": {
+                "value": "100000000"
+              },
               "nGtuLen": {
                 "value": "8"
               },
@@ -2663,6 +2663,17 @@
                     "value": "ACTIVE_HIGH"
                   }
                 }
+              },
+              "timeout": {
+                "direction": "O"
+              },
+              "timeoutFlag": {
+                "direction": "O",
+                "left": "3",
+                "right": "0"
+              },
+              "running": {
+                "direction": "O"
               }
             }
           },
@@ -2835,6 +2846,17 @@
               "runCtrlBusy": {
                 "direction": "I"
               },
+              "running": {
+                "direction": "I"
+              },
+              "timeout": {
+                "direction": "I"
+              },
+              "timeoutFlag": {
+                "direction": "I",
+                "left": "3",
+                "right": "0"
+              },
               "plToAxiSBusy": {
                 "direction": "I"
               },
@@ -2885,7 +2907,12 @@
               },
               "reset_l1_nr": {
                 "type": "rst",
-                "direction": "O"
+                "direction": "O",
+                "parameters": {
+                  "POLARITY": {
+                    "value": "ACTIVE_HIGH"
+                  }
+                }
               },
               "reset_evt_nr": {
                 "type": "rst",
@@ -3017,15 +3044,15 @@
           "Net1": {
             "ports": [
               "plToAxiSBusy",
-              "run_control_fsm_0/plToAxiSBusy",
-              "command_decoder_0/plToAxiSBusy"
+              "command_decoder_0/plToAxiSBusy",
+              "run_control_fsm_0/plToAxiSBusy"
             ]
           },
           "axis_data_fifo_0_prog_full": {
             "ports": [
               "fifoFull",
-              "run_control_fsm_0/fifoFull",
-              "command_decoder_0/fifoFull"
+              "command_decoder_0/fifoFull",
+              "run_control_fsm_0/fifoFull"
             ]
           },
           "command_decoder_0_cmd_busy": {
@@ -3097,9 +3124,7 @@
           "command_decoder_0_run": {
             "ports": [
               "command_decoder_0/run",
-              "run",
-              "run_control_fsm_0/run_val",
-              "trgFlagBuilder_0/running"
+              "run_control_fsm_0/run_val"
             ]
           },
           "command_decoder_0_send_nack": {
@@ -3165,10 +3190,10 @@
           "processing_system7_0_FCLK_CLK0": {
             "ports": [
               "clk",
-              "run_control_fsm_0/clock",
               "pulseExtender_0/clk",
               "trgFlagBuilder_0/clk",
-              "command_decoder_0/clk"
+              "command_decoder_0/clk",
+              "run_control_fsm_0/clock"
             ]
           },
           "pulseExtender_0_sigOut": {
@@ -3180,10 +3205,10 @@
           "rst_ps7_0_100M_peripheral_reset": {
             "ports": [
               "rst",
-              "run_control_fsm_0/reset",
               "pulseExtender_0/rst",
               "trgFlagBuilder_0/rst",
-              "command_decoder_0/rst"
+              "command_decoder_0/rst",
+              "run_control_fsm_0/reset"
             ]
           },
           "run_control_fsm_0_busy": {
@@ -3205,6 +3230,26 @@
               "reset_counters"
             ]
           },
+          "run_control_fsm_0_running": {
+            "ports": [
+              "run_control_fsm_0/running",
+              "run",
+              "trgFlagBuilder_0/running",
+              "command_decoder_0/running"
+            ]
+          },
+          "run_control_fsm_0_timeout": {
+            "ports": [
+              "run_control_fsm_0/timeout",
+              "command_decoder_0/timeout"
+            ]
+          },
+          "run_control_fsm_0_timeoutFlag": {
+            "ports": [
+              "run_control_fsm_0/timeoutFlag",
+              "command_decoder_0/timeoutFlag"
+            ]
+          },
           "run_control_fsm_0_trigger_out": {
             "ports": [
               "run_control_fsm_0/trigger_out",
@@ -3215,22 +3260,22 @@
           "synchronizers_0_busySync": {
             "ports": [
               "busy",
-              "run_control_fsm_0/busy_in",
-              "command_decoder_0/busy"
+              "command_decoder_0/busy",
+              "run_control_fsm_0/busy_in"
             ]
           },
           "synchronizers_0_extTrgSync": {
             "ports": [
               "trigger_ext",
-              "run_control_fsm_0/trigger_ext",
-              "trgConcat/In1"
+              "trgConcat/In1",
+              "run_control_fsm_0/trigger_ext"
             ]
           },
           "synchronizers_0_trgSync": {
             "ports": [
               "trigger_in",
-              "run_control_fsm_0/trigger_in",
-              "trgConcat/In0"
+              "trgConcat/In0",
+              "run_control_fsm_0/trigger_in"
             ]
           },
           "trgConcat_dout": {
@@ -3658,16 +3703,16 @@
                   }
                 }
               },
-              "rstTrgN": {
+              "rstTrg": {
                 "direction": "I",
                 "parameters": {
                   "POLARITY": {
-                    "value": "ACTIVE_LOW",
-                    "value_src": "default_prop"
+                    "value": "ACTIVE_HIGH",
+                    "value_src": "user_prop"
                   }
                 }
               },
-              "rstEvtN": {
+              "rstEvt": {
                 "direction": "I",
                 "parameters": {
                   "POLARITY": {
@@ -3694,10 +3739,10 @@
                   }
                 }
               },
-              "rstTrgNOut": {
+              "rstTrgOut": {
                 "direction": "O"
               },
-              "rstEvtNOut": {
+              "rstEvtOut": {
                 "direction": "O",
                 "parameters": {
                   "POLARITY": {
@@ -3799,9 +3844,9 @@
               "GTUcounter_0/run"
             ]
           },
-          "counterRstCtrl_0_rstEvtNOut": {
+          "counterRstCtrl_0_rstEvtOut": {
             "ports": [
-              "counterRstCtrl_0/rstEvtNOut",
+              "counterRstCtrl_0/rstEvtOut",
               "reg_event_number_0/clear"
             ]
           },
@@ -3811,9 +3856,9 @@
               "GTUcounter_0/clear"
             ]
           },
-          "counterRstCtrl_0_rstTrgNOut": {
+          "counterRstCtrl_0_rstTrgOut": {
             "ports": [
-              "counterRstCtrl_0/rstTrgNOut",
+              "counterRstCtrl_0/rstTrgOut",
               "trgCounter_0/clr"
             ]
           },
@@ -3835,8 +3880,8 @@
               "aliveDeadTCounter_0/clk",
               "trgCounter_0/clk",
               "reg_event_number_0/clock",
-              "counterRstCtrl_0/clk",
-              "GTUcounter_0/clk"
+              "GTUcounter_0/clk",
+              "counterRstCtrl_0/clk"
             ]
           },
           "reg_event_number_0_ready": {
@@ -3860,7 +3905,7 @@
           "rstEvtN_1": {
             "ports": [
               "rstEvtN",
-              "counterRstCtrl_0/rstEvtN"
+              "counterRstCtrl_0/rstEvt"
             ]
           },
           "rstFromRun_1": {
@@ -3878,7 +3923,7 @@
           "rstTrgN_1": {
             "ports": [
               "rstTrgN",
-              "counterRstCtrl_0/rstTrgN"
+              "counterRstCtrl_0/rstTrg"
             ]
           },
           "rst_ps7_0_100M_peripheral_reset": {
@@ -3887,8 +3932,8 @@
               "aliveDeadTCounter_0/rst",
               "trgCounter_0/rst",
               "reg_event_number_0/reset",
-              "counterRstCtrl_0/rst",
-              "GTUcounter_0/rst"
+              "GTUcounter_0/rst",
+              "counterRstCtrl_0/rst"
             ]
           },
           "run_control_fsm_0_busy": {
@@ -4093,6 +4138,11 @@
             "direction": "O",
             "left": "0",
             "right": "0"
+          },
+          "BUFGCE_CE": {
+            "direction": "I",
+            "left": "0",
+            "right": "0"
           }
         },
         "components": {
@@ -4124,13 +4174,6 @@
               }
             }
           },
-          "clk40Out_ODDR2": {
-            "vlnv": "xilinx.com:ip:oddr:1.0",
-            "ip_revision": "4",
-            "xci_name": "design_1_clk40Out_ODDR_1",
-            "xci_path": "ip\\design_1_clk40Out_ODDR_1\\design_1_clk40Out_ODDR_1.xci",
-            "inst_hier_path": "outBuffers/clk40Out_ODDR2"
-          },
           "util_ds_buf_0": {
             "vlnv": "xilinx.com:ip:util_ds_buf:2.2",
             "ip_revision": "7",
@@ -4145,13 +4188,6 @@
                 "value": "4"
               }
             }
-          },
-          "clk40Out_ODDR3": {
-            "vlnv": "xilinx.com:ip:oddr:1.0",
-            "ip_revision": "4",
-            "xci_name": "design_1_clk40Out_ODDR_2",
-            "xci_path": "ip\\design_1_clk40Out_ODDR_2\\design_1_clk40Out_ODDR_2.xci",
-            "inst_hier_path": "outBuffers/clk40Out_ODDR3"
           },
           "gtuClock_OBUFDS": {
             "vlnv": "xilinx.com:ip:util_ds_buf:2.2",
@@ -4252,13 +4288,6 @@
               }
             }
           },
-          "clk40Out_ODDR0": {
-            "vlnv": "xilinx.com:ip:oddr:1.0",
-            "ip_revision": "4",
-            "xci_name": "design_1_oddr_0_0",
-            "xci_path": "ip\\design_1_oddr_0_0\\design_1_oddr_0_0.xci",
-            "inst_hier_path": "outBuffers/clk40Out_ODDR0"
-          },
           "clk40Out_OBUFDS2": {
             "vlnv": "xilinx.com:ip:util_ds_buf:2.2",
             "ip_revision": "7",
@@ -4288,13 +4317,6 @@
                 "value": "1"
               }
             }
-          },
-          "clk40Out_ODDR1": {
-            "vlnv": "xilinx.com:ip:oddr:1.0",
-            "ip_revision": "4",
-            "xci_name": "design_1_clk40Out_ODDR_0",
-            "xci_path": "ip\\design_1_clk40Out_ODDR_0\\design_1_clk40Out_ODDR_0.xci",
-            "inst_hier_path": "outBuffers/clk40Out_ODDR1"
           },
           "ppsOutConcat": {
             "vlnv": "xilinx.com:inline_hdl:ilconcat:1.0",
@@ -4406,9 +4428,27 @@
                 "value": "OBUFDS"
               }
             }
+          },
+          "clk40Out_BUFGCE": {
+            "vlnv": "xilinx.com:ip:util_ds_buf:2.2",
+            "ip_revision": "7",
+            "xci_name": "design_1_util_ds_buf_1_5",
+            "xci_path": "ip\\design_1_util_ds_buf_1_5\\design_1_util_ds_buf_1_5.xci",
+            "inst_hier_path": "outBuffers/clk40Out_BUFGCE",
+            "parameters": {
+              "C_BUF_TYPE": {
+                "value": "BUFGCE"
+              }
+            }
           }
         },
         "nets": {
+          "BUFGCE_CE_1": {
+            "ports": [
+              "BUFGCE_CE",
+              "clk40Out_BUFGCE/BUFGCE_CE"
+            ]
+          },
           "In3_1": {
             "ports": [
               "In3",
@@ -4490,34 +4530,16 @@
               "CLK40_OUT3_P"
             ]
           },
-          "clk40Out_ODDR0_clk_out": {
-            "ports": [
-              "clk40Out_ODDR0/clk_out",
-              "clk40Out_OBUFDS0/OBUF_IN"
-            ]
-          },
-          "clk40Out_ODDR1_clk_out": {
-            "ports": [
-              "clk40Out_ODDR1/clk_out",
-              "clk40Out_OBUFDS1/OBUF_IN"
-            ]
-          },
-          "clk40Out_ODDR2_clk_out": {
-            "ports": [
-              "clk40Out_ODDR2/clk_out",
-              "clk40Out_OBUFDS2/OBUF_IN"
-            ]
-          },
-          "clk40Out_ODDR3_clk_out": {
-            "ports": [
-              "clk40Out_ODDR3/clk_out",
-              "clk40Out_OBUFDS3/OBUF_IN"
-            ]
-          },
           "clk_1": {
             "ports": [
               "clk",
               "pulseExtender_0/clk"
+            ]
+          },
+          "clk_in_1": {
+            "ports": [
+              "clk_in",
+              "clk40Out_BUFGCE/BUFGCE_I"
             ]
           },
           "extTrg_OBUFDS_1_OBUF_DS_N": {
@@ -4589,15 +4611,6 @@
               "ppsOutConcat/In0"
             ]
           },
-          "processing_system7_0_FCLK_CLK1": {
-            "ports": [
-              "clk_in",
-              "clk40Out_ODDR0/clk_in",
-              "clk40Out_ODDR1/clk_in",
-              "clk40Out_ODDR3/clk_in",
-              "clk40Out_ODDR2/clk_in"
-            ]
-          },
           "pulseExtender_0_sigOut": {
             "ports": [
               "pulseExtender_0/sigOut",
@@ -4624,6 +4637,15 @@
             "ports": [
               "util_ds_buf_0/OBUF_DS_P",
               "PPS_OUT_P"
+            ]
+          },
+          "util_ds_buf_1_BUFGCE_O": {
+            "ports": [
+              "clk40Out_BUFGCE/BUFGCE_O",
+              "clk40Out_OBUFDS0/OBUF_IN",
+              "clk40Out_OBUFDS1/OBUF_IN",
+              "clk40Out_OBUFDS2/OBUF_IN",
+              "clk40Out_OBUFDS3/OBUF_IN"
             ]
           }
         }
@@ -5090,6 +5112,9 @@
           },
           "ppsEdgeOut": {
             "direction": "O"
+          },
+          "enable": {
+            "direction": "I"
           }
         },
         "components": {
@@ -5205,6 +5230,9 @@
                   }
                 }
               },
+              "enable": {
+                "direction": "I"
+              },
               "clear": {
                 "direction": "I",
                 "parameters": {
@@ -5263,6 +5291,12 @@
             "ports": [
               "ppsSel",
               "ppsControl_0/ppsSel"
+            ]
+          },
+          "enable_1": {
+            "ports": [
+              "enable",
+              "ppsControl_0/enable"
             ]
           },
           "ilconcat_0_dout2": {
@@ -5803,7 +5837,7 @@
                     "value_src": "ip_prop"
                   },
                   "CLK_DOMAIN": {
-                    "value": "design_1_IBUF_DS_N_0",
+                    "value": "design_1_GTU_CLK_IN_N",
                     "value_src": "ip_prop"
                   }
                 }
@@ -6622,6 +6656,9 @@
               }
             }
           },
+          "enable": {
+            "direction": "I"
+          },
           "gtuSel": {
             "direction": "I"
           },
@@ -6932,7 +6969,10 @@
       "command_decoder_0_run": {
         "ports": [
           "cmdAndRunCtrl/run",
-          "counters/run"
+          "counters/run",
+          "ppsPresAndCtrl/enable",
+          "gtuCtrl_0/enable",
+          "outBuffers/BUFGCE_CE"
         ]
       },
       "command_decoder_0_status_register": {
@@ -7189,7 +7229,7 @@
           "ppsPresAndCtrl/clear"
         ]
       },
-      "rstEvtN_1": {
+      "rstEvt_1": {
         "ports": [
           "cmdAndRunCtrl/reset_evt_nr",
           "counters/rstEvtN"
@@ -7201,7 +7241,7 @@
           "counters/rstGtu"
         ]
       },
-      "rstTrgN_1": {
+      "rstTrg_1": {
         "ports": [
           "cmdAndRunCtrl/reset_l1_nr",
           "counters/rstTrgN"

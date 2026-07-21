@@ -24,6 +24,7 @@ generic(
 port(
     clk        : in  std_logic;
     rst        : in  std_logic;
+    enable     : in  std_logic;
     clear      : in  std_logic;
     ppsAuto    : in  std_logic;
     ppsSel     : in  std_logic_vector(ppsNum-1 downto 0);
@@ -62,34 +63,36 @@ ppsCnt        <= std_logic_vector(ppsCntSig);
 ppsMuxInst: process(clk)
 begin
     if rising_edge(clk) then
-        if rst = '1' then
+        if rst = '1' or enable = '0' then
             ppsEdgeSig    <= '0';
             secCounterEn  <= '0';
             secCounterRst <= '1'; 
-        elsif ppsAuto = '1' then
-            ppsEdgeSig    <= internalPPS;
-            secCounterEn  <= '1';
-            secCounterRst <= '0';
+        elsif enable = '1' then
+            if ppsAuto = '1' then
+                ppsEdgeSig    <= internalPPS;
+                secCounterEn  <= '1';
+                secCounterRst <= '0';
             
-            for g in ppsNum-1 downto 0 loop        -- the LSB of ppsPres has priority (IN1bit1->gps2,
-                if ppsPres(g) = '1' then           --                                  IN1bit0->gps1,
-                    ppsEdgeSig    <= ppsEdgeIn(g); --                                  IN0bit0->CC clk pps) <- highest priority
-                    secCounterEn  <= '0';
-                    secCounterRst <= '1';
-                end if;
-            end loop;
-        else
-            ppsEdgeSig    <= '0';
-            secCounterEn  <= '0';
-            secCounterRst <= '0';
+                for g in ppsNum-1 downto 0 loop        -- the LSB of ppsPres has priority (IN1bit1->gps2,
+                    if ppsPres(g) = '1' then           --                                  IN1bit0->gps1,
+                        ppsEdgeSig    <= ppsEdgeIn(g); --                                  IN0bit0->CC clk pps) <- highest priority
+                        secCounterEn  <= '0';
+                        secCounterRst <= '1';
+                    end if;
+                end loop;
+            else
+                ppsEdgeSig    <= '0';
+                secCounterEn  <= '0';
+                secCounterRst <= '0';
     
-            for g in ppsNum-1 downto 0 loop
-                if ppsSel(g) = '1' then
-                    ppsEdgeSig    <= ppsEdgeIn(g);
-                    secCounterEn  <= '0';
-                    secCounterRst <= '1';
-                end if;
-            end loop;
+                for g in ppsNum-1 downto 0 loop
+                    if ppsSel(g) = '1' then
+                        ppsEdgeSig    <= ppsEdgeIn(g);
+                        secCounterEn  <= '0';
+                        secCounterRst <= '1';
+                    end if;
+                end loop;
+            end if;
         end if;
     end if;
 end process;
@@ -116,9 +119,9 @@ begin
         if rst = '1' then
             ppsCntSig  <= (others => '0');
         else
-            if clear = '1' then
+            if clear = '1' or enable = '0' then
                 ppsCntSig <= (others => '0');
-            elsif ppsEdgeSig = '1' then
+            elsif enable = '1' and ppsEdgeSig = '1' then
                 ppsCntSig <= ppsCntSig + 1;
             end if;
         end if;

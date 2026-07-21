@@ -23,6 +23,7 @@ generic(
 port(
     clk      : in  std_logic;
     rst      : in  std_logic;
+    enable   : in  std_logic;
     gtuClock : out std_logic;
     gtuTick  : out std_logic
 );
@@ -43,6 +44,7 @@ generic map(
 port map(
     clk            => clk,
     rst            => rst,
+    enable         => enable,
     clkOut         => gtuClock,
     clkRisingEdge  => gtuTick,
     clkFallingEdge => open

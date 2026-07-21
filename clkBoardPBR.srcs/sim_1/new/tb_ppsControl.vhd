@@ -16,6 +16,7 @@ constant presWindow  : integer := 1_000_000; -- ns
 constant ppsNum      : positive := 3;
 constant ppsWidth    : positive := 10;
 constant ppsRstVal   : integer := 4;
+
 signal clk,
        rst,
        ppsAuto,
@@ -23,7 +24,8 @@ signal clk,
        pps2En,
        pps3En  : std_logic := '1';
 
-signal clear   : std_logic := '0';
+signal enable,
+       clear   : std_logic := '0';
 
 signal ppsOut  : std_logic;
 
@@ -40,6 +42,8 @@ signal ppsSel,
 begin
 
 rst <= '0' after clkPeriod*5;
+
+enable <= '1' after clkPeriod*6, '0' after 50 ms, '1' after 150 ms;
 
 clk <= not clk after clkPeriod/2;
 
@@ -61,8 +65,19 @@ port map(
     clk     => clk,
     rst     => rst,
     ppsIn   => ppsIn,
-    ppsEdge => ppsEdge,
     present => ppsPres
+);
+
+ppsEdgeInst: entity work.edgeDetectors
+generic map(
+    sigRst => 1,
+    sigNum => ppsNum
+)
+port map(
+    clk    => clk,
+    rst    => rst,
+    sigIn  => ppsIn,
+    sigOut => ppsEdge
 );
 
 ppsCtrlInst: entity work.ppsControl
@@ -74,6 +89,7 @@ generic map(
 port map(
     clk       => clk,
     rst       => rst,
+    enable    => enable,
     clear     => clear,
     ppsAuto   => ppsAuto,
     ppsSel    => ppsSel,

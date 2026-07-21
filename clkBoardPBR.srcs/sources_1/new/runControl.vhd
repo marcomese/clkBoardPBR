@@ -24,6 +24,7 @@ library IEEE;
 use IEEE.STD_LOGIC_1164.ALL;
 use IEEE.NUMERIC_STD.ALL;
 use IEEE.STD_LOGIC_MISC.ALL;
+use work.utilsPkg.all;
 
 -- trigger and busy signal must be already syncronized and high only for 1 clock cyle
 
@@ -32,7 +33,8 @@ generic(
     extTrgNum : positive;
     zynqNum   : positive;
     gpsNum    : positive;
-    nGtuLen   : positive
+    nGtuLen   : positive;
+    nClkTOut  : positive
 );
 port(
     reset           : in  std_logic;
@@ -54,7 +56,10 @@ port(
     fifoFull        : in  std_logic;
     trigger_out     : out std_logic;
     busy            : out std_logic;
-    reset_counters  : out std_logic 
+    reset_counters  : out std_logic;
+    timeout         : out std_logic;
+    timeoutFlag     : out std_logic_vector(zynqNum-1 downto 0); 
+    running         : out std_logic
 );
 end run_control_fsm;
 
@@ -100,13 +105,23 @@ signal busy_i,
        busy_zynq,
        busy_s,
        triggerOr,
-       triggerOutSig    : std_logic;
+       triggerOutSig,
+       runValFF,
+       runValFalling,
+       runningSig,
+       timeoutSig,
+       tOutEn,
+       tOutEnFF,
+       tOutEnRise,
+       tOutRst          : std_logic;
 
 signal extTrgMasked     : std_logic_vector(extTrgNum-1 downto 0);
 
 signal fsmStateSig      : std_logic_vector(3 downto 0);
 
 signal GTU_count        : unsigned(7 downto 0);
+
+signal tOutCnt          : unsigned(bitsNum(nClkTOut)-1 downto 0);
 
 signal busyAndZynq,
        triggerAndZynq   : std_logic_vector(zynqNum-1 downto 0);
@@ -129,10 +144,65 @@ trigger_out    <= triggerOutSig;
 
 busy           <= busy_s or fifoFull;
 
+runValFalling  <= runValFF and not run_val;
+
+running        <= runningSig;
+
+timeout        <= timeoutSig;
+
+tOutEn         <= run_val and not runningSig;
+
+tOutEnRise     <= tOutEn and not tOutEnFF;
+
+runningProc: process(clock)
+begin
+    if rising_edge(clock) then
+        if reset = '1' then
+            runValFF   <= '0';
+            runningSig <= '0';
+        else
+            runValFF <= run_val;
+
+            if run_val = '1' and busy_zynq = '0' then
+                runningSig <= '1';
+            elsif runValFalling = '1' then
+                runningSig <= '0';
+            end if;
+        end if;
+    end if;
+end process;
+
+tOutCntProc: process(clock)
+begin
+    if rising_edge(clock) then
+        if reset = '1' then
+            timeoutSig     <= '0';
+            tOutCnt     <= to_unsigned(nClkTOut-1, tOutCnt'length);
+            timeoutFlag <= (others => '0');
+        else
+            tOutEnFF <= tOutEn;
+
+            if tOutEn = '0' or tOutCnt = 0 then
+                tOutCnt     <= to_unsigned(nClkTOut-1, tOutCnt'length);
+            elsif timeoutSig = '0' then
+                tOutCnt     <= tOutCnt - 1;
+            end if;
+
+            if tOutCnt = 0 then
+                timeoutSig  <= '1';
+                timeoutFlag <= busyAndZynq;
+            elsif tOutEnRise = '1' then
+                timeoutSig  <= '0';
+                timeoutFlag <= (others => '0');
+            end if;
+        end if;
+    end if;
+end process;
+
 SYNC_PROC: process(clock)
 begin
     if rising_edge(clock) then
-        if reset='1' then 
+        if reset = '1' then 
             busy_s         <= '0' ;
             triggerOutSig  <= '0' ;
             reset_counters <= '0' ;
@@ -353,4 +423,5 @@ begin
         end if;
     end if;
 end process;
+
 end Behavioral;
