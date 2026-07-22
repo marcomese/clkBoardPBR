@@ -13,6 +13,7 @@ constant extTrgNum     : positive := 2;
 constant gpsNum        : positive := 2;
 constant nGtuLen       : positive := 4;
 constant nClkTOut      : positive := 100;
+constant nClkRst       : positive := 32;
 constant sigWidth      : positive := 10;
 
 signal clk             : std_logic := '1';
@@ -97,7 +98,8 @@ generic map(
     zynqNum   => trgNum,
     gpsNum    => gpsNum,
     nGtuLen   => nGtuLen,
-    nClkTOut  => nClkTOut
+    nClkTOut  => nClkTOut,
+    nClkRst   => nClkRst
 )
 port map(
     reset           => rst,

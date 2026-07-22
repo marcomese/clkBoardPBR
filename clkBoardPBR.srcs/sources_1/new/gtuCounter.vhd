@@ -32,8 +32,6 @@ end GTUcounter;
 architecture Behavioral of GTUcounter is
 
 signal enGtuCount,
-       ppsRst,
-       rstGate,
        rstGtuCount : std_logic;
 signal gtuCounter  : unsigned(31 downto 0);
 
@@ -43,20 +41,11 @@ ctrlProc: process(clk)
 begin
     if rising_edge(clk) then
         if rst = '1' then
-            ppsRst      <= '0';
-            rstGate     <= '0';
             rstGtuCount <= '1';
             enGtuCount  <= '0';
         else
-            if pps = '1' then
-                rstGate <= '1';
-            elsif dataReady = '1' or clear = '1' then
-                rstGate <= '0';
-            end if;
-
-            ppsRst      <= dataReady and rstGate;
-            rstGtuCount <= (not run) or ppsRst;
-            enGtuCount  <=  run  and not pps;
+            rstGtuCount <= (not run) or pps;
+            enGtuCount  <=  run;
         end if;
     end if;
 end process;
@@ -80,11 +69,9 @@ begin
         if rst = '1' then
             GTUcounted <= (others => '0');
         elsif trigger = '1' then
-            -- latch on every trigger, PPS-sourced included: during a PPS the
-            -- counter is held at 0, so GTUcounted = 0 (offset from the PPS edge)
             GTUcounted <= std_logic_vector(gtuCounter);
             ready      <= '1';
-        elsif rstGtuCount = '1' or clear = '1' then
+        elsif dataReady = '1' or clear = '1' then
             GTUcounted <= (others => '0');
         end if;
     end if;

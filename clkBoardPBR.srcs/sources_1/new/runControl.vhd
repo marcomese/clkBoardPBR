@@ -34,7 +34,8 @@ generic(
     zynqNum   : positive;
     gpsNum    : positive;
     nGtuLen   : positive;
-    nClkTOut  : positive
+    nClkTOut  : positive;
+    nClkRst   : positive
 );
 port(
     reset           : in  std_logic;
@@ -123,6 +124,8 @@ signal GTU_count        : unsigned(7 downto 0);
 
 signal tOutCnt          : unsigned(bitsNum(nClkTOut)-1 downto 0);
 
+signal rstCnt           : integer range 0 to nClkRst-1;
+
 signal busyAndZynq,
        triggerAndZynq   : std_logic_vector(zynqNum-1 downto 0);
 
@@ -199,6 +202,17 @@ begin
     end if;
 end process;
 
+rstCntProc: process(clock)
+begin
+    if rising_edge(clock) then
+        if reset = '1' or pres_state /= start_run_state then
+            rstCnt <= 0;
+        elsif rstCnt < nClkRst-1 then
+            rstCnt <= rstCnt + 1;
+        end if;
+    end if;
+end process;
+
 SYNC_PROC: process(clock)
 begin
     if rising_edge(clock) then
@@ -224,7 +238,8 @@ end process;
 
 COMB_PROC: process(pres_state, triggerOr, busy_zynq, N_gtu,
                    run_val, set_rel_busy, trigger_command, 
-                   GTU_count, trigger_ext, PPS, extTrgMasked, fifoFull, ppsTrgEn, plToAxiSBusy)
+                   GTU_count, trigger_ext, PPS, extTrgMasked, fifoFull, ppsTrgEn, plToAxiSBusy,
+                   rstCnt)
 begin
     next_state <= pres_state;
     
@@ -238,9 +253,11 @@ begin
                 next_state <= idle_state;
             end if;
         
-        when start_run_state => 
+        when start_run_state =>
             if run_val = '0' then
                 next_state <= idle_state;
+            elsif rstCnt < nClkRst-1 then
+                next_state <= start_run_state;
             elsif run_val = '1' and set_rel_busy = '1' then
                 next_state <= busy_CPU_state;
             elsif run_val = '1' and busy_zynq = '1' then
@@ -348,8 +365,8 @@ begin
         reset_counters_i <= '0' ;
         busy_trg_i       <= '0';
     
-    elsif next_state = start_run_state then 
-        busy_i           <= '0' ;
+    elsif next_state = start_run_state then
+        busy_i           <= '1' ;
         trigger_out_i    <= '0' ;
         reset_counters_i <= '1' ;
         busy_trg_i       <= '0';

@@ -1,7 +1,7 @@
 {
   "design": {
     "design_info": {
-      "boundary_crc": "0x2145B41C0198450C",
+      "boundary_crc": "0x2145B41CF8DF3E77",
       "device": "xc7z020clg484-2",
       "gen_directory": "../../../../clkBoardPBR.gen/sources_1/bd/design_1",
       "name": "design_1",
@@ -52,13 +52,19 @@
         "busy_OBUFDS": "",
         "l1TrigOut_OBUFDS": "",
         "clk40Out_BUFGCE": "",
-        "clk40OutConcat": ""
+        "clk40Out_OBUFDS1": "",
+        "clk40Out_OBUFDS2": "",
+        "clk40Out_OBUFDS3": "",
+        "clk40NConcat": "",
+        "clk40PConcat": ""
       },
       "fifoDMA": {
-        "fifoRstAnd": "",
         "axi_dma_0": "",
         "axis_data_fifo_0": "",
-        "rawDataToAxiStream_0": ""
+        "rawDataToAxiStream_0": "",
+        "rstAndFifo": "",
+        "rstConcatFIFO": "",
+        "runRstNot": ""
       },
       "gpsUART": {
         "gps1Uartlite": "",
@@ -1926,6 +1932,9 @@
               "gpsNum": {
                 "value": "2"
               },
+              "nClkRst": {
+                "value": "32"
+              },
               "nClkTOut": {
                 "value": "100000000"
               },
@@ -1958,14 +1967,6 @@
                   "ASSOCIATED_RESET": {
                     "value": "reset",
                     "value_src": "constant"
-                  },
-                  "FREQ_HZ": {
-                    "value": "1e+08",
-                    "value_src": "user_prop"
-                  },
-                  "CLK_DOMAIN": {
-                    "value": "design_1_processing_system7_0_0_FCLK_CLK0",
-                    "value_src": "default_prop"
                   }
                 }
               },
@@ -2858,6 +2859,14 @@
                   "ASSOCIATED_RESET": {
                     "value": "rst",
                     "value_src": "constant"
+                  },
+                  "FREQ_HZ": {
+                    "value": "1e+08",
+                    "value_src": "user_prop"
+                  },
+                  "CLK_DOMAIN": {
+                    "value": "design_1_processing_system7_0_0_FCLK_CLK0",
+                    "value_src": "default_prop"
                   }
                 }
               },
@@ -2883,7 +2892,13 @@
                 "direction": "I"
               },
               "clear": {
-                "direction": "I"
+                "direction": "I",
+                "parameters": {
+                  "POLARITY": {
+                    "value": "ACTIVE_HIGH",
+                    "value_src": "user_prop"
+                  }
+                }
               },
               "dataReady": {
                 "direction": "I"
@@ -3584,7 +3599,7 @@
                 "value": "OBUFDS"
               },
               "C_SIZE": {
-                "value": "4"
+                "value": "1"
               }
             }
           },
@@ -3737,9 +3752,93 @@
               }
             }
           },
-          "clk40OutConcat": {
+          "clk40Out_OBUFDS1": {
+            "vlnv": "xilinx.com:ip:util_ds_buf:2.2",
+            "ip_revision": "7",
+            "xci_name": "design_1_util_ds_buf_0_9",
+            "xci_path": "ip\\design_1_util_ds_buf_0_9\\design_1_util_ds_buf_0_9.xci",
+            "inst_hier_path": "outBuffers/clk40Out_OBUFDS1",
+            "parameters": {
+              "C_BUF_TYPE": {
+                "value": "OBUFDS"
+              }
+            }
+          },
+          "clk40Out_OBUFDS2": {
+            "vlnv": "xilinx.com:ip:util_ds_buf:2.2",
+            "ip_revision": "7",
+            "xci_name": "design_1_util_ds_buf_1_6",
+            "xci_path": "ip\\design_1_util_ds_buf_1_6\\design_1_util_ds_buf_1_6.xci",
+            "inst_hier_path": "outBuffers/clk40Out_OBUFDS2",
+            "parameters": {
+              "C_BUF_TYPE": {
+                "value": "OBUFDS"
+              }
+            }
+          },
+          "clk40Out_OBUFDS3": {
+            "vlnv": "xilinx.com:ip:util_ds_buf:2.2",
+            "ip_revision": "7",
+            "xci_name": "design_1_util_ds_buf_2_0",
+            "xci_path": "ip\\design_1_util_ds_buf_2_0\\design_1_util_ds_buf_2_0.xci",
+            "inst_hier_path": "outBuffers/clk40Out_OBUFDS3",
+            "parameters": {
+              "C_BUF_TYPE": {
+                "value": "OBUFDS"
+              }
+            }
+          },
+          "clk40NConcat": {
             "vlnv": "xilinx.com:inline_hdl:ilconcat:1.0",
             "parameters": {
+              "IN0_WIDTH": {
+                "value": "1",
+                "value_src": "propagated",
+                "value_mode": "auto"
+              },
+              "IN1_WIDTH": {
+                "value": "1",
+                "value_src": "propagated",
+                "value_mode": "auto"
+              },
+              "IN2_WIDTH": {
+                "value": "1",
+                "value_src": "propagated",
+                "value_mode": "auto"
+              },
+              "IN3_WIDTH": {
+                "value": "1",
+                "value_src": "propagated",
+                "value_mode": "auto"
+              },
+              "NUM_PORTS": {
+                "value": "4"
+              }
+            }
+          },
+          "clk40PConcat": {
+            "vlnv": "xilinx.com:inline_hdl:ilconcat:1.0",
+            "parameters": {
+              "IN0_WIDTH": {
+                "value": "1",
+                "value_src": "propagated",
+                "value_mode": "auto"
+              },
+              "IN1_WIDTH": {
+                "value": "1",
+                "value_src": "propagated",
+                "value_mode": "auto"
+              },
+              "IN2_WIDTH": {
+                "value": "1",
+                "value_src": "propagated",
+                "value_mode": "auto"
+              },
+              "IN3_WIDTH": {
+                "value": "1",
+                "value_src": "propagated",
+                "value_mode": "auto"
+              },
               "NUM_PORTS": {
                 "value": "4"
               }
@@ -3786,24 +3885,72 @@
               "OBUF_DS_P_0"
             ]
           },
+          "clk40NConcat_dout": {
+            "ports": [
+              "clk40NConcat/dout",
+              "OBUF_DS_N_2"
+            ]
+          },
           "clk40Out_BUFGCE_BUFGCE_O": {
             "ports": [
               "clk40Out_BUFGCE/BUFGCE_O",
-              "clk40OutConcat/In3",
-              "clk40OutConcat/In1",
-              "clk40OutConcat/In0",
-              "clk40OutConcat/In2"
+              "clk40Out_OBUFDS0/OBUF_IN",
+              "clk40Out_OBUFDS1/OBUF_IN",
+              "clk40Out_OBUFDS2/OBUF_IN",
+              "clk40Out_OBUFDS3/OBUF_IN"
             ]
           },
           "clk40Out_OBUFDS0_OBUF_DS_N": {
             "ports": [
               "clk40Out_OBUFDS0/OBUF_DS_N",
-              "OBUF_DS_N_2"
+              "clk40NConcat/In0"
             ]
           },
           "clk40Out_OBUFDS0_OBUF_DS_P": {
             "ports": [
               "clk40Out_OBUFDS0/OBUF_DS_P",
+              "clk40PConcat/In0"
+            ]
+          },
+          "clk40Out_OBUFDS1_OBUF_DS_N": {
+            "ports": [
+              "clk40Out_OBUFDS1/OBUF_DS_N",
+              "clk40NConcat/In1"
+            ]
+          },
+          "clk40Out_OBUFDS1_OBUF_DS_P": {
+            "ports": [
+              "clk40Out_OBUFDS1/OBUF_DS_P",
+              "clk40PConcat/In1"
+            ]
+          },
+          "clk40Out_OBUFDS2_OBUF_DS_N": {
+            "ports": [
+              "clk40Out_OBUFDS2/OBUF_DS_N",
+              "clk40NConcat/In2"
+            ]
+          },
+          "clk40Out_OBUFDS2_OBUF_DS_P": {
+            "ports": [
+              "clk40Out_OBUFDS2/OBUF_DS_P",
+              "clk40PConcat/In2"
+            ]
+          },
+          "clk40Out_OBUFDS3_OBUF_DS_N": {
+            "ports": [
+              "clk40Out_OBUFDS3/OBUF_DS_N",
+              "clk40NConcat/In3"
+            ]
+          },
+          "clk40Out_OBUFDS3_OBUF_DS_P": {
+            "ports": [
+              "clk40Out_OBUFDS3/OBUF_DS_P",
+              "clk40PConcat/In3"
+            ]
+          },
+          "clk40PConcat_dout": {
+            "ports": [
+              "clk40PConcat/dout",
               "OBUF_DS_P_2"
             ]
           },
@@ -3841,12 +3988,6 @@
             "ports": [
               "gtuClock_OBUFDS/OBUF_DS_P",
               "GTU_CLK_OUT_P"
-            ]
-          },
-          "ilconcat_0_dout": {
-            "ports": [
-              "clk40OutConcat/dout",
-              "clk40Out_OBUFDS0/OBUF_IN"
             ]
           },
           "ilconcat_0_dout1": {
@@ -3969,17 +4110,14 @@
           },
           "write": {
             "direction": "I"
+          },
+          "Op1": {
+            "direction": "I",
+            "left": "0",
+            "right": "0"
           }
         },
         "components": {
-          "fifoRstAnd": {
-            "vlnv": "xilinx.com:inline_hdl:ilvector_logic:1.0",
-            "parameters": {
-              "C_SIZE": {
-                "value": "1"
-              }
-            }
-          },
           "axi_dma_0": {
             "vlnv": "xilinx.com:ip:axi_dma:7.1",
             "ip_revision": "35",
@@ -4065,6 +4203,33 @@
                 "value": "192"
               }
             }
+          },
+          "rstAndFifo": {
+            "vlnv": "xilinx.com:inline_hdl:ilreduced_logic:1.0",
+            "parameters": {
+              "C_SIZE": {
+                "value": "3"
+              }
+            }
+          },
+          "rstConcatFIFO": {
+            "vlnv": "xilinx.com:inline_hdl:ilconcat:1.0",
+            "parameters": {
+              "NUM_PORTS": {
+                "value": "3"
+              }
+            }
+          },
+          "runRstNot": {
+            "vlnv": "xilinx.com:inline_hdl:ilvector_logic:1.0",
+            "parameters": {
+              "C_OPERATION": {
+                "value": "not"
+              },
+              "C_SIZE": {
+                "value": "1"
+              }
+            }
           }
         },
         "interface_nets": {
@@ -4094,6 +4259,12 @@
           }
         },
         "nets": {
+          "Op1_1": {
+            "ports": [
+              "Op1",
+              "runRstNot/Op1"
+            ]
+          },
           "axi_dma_0_s2mm_introut": {
             "ports": [
               "axi_dma_0/s2mm_introut",
@@ -4103,7 +4274,7 @@
           "axi_dma_0_s2mm_prmry_reset_out_n": {
             "ports": [
               "axi_dma_0/s2mm_prmry_reset_out_n",
-              "fifoRstAnd/Op1"
+              "rstConcatFIFO/In0"
             ]
           },
           "axis_data_fifo_0_axis_wr_data_count": {
@@ -4124,10 +4295,23 @@
               "rawDataToAxiStream_0/dataIn"
             ]
           },
-          "fifoRstAnd_Res": {
+          "ilconcat_0_dout": {
             "ports": [
-              "fifoRstAnd/Res",
-              "axis_data_fifo_0/s_axis_aresetn"
+              "rstConcatFIFO/dout",
+              "rstAndFifo/Op1"
+            ]
+          },
+          "ilreduced_logic_0_Res": {
+            "ports": [
+              "rstAndFifo/Res",
+              "axis_data_fifo_0/s_axis_aresetn",
+              "rawDataToAxiStream_0/m00_axis_aresetn"
+            ]
+          },
+          "ilvector_logic_0_Res": {
+            "ports": [
+              "runRstNot/Res",
+              "rstConcatFIFO/In2"
             ]
           },
           "processing_system7_0_FCLK_CLK0": {
@@ -4148,9 +4332,8 @@
           "rst_ps7_0_100M_peripheral_aresetn": {
             "ports": [
               "Op2",
-              "fifoRstAnd/Op2",
               "axi_dma_0/axi_resetn",
-              "rawDataToAxiStream_0/m00_axis_aresetn"
+              "rstConcatFIFO/In1"
             ]
           },
           "write_1": {
@@ -6183,7 +6366,8 @@
       "cmdAndRunCtrl_reset_counters": {
         "ports": [
           "cmdAndRunCtrl/reset_counters",
-          "counters/rstFromRun"
+          "counters/rstFromRun",
+          "fifoDMA/Op1"
         ]
       },
       "cmdAndRunCtrl_send_nack": {
@@ -6556,6 +6740,11 @@
           "outBuffers/PPS_OUT_P",
           "PPS_OUT_P"
         ]
+      }
+    },
+    "comments": {
+      "/fifoDMA/rstAndFifo": {
+        "comment_0": "AND because of the active low resets"
       }
     },
     "addressing": {

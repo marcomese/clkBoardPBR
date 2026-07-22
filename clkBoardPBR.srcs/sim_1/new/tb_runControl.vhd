@@ -96,6 +96,14 @@ signal gtuTick            : std_logic;
 signal gtuReady           : std_logic;
 signal GTUcounted         : std_logic_vector(31 downto 0);
 
+signal dataRdy,
+       evtRdy,
+       rstGtuOut,
+       rstTrgOut,
+       rstEvtOut          : std_logic;
+signal evtNum             : std_logic_vector(31 downto 0);
+signal trgCount           : std_logic_vector((zynqNum*32)-1 downto 0);
+
 -- run_control_fsm interface
 --   board-side inputs are stimulus; configuration comes from command_decoder,
 --   'running'/'busy'/'trigger_out' come from the FSM (as wired in the block design)
@@ -189,7 +197,7 @@ begin
     sendCmd(MSG_START_RUN);
     wait for clkPeriod*5;
 
-    busy <= "0110";         
+    busy <= "0110";
 
     wait for clkPeriod*100;
 
@@ -276,9 +284,68 @@ port map(
     pps        => ppsEdgeOut,
     gtuTick    => gtuTick,
     trigger    => trigger_out,
-    clear      => reset_GTU_count,
+    clear      => rstGtuOut,
     ready      => gtuReady,
+    dataReady  => dataRdy,
     GTUcounted => GTUcounted
+);
+
+trgCntInst: entity work.trgCounter
+generic map(
+    trgNum => zynqNum
+)
+port map(
+    clk      => clk,
+    rst      => rst,
+    clr      => rstTrgOut,
+    trgIn    => trigger_in,
+    trgCount => trgCount
+);
+
+cntRstCtrlInst: entity work.counterRstCtrl
+port map(
+    clk        => clk,
+    rst        => rst,
+    rstAll     => reset_all_counters,
+    rstGtu     => reset_GTU_count,
+    rstTrg     => reset_l1_nr,
+    rstEvt     => reset_evt_nr,
+    rstFromRun => reset_counters,
+    rstGtuOut  => rstGtuOut,
+    rstTrgOut  => rstTrgOut,
+    rstEvtOut  => rstEvtOut
+);
+
+evtCounterInst: entity work.reg_event_number
+port map(
+    clock   => clk,
+    reset   => rst,
+    load    => trigger_out,
+    clear   => rstEvtOut,
+    ready   => evtRdy,
+    reg_out => evtNum
+);
+
+dataBuilderInst: entity work.dataBuilder
+generic map(
+    trgNum    => zynqNum+extTrgNum,
+    dataWords => 6
+)
+port map(
+    clk       => clk,
+    rst       => rst,
+    evtNum    => evtNum,
+    evtRdy    => evtRdy,
+    gtuCount  => GTUcounted,
+    gtuRdy    => gtuReady,
+    trgFlag   => "000000",
+    trgFRdy   => '1',
+    aliveT    => x"00000000",
+    deadT     => x"00000000",
+    aDTRdy    => '1',
+    statusReg => status_register,
+    dataRdy   => dataRdy,
+    dataOut   => open
 );
 
 cmdDecInst: entity work.command_decoder
@@ -300,7 +367,7 @@ port map(
     plToAxiSBusy       => plToAxiSBusy,
     run                => run,
     timeout            => timeout,
-    timeoutFlag        => timeoutFlag, 
+    timeoutFlag        => timeoutFlag,
     running            => running,
     cmd_busy           => cmd_busy,
     zynq_en            => zynq_en,
@@ -325,7 +392,8 @@ generic map(
     zynqNum   => zynqNum,
     gpsNum    => ppsNum,
     nGtuLen   => 8,
-    nClkTOut  => 100
+    nClkTOut  => 100,
+    nClkRst   => 32
 )
 port map(
      reset           => rst,
@@ -349,7 +417,7 @@ port map(
      busy            => runBusy,
      reset_counters  => reset_counters,
      timeout         => timeout,
-     timeoutFlag     => timeoutFlag, 
+     timeoutFlag     => timeoutFlag,
      running         => running
 );
 

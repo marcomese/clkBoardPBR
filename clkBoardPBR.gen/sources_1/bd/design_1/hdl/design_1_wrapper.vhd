@@ -2,7 +2,7 @@
 --Copyright 2022-2025 Advanced Micro Devices, Inc. All Rights Reserved.
 ----------------------------------------------------------------------------------
 --Tool Version: Vivado v.2024.2.2 (win64) Build 6060944 Thu Mar 06 19:10:01 MST 2025
---Date        : Wed Jul 22 11:14:29 2026
+--Date        : Wed Jul 22 18:59:22 2026
 --Host        : MARCOMPUTER running 64-bit major release  (build 9200)
 --Command     : generate_target design_1_wrapper.bd
 --Design      : design_1_wrapper
@@ -18,14 +18,8 @@ entity design_1_wrapper is
     BUSY_IN_P : in STD_LOGIC_VECTOR ( 3 downto 0 );
     BUSY_OUT_N : out STD_LOGIC_VECTOR ( 0 to 0 );
     BUSY_OUT_P : out STD_LOGIC_VECTOR ( 0 to 0 );
-    CLK40_OUT0_N : out STD_LOGIC_VECTOR ( 0 to 0 );
-    CLK40_OUT0_P : out STD_LOGIC_VECTOR ( 0 to 0 );
-    CLK40_OUT1_N : out STD_LOGIC_VECTOR ( 0 to 0 );
-    CLK40_OUT1_P : out STD_LOGIC_VECTOR ( 0 to 0 );
-    CLK40_OUT2_N : out STD_LOGIC_VECTOR ( 0 to 0 );
-    CLK40_OUT2_P : out STD_LOGIC_VECTOR ( 0 to 0 );
-    CLK40_OUT3_N : out STD_LOGIC_VECTOR ( 0 to 0 );
-    CLK40_OUT3_P : out STD_LOGIC_VECTOR ( 0 to 0 );
+    CLK40_OUT_N : out STD_LOGIC_VECTOR ( 3 downto 0 );
+    CLK40_OUT_P : out STD_LOGIC_VECTOR ( 3 downto 0 );
     DDR_addr : inout STD_LOGIC_VECTOR ( 14 downto 0 );
     DDR_ba : inout STD_LOGIC_VECTOR ( 2 downto 0 );
     DDR_cas_n : inout STD_LOGIC;
@@ -106,14 +100,6 @@ architecture STRUCTURE of design_1_wrapper is
     gps_1pps_ext : in STD_LOGIC_VECTOR ( 1 downto 0 );
     PPS_OUT_N : out STD_LOGIC_VECTOR ( 3 downto 0 );
     PPS_OUT_P : out STD_LOGIC_VECTOR ( 3 downto 0 );
-    CLK40_OUT0_N : out STD_LOGIC_VECTOR ( 0 to 0 );
-    CLK40_OUT0_P : out STD_LOGIC_VECTOR ( 0 to 0 );
-    CLK40_OUT3_N : out STD_LOGIC_VECTOR ( 0 to 0 );
-    CLK40_OUT2_P : out STD_LOGIC_VECTOR ( 0 to 0 );
-    CLK40_OUT2_N : out STD_LOGIC_VECTOR ( 0 to 0 );
-    CLK40_OUT1_P : out STD_LOGIC_VECTOR ( 0 to 0 );
-    CLK40_OUT1_N : out STD_LOGIC_VECTOR ( 0 to 0 );
-    CLK40_OUT3_P : out STD_LOGIC_VECTOR ( 0 to 0 );
     gps_rxd : in STD_LOGIC_VECTOR ( 1 downto 0 );
     gps_txd : out STD_LOGIC_VECTOR ( 1 downto 0 );
     PPS_IN_N : in STD_LOGIC_VECTOR ( 0 to 0 );
@@ -125,7 +111,9 @@ architecture STRUCTURE of design_1_wrapper is
     EXT_TRIG_IN_N : in STD_LOGIC_VECTOR ( 1 downto 0 );
     EXT_TRIG_IN_P : in STD_LOGIC_VECTOR ( 1 downto 0 );
     GTU_CLK_IN_N : in STD_LOGIC_VECTOR ( 0 to 0 );
-    GTU_CLK_IN_P : in STD_LOGIC_VECTOR ( 0 to 0 )
+    GTU_CLK_IN_P : in STD_LOGIC_VECTOR ( 0 to 0 );
+    CLK40_OUT_N : out STD_LOGIC_VECTOR ( 3 downto 0 );
+    CLK40_OUT_P : out STD_LOGIC_VECTOR ( 3 downto 0 )
   );
   end component design_1;
 begin
@@ -135,14 +123,8 @@ design_1_i: component design_1
       BUSY_IN_P(3 downto 0) => BUSY_IN_P(3 downto 0),
       BUSY_OUT_N(0) => BUSY_OUT_N(0),
       BUSY_OUT_P(0) => BUSY_OUT_P(0),
-      CLK40_OUT0_N(0) => CLK40_OUT0_N(0),
-      CLK40_OUT0_P(0) => CLK40_OUT0_P(0),
-      CLK40_OUT1_N(0) => CLK40_OUT1_N(0),
-      CLK40_OUT1_P(0) => CLK40_OUT1_P(0),
-      CLK40_OUT2_N(0) => CLK40_OUT2_N(0),
-      CLK40_OUT2_P(0) => CLK40_OUT2_P(0),
-      CLK40_OUT3_N(0) => CLK40_OUT3_N(0),
-      CLK40_OUT3_P(0) => CLK40_OUT3_P(0),
+      CLK40_OUT_N(3 downto 0) => CLK40_OUT_N(3 downto 0),
+      CLK40_OUT_P(3 downto 0) => CLK40_OUT_P(3 downto 0),
       DDR_addr(14 downto 0) => DDR_addr(14 downto 0),
       DDR_ba(2 downto 0) => DDR_ba(2 downto 0),
       DDR_cas_n => DDR_cas_n,
