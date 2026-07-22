@@ -41,7 +41,7 @@ begin
             rstTrgOut <= '0';
             rstEvtOut <= '0';
         else
-            rstGtuOut <= rstAll or rstGtu;
+            rstGtuOut <= rstAll or rstFromRun or rstGtu;
             rstTrgOut <= rstAll or rstFromRun or rstTrg;
             rstEvtOut <= rstAll or rstFromRun or rstEvt;
         end if;
