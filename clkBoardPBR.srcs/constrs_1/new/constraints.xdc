@@ -68,10 +68,10 @@ set_property IOSTANDARD LVDS_25 [get_ports EXT_TRIG_OUT_P[0]]
 set_property IOSTANDARD LVDS_25 [get_ports EXT_TRIG_OUT_N[0]]
 
 # CLK40_OUT0 [OUTPUT] B35_L1
-set_property PACKAGE_PIN F16 [get_ports CLK40_OUT0_P[0]]
-set_property PACKAGE_PIN E16 [get_ports CLK40_OUT0_N[0]]
-set_property IOSTANDARD LVDS_25 [get_ports CLK40_OUT0_P[0]]
-set_property IOSTANDARD LVDS_25 [get_ports CLK40_OUT0_N[0]]
+set_property PACKAGE_PIN F16 [get_ports CLK40_OUT_P[0]]
+set_property PACKAGE_PIN E16 [get_ports CLK40_OUT_N[0]]
+set_property IOSTANDARD LVDS_25 [get_ports CLK40_OUT_P[0]]
+set_property IOSTANDARD LVDS_25 [get_ports CLK40_OUT_N[0]]
 
 ##############################################################################
 # JLVDS0&1B - Connettore 1 (Bank 35)
@@ -108,10 +108,10 @@ set_property IOSTANDARD LVDS_25 [get_ports EXT_TRIG_OUT_P[1]]
 set_property IOSTANDARD LVDS_25 [get_ports EXT_TRIG_OUT_N[1]]
 
 # CLK40_OUT[1] [OUTPUT] B35_L7
-set_property PACKAGE_PIN C15 [get_ports CLK40_OUT1_P[0]]
-set_property PACKAGE_PIN B15 [get_ports CLK40_OUT1_N[0]]
-set_property IOSTANDARD LVDS_25 [get_ports CLK40_OUT1_P[0]]
-set_property IOSTANDARD LVDS_25 [get_ports CLK40_OUT1_N[0]]
+set_property PACKAGE_PIN C15 [get_ports CLK40_OUT_P[1]]
+set_property PACKAGE_PIN B15 [get_ports CLK40_OUT_N[1]]
+set_property IOSTANDARD LVDS_25 [get_ports CLK40_OUT_P[1]]
+set_property IOSTANDARD LVDS_25 [get_ports CLK40_OUT_N[1]]
 
 ##############################################################################
 # JLVDS2&3A - Connettore 2 (Bank 35 + Bank 34)
@@ -148,10 +148,10 @@ set_property IOSTANDARD LVDS_25 [get_ports EXT_TRIG_OUT_P[2]]
 set_property IOSTANDARD LVDS_25 [get_ports EXT_TRIG_OUT_N[2]]
 
 # CLK40_OUT[2] [OUTPUT] B34_L7
-set_property PACKAGE_PIN J18 [get_ports CLK40_OUT2_P[0]]
-set_property PACKAGE_PIN K18 [get_ports CLK40_OUT2_N[0]]
-set_property IOSTANDARD LVDS_25 [get_ports CLK40_OUT2_P[0]]
-set_property IOSTANDARD LVDS_25 [get_ports CLK40_OUT2_N[0]]
+set_property PACKAGE_PIN J18 [get_ports CLK40_OUT_P[2]]
+set_property PACKAGE_PIN K18 [get_ports CLK40_OUT_N[2]]
+set_property IOSTANDARD LVDS_25 [get_ports CLK40_OUT_P[2]]
+set_property IOSTANDARD LVDS_25 [get_ports CLK40_OUT_N[2]]
 
 ##############################################################################
 # JLVDS2&3B - Connettore 3 (Bank 33 + Bank 34 + Bank 13)
@@ -188,10 +188,10 @@ set_property IOSTANDARD LVDS_25 [get_ports EXT_TRIG_OUT_P[3]]
 set_property IOSTANDARD LVDS_25 [get_ports EXT_TRIG_OUT_N[3]]
 
 # CLK40_OUT[3] [OUTPUT] B13_L7
-set_property PACKAGE_PIN AA12 [get_ports CLK40_OUT3_P[0]]
-set_property PACKAGE_PIN AB12 [get_ports CLK40_OUT3_N[0]]
-set_property IOSTANDARD LVDS_25 [get_ports CLK40_OUT3_P[0]]
-set_property IOSTANDARD LVDS_25 [get_ports CLK40_OUT3_N[0]]
+set_property PACKAGE_PIN AA12 [get_ports CLK40_OUT_P[3]]
+set_property PACKAGE_PIN AB12 [get_ports CLK40_OUT_N[3]]
+set_property IOSTANDARD LVDS_25 [get_ports CLK40_OUT_P[3]]
+set_property IOSTANDARD LVDS_25 [get_ports CLK40_OUT_N[3]]
 
 ###############################################################################
 ## JLVDS4&5A - Connettore 4 (Bank 13)

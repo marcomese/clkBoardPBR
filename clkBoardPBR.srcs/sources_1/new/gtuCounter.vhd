@@ -23,6 +23,7 @@ port(
     gtuTick    : in  std_logic;
     trigger    : in  std_logic;
     clear      : in  std_logic;
+    dataReady  : in  std_logic;
     ready      : out std_logic;
     GTUcounted : out std_logic_vector(31 downto 0)
 );
@@ -30,8 +31,10 @@ end GTUcounter;
 
 architecture Behavioral of GTUcounter is
 
-signal enGtuCount  : std_logic;
-signal rstGtuCount : std_logic;
+signal enGtuCount,
+       ppsRst,
+       rstGate,
+       rstGtuCount : std_logic;
 signal gtuCounter  : unsigned(31 downto 0);
 
 begin
@@ -40,10 +43,19 @@ ctrlProc: process(clk)
 begin
     if rising_edge(clk) then
         if rst = '1' then
+            ppsRst      <= '0';
+            rstGate     <= '0';
             rstGtuCount <= '1';
             enGtuCount  <= '0';
         else
-            rstGtuCount <= (not run) or pps;
+            if pps = '1' then
+                rstGate <= '1';
+            elsif dataReady = '1' or clear = '1' then
+                rstGate <= '0';
+            end if;
+
+            ppsRst      <= dataReady and rstGate;
+            rstGtuCount <= (not run) or ppsRst;
             enGtuCount  <=  run  and not pps;
         end if;
     end if;
