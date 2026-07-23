@@ -330,14 +330,12 @@ begin
                 next_state <= busy_CPU_state;
             end if;
         
-        when busy_state => 
+        when busy_state =>
             if run_val = '0' then
                 next_state <= idle_state;
-            elsif set_rel_busy = '0' then
-                next_state <= wait_trg_state;
             elsif GTU_count = unsigned(N_GTU)-1 then
                 next_state <= busy_zynq_state;
-            else 
+            else
                 next_state <= busy_state;
             end if;
         
@@ -346,9 +344,7 @@ begin
                 next_state <= idle_state;
             elsif (busy_zynq = '0') and (plToAxiSBusy = '0') then
                 next_state <= wait_trg_state;
-            elsif set_rel_busy = '0' then
-                next_state <= wait_trg_state;
-            else 
+            else
                 next_state <= busy_zynq_state;
             end if;
         

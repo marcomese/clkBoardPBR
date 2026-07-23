@@ -4100,7 +4100,7 @@
             "left": "31",
             "right": "0"
           },
-          "dataReady": {
+          "plToAxiSBusy": {
             "direction": "O"
           },
           "dataIn": {
@@ -4191,7 +4191,7 @@
           },
           "rawDataToAxiStream_0": {
             "vlnv": "mames:user:rawDataToAxiStream:1.0",
-            "ip_revision": "7",
+            "ip_revision": "8",
             "xci_name": "design_1_rawDataToAxiStream_0_0",
             "xci_path": "ip\\design_1_rawDataToAxiStream_0_0\\design_1_rawDataToAxiStream_0_0.xci",
             "inst_hier_path": "fifoDMA/rawDataToAxiStream_0",
@@ -4215,6 +4215,21 @@
           "rstConcatFIFO": {
             "vlnv": "xilinx.com:inline_hdl:ilconcat:1.0",
             "parameters": {
+              "IN0_WIDTH": {
+                "value": "1",
+                "value_src": "propagated",
+                "value_mode": "auto"
+              },
+              "IN1_WIDTH": {
+                "value": "1",
+                "value_src": "propagated",
+                "value_mode": "auto"
+              },
+              "IN2_WIDTH": {
+                "value": "1",
+                "value_src": "propagated",
+                "value_mode": "auto"
+              },
               "NUM_PORTS": {
                 "value": "3"
               }
@@ -4323,10 +4338,10 @@
               "rawDataToAxiStream_0/m00_axis_aclk"
             ]
           },
-          "rawDataToAxiStream_0_dataReady": {
+          "rawDataToAxiStream_0_busy": {
             "ports": [
-              "rawDataToAxiStream_0/dataReady",
-              "dataReady"
+              "rawDataToAxiStream_0/busy",
+              "plToAxiSBusy"
             ]
           },
           "rst_ps7_0_100M_peripheral_aresetn": {
@@ -6564,7 +6579,7 @@
       },
       "plToAxiSBusy_1": {
         "ports": [
-          "fifoDMA/dataReady",
+          "fifoDMA/plToAxiSBusy",
           "cmdAndRunCtrl/plToAxiSBusy"
         ]
       },
