@@ -1996,7 +1996,10 @@
               "run_val": {
                 "direction": "I"
               },
-              "set_rel_busy": {
+              "cmd_busy": {
+                "direction": "I"
+              },
+              "release_busy": {
                 "direction": "I"
               },
               "trigger_command": {
@@ -2177,14 +2180,6 @@
                   "ASSOCIATED_RESET": {
                     "value": "rst",
                     "value_src": "constant"
-                  },
-                  "FREQ_HZ": {
-                    "value": "1e+08",
-                    "value_src": "user_prop"
-                  },
-                  "CLK_DOMAIN": {
-                    "value": "design_1_processing_system7_0_0_FCLK_CLK0",
-                    "value_src": "default_prop"
                   }
                 }
               },
@@ -2268,6 +2263,9 @@
                 "right": "0"
               },
               "gtu_sel": {
+                "direction": "O"
+              },
+              "release_busy": {
                 "direction": "O"
               },
               "trg_command": {
@@ -2424,21 +2422,21 @@
           "Net1": {
             "ports": [
               "plToAxiSBusy",
-              "command_decoder_0/plToAxiSBusy",
-              "run_control_fsm_0/plToAxiSBusy"
+              "run_control_fsm_0/plToAxiSBusy",
+              "command_decoder_0/plToAxiSBusy"
             ]
           },
           "axis_data_fifo_0_prog_full": {
             "ports": [
               "fifoFull",
-              "command_decoder_0/fifoFull",
-              "run_control_fsm_0/fifoFull"
+              "run_control_fsm_0/fifoFull",
+              "command_decoder_0/fifoFull"
             ]
           },
           "command_decoder_0_cmd_busy": {
             "ports": [
               "command_decoder_0/cmd_busy",
-              "run_control_fsm_0/set_rel_busy"
+              "run_control_fsm_0/cmd_busy"
             ]
           },
           "command_decoder_0_configure_GPS": {
@@ -2475,6 +2473,12 @@
             "ports": [
               "command_decoder_0/pps_trg",
               "run_control_fsm_0/ppsTrgEn"
+            ]
+          },
+          "command_decoder_0_release_busy": {
+            "ports": [
+              "command_decoder_0/release_busy",
+              "run_control_fsm_0/release_busy"
             ]
           },
           "command_decoder_0_reset_GTU_count": {
@@ -2572,8 +2576,8 @@
               "clk",
               "pulseExtender_0/clk",
               "trgFlagBuilder_0/clk",
-              "command_decoder_0/clk",
-              "run_control_fsm_0/clock"
+              "run_control_fsm_0/clock",
+              "command_decoder_0/clk"
             ]
           },
           "pulseExtender_0_sigOut": {
@@ -2587,8 +2591,8 @@
               "rst",
               "pulseExtender_0/rst",
               "trgFlagBuilder_0/rst",
-              "command_decoder_0/rst",
-              "run_control_fsm_0/reset"
+              "run_control_fsm_0/reset",
+              "command_decoder_0/rst"
             ]
           },
           "run_control_fsm_0_busy": {
@@ -2640,8 +2644,8 @@
           "synchronizers_0_busySync": {
             "ports": [
               "busy",
-              "command_decoder_0/busy",
-              "run_control_fsm_0/busy_in"
+              "run_control_fsm_0/busy_in",
+              "command_decoder_0/busy"
             ]
           },
           "synchronizers_0_extTrgSync": {

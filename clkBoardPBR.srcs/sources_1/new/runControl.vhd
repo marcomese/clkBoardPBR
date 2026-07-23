@@ -46,7 +46,8 @@ port(
     busy_in         : in  std_logic_vector(zynqNum-1 downto 0); 
     zynq_on         : in  std_logic_vector(zynqNum-1 downto 0);
     run_val         : in  std_logic;
-    set_rel_busy    : in  std_logic;
+    cmd_busy        : in  std_logic;
+    release_busy    : in  std_logic;
     trigger_command : in  std_logic;
     trigger_ext     : in  std_logic_vector(extTrgNum-1 downto 0);
     triggerExtMask  : in  std_logic_vector(extTrgNum-1 downto 0);
@@ -237,9 +238,9 @@ begin
 end process;
 
 COMB_PROC: process(pres_state, triggerOr, busy_zynq, N_gtu,
-                   run_val, set_rel_busy, trigger_command, 
+                   run_val, cmd_busy, trigger_command, 
                    GTU_count, trigger_ext, PPS, extTrgMasked, fifoFull, ppsTrgEn, plToAxiSBusy,
-                   rstCnt)
+                   rstCnt, release_busy)
 begin
     next_state <= pres_state;
     
@@ -258,7 +259,7 @@ begin
                 next_state <= idle_state;
             elsif rstCnt < nClkRst-1 then
                 next_state <= start_run_state;
-            elsif run_val = '1' and set_rel_busy = '1' then
+            elsif run_val = '1' and cmd_busy = '1' then
                 next_state <= busy_CPU_state;
             elsif run_val = '1' and busy_zynq = '1' then
                 next_state <= busy_zynq_state;
@@ -279,7 +280,7 @@ begin
                     next_state <= trg_ext_state;
             elsif run_val = '1' and PPS = '1' and ppsTrgEn = '1' and fifoFull = '0' then
                     next_state <= trg_PPS_state;
-            elsif run_val = '1' and set_rel_busy = '1' then
+            elsif run_val = '1' and cmd_busy = '1' then
                     next_state <= busy_CPU_state;
             else
                 next_state <= wait_trg_state;
@@ -288,7 +289,7 @@ begin
         when trgOr_state => 
             if run_val = '0' then
                 next_state <= idle_state;
-            elsif run_val = '1' and set_rel_busy = '1' then
+            elsif run_val = '1' and cmd_busy = '1' then
                 next_state <= busy_CPU_state;
             else 
                 next_state <= busy_state;
@@ -297,7 +298,7 @@ begin
         when trg_cpu_state => 
             if run_val = '0' then
                 next_state <= idle_state;
-            elsif run_val = '1' and set_rel_busy = '1' then
+            elsif run_val = '1' and cmd_busy = '1' then
                 next_state <= busy_CPU_state;
             else 
                 next_state <= busy_state;
@@ -306,7 +307,7 @@ begin
         when trg_ext_state => 
             if run_val = '0' then
                 next_state <= idle_state;
-            elsif run_val = '1' and set_rel_busy = '1' then
+            elsif run_val = '1' and cmd_busy = '1' then
                 next_state <= busy_CPU_state;
             else 
                 next_state <= busy_state;
@@ -315,7 +316,7 @@ begin
         when trg_PPS_state => 
             if run_val = '0' then
                 next_state <= idle_state;
-            elsif run_val = '1' and set_rel_busy = '1' then
+            elsif run_val = '1' and cmd_busy = '1' then
                 next_state <= busy_CPU_state;
             else 
                 next_state <= busy_state;
@@ -324,7 +325,7 @@ begin
         when busy_CPU_state => 
             if run_val = '0' then
                 next_state <= idle_state;
-            elsif set_rel_busy = '0' then
+            elsif cmd_busy = '0' then
                 next_state <= wait_trg_state;
             else 
                 next_state <= busy_CPU_state;
@@ -333,6 +334,8 @@ begin
         when busy_state =>
             if run_val = '0' then
                 next_state <= idle_state;
+            elsif release_busy = '1' then
+                next_state <= wait_trg_state;
             elsif GTU_count = unsigned(N_GTU)-1 then
                 next_state <= busy_zynq_state;
             else
@@ -342,6 +345,8 @@ begin
         when busy_zynq_state =>
             if run_val = '0' then
                 next_state <= idle_state;
+            elsif release_busy = '1' then
+                next_state <= wait_trg_state;
             elsif (busy_zynq = '0') and (plToAxiSBusy = '0') then
                 next_state <= wait_trg_state;
             else

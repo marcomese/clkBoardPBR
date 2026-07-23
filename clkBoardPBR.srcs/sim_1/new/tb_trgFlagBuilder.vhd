@@ -29,7 +29,8 @@ signal trgExtended     : std_logic_vector(trgNum-1 downto 0) := (others => '0');
 signal busy_in         : std_logic_vector(trgNum-1 downto 0) := (others => '0');
 signal zynq_on         : std_logic_vector(trgNum-1 downto 0) := (others => '0');
 signal run_val         : std_logic := '0';
-signal set_rel_busy    : std_logic := '0';
+signal cmd_busy        : std_logic := '0';
+signal release_busy    : std_logic := '0';
 signal trigger_command : std_logic := '0';
 signal trigger_ext     : std_logic_vector(extTrgNum-1 downto 0) := (others => '0');
 signal triggerExtMask  : std_logic_vector(extTrgNum-1 downto 0) := (others => '0');
@@ -110,7 +111,8 @@ port map(
     busy_in         => busy_in,
     zynq_on         => zynq_on,
     run_val         => run_val,
-    set_rel_busy    => set_rel_busy,
+    cmd_busy        => cmd_busy,
+    release_busy    => release_busy,
     trigger_command => trigger_command,
     trigger_ext     => trigger_ext,
     triggerExtMask  => triggerExtMask,

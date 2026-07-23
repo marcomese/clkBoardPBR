@@ -79,6 +79,7 @@ signal reset_GTU_count    : std_logic;
 signal reset_l1_nr        : std_logic;
 signal reset_evt_nr       : std_logic;
 signal reset_all_counters : std_logic;
+signal release_busy       : std_logic;
 signal send_nack          : std_logic;
 signal status_register    : std_logic_vector(31 downto 0);
 
@@ -212,8 +213,22 @@ begin
     wait for clkPeriod*1000;
 
     sendCmd(MSG_START_RUN);
-    wait for clkPeriod*5;
+    wait for clkPeriod*50;
 
+    trigger_in <= "1000";
+    wait for clkPeriod;
+    trigger_in <= "0000";
+    wait for clkPeriod*10;
+
+    trigger_in <= "0001";
+    wait for clkPeriod;
+    trigger_in <= "0000";
+    wait for clkPeriod*180;
+
+    trigger_in <= "0001";
+    wait for clkPeriod;
+    trigger_in <= "0000";
+    wait for clkPeriod*180;
 
     wait;
 end process;
@@ -382,6 +397,7 @@ port map(
     reset_l1_nr        => reset_l1_nr,
     reset_evt_nr       => reset_evt_nr,
     reset_all_counters => reset_all_counters,
+    release_busy       => release_busy,
     send_nack          => send_nack,
     status_register    => status_register
 );
@@ -404,7 +420,8 @@ port map(
      busy_in         => busy,
      zynq_on         => zynq_en,
      run_val         => run,
-     set_rel_busy    => cmd_busy,
+     cmd_busy        => cmd_busy,
+     release_busy    => release_busy,
      trigger_command => trg_command,
      trigger_ext     => trigger_ext,
      triggerExtMask  => ext_trg_en,

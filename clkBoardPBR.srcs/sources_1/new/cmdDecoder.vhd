@@ -44,6 +44,7 @@ port(
     ext_trg_en         : out std_logic_vector(extTrgNum-1 downto 0);
     gtu_sel            : out std_logic;
     -- pulse outputs
+    release_busy       : out std_logic;
     trg_command        : out std_logic;
     configure_GPS      : out std_logic;
     reset_GTU_count    : out std_logic;
@@ -147,6 +148,7 @@ begin
     if rising_edge(clk) then
         trg_command        <= '0';
         configure_GPS      <= '0';
+        release_busy       <= '0';
         reset_GTU_count    <= '0';
         reset_l1_nr        <= '0';
         reset_evt_nr       <= '0';
@@ -178,6 +180,7 @@ begin
                     when MSG_STOP_RUN        => run_s              <= '0';
                     when MSG_SET_BUSY        => cmd_busy_s         <= '1';
                     when MSG_RELEASE_BUSY    => cmd_busy_s         <= '0';
+                                                release_busy       <= '1';
                     when MSG_TRIGGER         => trg_command        <= '1';
                     when MSG_CONFIGURE_GPS   => configure_GPS      <= '1';
                     when MSG_GPS1_ON         => pps_en_s(1)        <= '1';
