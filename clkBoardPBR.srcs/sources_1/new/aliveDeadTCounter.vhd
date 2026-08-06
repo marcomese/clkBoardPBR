@@ -16,13 +16,14 @@ use IEEE.NUMERIC_STD.ALL;
 
 entity aliveDeadTCounter is
 port(
-    clk    : in  std_logic;
-    rst    : in  std_logic;
-    busy   : in  std_logic;
-    trgIn  : in  std_logic;
-    ready  : out std_logic;
-    aliveT : out std_logic_vector(31 downto 0);
-    deadT  : out std_logic_vector(31 downto 0)
+    clk     : in  std_logic;
+    rst     : in  std_logic;
+    busy    : in  std_logic;
+    running : in  std_logic;
+    trgIn   : in  std_logic;
+    ready   : out std_logic;
+    aliveT  : out std_logic_vector(31 downto 0);
+    deadT   : out std_logic_vector(31 downto 0)
 );
 end aliveDeadTCounter;
 
@@ -33,7 +34,6 @@ signal rstAlive  : std_logic;
 signal rstDead   : std_logic;
 signal cntAlive  : unsigned(31 downto 0);
 signal cntDead   : unsigned(31 downto 0);
-signal aliveTSig : std_logic_vector(31 downto 0);
 signal deadTSig  : std_logic_vector(31 downto 0);
 
 begin
@@ -56,7 +56,7 @@ end process;
 aliveProc: process(clk)
 begin
     if rising_edge(clk) then
-        if rst = '1' or rstAlive = '1' then
+        if rst = '1' or rstAlive = '1' or running = '0' then
             cntAlive <= (others => '0');
         elsif busy = '0' then
             cntAlive <= cntAlive + 1;
@@ -67,7 +67,7 @@ end process;
 deadProc: process(clk)
 begin
     if rising_edge(clk) then
-        if rst = '1' or rstDead = '1' then
+        if rst = '1' or rstDead = '1' or running = '0' then
             cntDead <= (others => '0');
         elsif busy = '1' then
             cntDead <= cntDead + 1;
@@ -78,7 +78,7 @@ end process;
 tProc: process(clk)
 begin
     if rising_edge(clk) then
-        if rst = '1' then
+        if rst = '1' or running = '0' then
             deadTSig  <= (others => '0');
         else
             if rstDead = '1' then
