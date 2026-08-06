@@ -42,6 +42,7 @@ signal fifoFull        : std_logic := '0';
 signal trigger_out     : std_logic := '0';
 signal busy            : std_logic := '0';
 signal reset_counters  : std_logic := '0';
+signal fifoRst         : std_logic;
 signal timeout         : std_logic;
 signal timeoutFlag     : std_logic_vector(trgNum-1 downto 0);
 
@@ -124,6 +125,7 @@ port map(
     trigger_out     => trigger_out,
     busy            => busy,
     reset_counters  => reset_counters,
+    fifoRst         => fifoRst,
     timeout         => timeout,
     timeoutFlag     => timeoutFlag,
     running         => running

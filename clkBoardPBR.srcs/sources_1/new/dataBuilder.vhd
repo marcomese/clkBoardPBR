@@ -27,6 +27,7 @@ port(
     evtRdy    : in  std_logic;
     gtuCount  : in  std_logic_vector(31 downto 0);
     gtuRdy    : in  std_logic;
+    ppsCount  : in  std_logic_vector(31 downto 0);
     trgFlag   : in  std_logic_vector(trgNum-1 downto 0);
     trgFRdy   : in  std_logic;
     aliveT    : in  std_logic_vector(31 downto 0);
@@ -61,7 +62,8 @@ begin
         elsif dRdySig = '1' then
             dataRdy <= '1';
             dataOut <= evtNum     &
-                       gtuCount   & 
+                       gtuCount   &
+                       ppsCount   & 
                        trgFlagSig & 
                        aliveT     &
                        deadT      &

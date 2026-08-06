@@ -59,6 +59,7 @@ port(
     trigger_out     : out std_logic;
     busy            : out std_logic;
     reset_counters  : out std_logic;
+    fifoRst         : out std_logic;
     timeout         : out std_logic;
     timeoutFlag     : out std_logic_vector(zynqNum-1 downto 0); 
     running         : out std_logic
@@ -125,7 +126,9 @@ signal GTU_count        : unsigned(7 downto 0);
 
 signal tOutCnt          : unsigned(bitsNum(nClkTOut)-1 downto 0);
 
-signal rstCnt           : integer range 0 to nClkRst-1;
+signal idleCnt          : integer range 0 to nClkRst-1;
+
+signal fifoRstSig       : std_logic;
 
 signal busyAndZynq,
        triggerAndZynq   : std_logic_vector(zynqNum-1 downto 0);
@@ -153,6 +156,8 @@ runValFalling  <= runValFF and not run_val;
 running        <= runningSig;
 
 timeout        <= timeoutSig;
+
+fifoRst        <= fifoRstSig;
 
 tOutEn         <= run_val and not runningSig;
 
@@ -203,13 +208,20 @@ begin
     end if;
 end process;
 
-rstCntProc: process(clock)
+fifoRstProc: process(clock)
 begin
     if rising_edge(clock) then
-        if reset = '1' or pres_state /= start_run_state then
-            rstCnt <= 0;
-        elsif rstCnt < nClkRst-1 then
-            rstCnt <= rstCnt + 1;
+        if reset = '1' then
+            idleCnt    <= 0;
+            fifoRstSig <= '1';
+        elsif pres_state /= idle_state then
+            idleCnt    <= 0;
+            fifoRstSig <= '0';
+        elsif idleCnt < nClkRst-1 then
+            idleCnt    <= idleCnt + 1;
+            fifoRstSig <= '1';
+        else
+            fifoRstSig <= '0';
         end if;
     end if;
 end process;
@@ -240,7 +252,7 @@ end process;
 COMB_PROC: process(pres_state, triggerOr, busy_zynq, N_gtu,
                    run_val, cmd_busy, trigger_command, 
                    GTU_count, trigger_ext, PPS, extTrgMasked, fifoFull, ppsTrgEn, plToAxiSBusy,
-                   rstCnt, release_busy)
+                   release_busy)
 begin
     next_state <= pres_state;
     
@@ -257,8 +269,6 @@ begin
         when start_run_state =>
             if run_val = '0' then
                 next_state <= idle_state;
-            elsif rstCnt < nClkRst-1 then
-                next_state <= start_run_state;
             elsif run_val = '1' and cmd_busy = '1' then
                 next_state <= busy_CPU_state;
             elsif run_val = '1' and busy_zynq = '1' then

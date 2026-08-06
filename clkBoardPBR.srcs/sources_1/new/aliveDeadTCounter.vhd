@@ -79,13 +79,8 @@ tProc: process(clk)
 begin
     if rising_edge(clk) then
         if rst = '1' then
-            aliveTSig <= (others => '0');
             deadTSig  <= (others => '0');
         else
-            if rstAlive = '1' then
-                aliveTSig <= std_logic_vector(cntAlive);
-            end if;
-
             if rstDead = '1' then
                 deadTSig <= std_logic_vector(cntDead);
             end if;
@@ -102,7 +97,7 @@ begin
             aliveT <= (others => '0');
             deadT  <= (others => '0');
         elsif trgIn = '1' then
-            aliveT <= aliveTSig;
+            aliveT <= std_logic_vector(cntAlive);
             deadT  <= deadTSig;
             ready  <= '1';
         end if;

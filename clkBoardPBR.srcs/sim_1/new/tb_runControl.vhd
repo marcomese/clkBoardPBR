@@ -16,7 +16,7 @@ constant ppsWidth     : positive := 10;
 constant ppsRstVal    : integer  := 1;
 constant presWindow   : integer  := 2000;
 constant clkPeriodNs  : positive := 10;
-constant gtuPeriodNs  : positive := 1000;
+constant gtuPeriodNs  : positive := 1050;
 
 -- command opcodes (must match cmdDecoder.vhd)
 constant MSG_START_RUN       : std_logic_vector(31 downto 0) := X"FFFFFFFF";
@@ -114,9 +114,14 @@ signal N_gtu              : std_logic_vector(7 downto 0) := std_logic_vector(to_
 signal trigger_out        : std_logic;
 signal runBusy            : std_logic;   -- run_control_fsm 'busy' output (global busy)
 signal reset_counters     : std_logic;
+signal fifoRst            : std_logic;
 signal running            : std_logic;
 signal timeout            : std_logic;
 signal timeoutFlag        : std_logic_vector(zynqNum-1 downto 0);
+
+signal adTReady : std_logic := '0';
+signal aliveT   : std_logic_vector(31 downto 0) := (others => '0');
+signal deadT    : std_logic_vector(31 downto 0) := (others => '0');
 
 begin
 
@@ -152,15 +157,12 @@ begin
     wait until rst = '0';
     wait for clkPeriod*2;
     
-    busy <= (others => '1');
+    busy <= (others => '0');
 
     sendCmd(MSG_ZYNQ0_ON);
     wait for clkPeriod*5;
 
     sendCmd(MSG_ZYNQ3_ON);
-    wait for clkPeriod*5;
-
-    sendCmd(MSG_START_RUN);
     wait for clkPeriod*5;
 
     sendCmd(MSG_GPS1_ON);
@@ -169,69 +171,94 @@ begin
     sendCmd(MSG_GPS_AUTO_ON);
     wait for clkPeriod*5;
 
---    sendCmd(MSG_PPS_TRG_ON);
---    wait for clkPeriod*5;
-
     sendCmd(MSG_UNMASK_EXT_TRG0);
     wait for clkPeriod*5;
 
     sendCmd(MSG_GTU_INTERNAL_ON);
     wait for clkPeriod*5;
 
+    sendCmd(MSG_START_RUN);
+    wait for 15 us;
+
     sendCmd(MSG_TRIGGER);
-    wait for clkPeriod*10;
+    wait for 80 us;
 
-    busy <= "0111";
-    wait for clkPeriod*10;
+    sendCmd(MSG_TRIGGER);
+    wait for 180 us;
 
-    -- inject an L1 trigger from board 1 into the FSM and observe the dead time
-    trigger_in <= "0010";
-    wait for clkPeriod;
-    trigger_in <= "0000";
-    wait for clkPeriod*180;
+    sendCmd(MSG_TRIGGER);
+    wait for 230 us;
 
-    sendCmd(MSG_STOP_RUN);
-    wait for clkPeriod*5;
+    sendCmd(MSG_TRIGGER);
+    wait for 307 us;
+    
+    sendCmd(MSG_TRIGGER);
+    wait for 329 us;
 
-    wait for clkPeriod*1000;
+    sendCmd(MSG_TRIGGER);
 
-    sendCmd(MSG_START_RUN);
-    wait for clkPeriod*5;
+--    busy <= "0111";
+--    wait for clkPeriod*10;
 
-    busy <= "0110";
-
-    wait for clkPeriod*100;
-
-    trigger_in <= "1010";
-    wait for clkPeriod;
-    trigger_in <= "0000";
-    wait for clkPeriod*180;
+--    -- inject an L1 trigger from board 1 into the FSM and observe the dead time
+--    trigger_in <= "0010";
+--    wait for clkPeriod;
+--    trigger_in <= "0000";
+    wait for 5 us;
 
     sendCmd(MSG_STOP_RUN);
     wait for clkPeriod*5;
 
-    wait for clkPeriod*1000;
+--    wait for clkPeriod*1000;
 
-    sendCmd(MSG_START_RUN);
-    wait for clkPeriod*50;
+--    sendCmd(MSG_START_RUN);
+--    wait for clkPeriod*5;
 
-    trigger_in <= "1000";
-    wait for clkPeriod;
-    trigger_in <= "0000";
-    wait for clkPeriod*10;
+--    busy <= "0110";
 
-    trigger_in <= "0001";
-    wait for clkPeriod;
-    trigger_in <= "0000";
-    wait for clkPeriod*180;
+--    wait for clkPeriod*100;
 
-    trigger_in <= "0001";
-    wait for clkPeriod;
-    trigger_in <= "0000";
-    wait for clkPeriod*180;
+--    trigger_in <= "1010";
+--    wait for clkPeriod;
+--    trigger_in <= "0000";
+--    wait for clkPeriod*180;
+
+--    sendCmd(MSG_STOP_RUN);
+--    wait for clkPeriod*5;
+
+--    wait for clkPeriod*1000;
+
+--    sendCmd(MSG_START_RUN);
+--    wait for clkPeriod*50;
+
+--    trigger_in <= "1000";
+--    wait for clkPeriod;
+--    trigger_in <= "0000";
+--    wait for clkPeriod*10;
+
+--    trigger_in <= "0001";
+--    wait for clkPeriod;
+--    trigger_in <= "0000";
+--    wait for clkPeriod*180;
+
+--    trigger_in <= "0001";
+--    wait for clkPeriod;
+--    trigger_in <= "0000";
+--    wait for clkPeriod*180;
 
     wait;
 end process;
+
+aliveDeadTInst: entity work.aliveDeadTCounter
+port map(
+    clk    => clk,
+    rst    => rst,
+    busy   => runBusy,
+    trgIn  => trigger_out,
+    ready  => adTReady,
+    aliveT => aliveT,
+    deadT  => deadT
+);
 
 gtuGenInst: entity work.gtuGenerator
 generic map(
@@ -282,6 +309,7 @@ port map(
     rst        => rst,
     enable     => running,
     clear      => reset_all_counters,
+    trgIn      => trigger_out,
     ppsAuto    => pps_auto,
     ppsSel     => pps_en,
     ppsPres    => ppsPres,
@@ -344,7 +372,7 @@ port map(
 dataBuilderInst: entity work.dataBuilder
 generic map(
     trgNum    => zynqNum+extTrgNum,
-    dataWords => 6
+    dataWords => 7
 )
 port map(
     clk       => clk,
@@ -353,11 +381,12 @@ port map(
     evtRdy    => evtRdy,
     gtuCount  => GTUcounted,
     gtuRdy    => gtuReady,
-    trgFlag   => "000000",
+    ppsCount  => ppsCnt,
+    trgFlag   => std_logic_vector'("000000"),
     trgFRdy   => '1',
-    aliveT    => x"00000000",
-    deadT     => x"00000000",
-    aDTRdy    => '1',
+    aliveT    => aliveT,
+    deadT     => deadT,
+    aDTRdy    => adTReady,
     statusReg => status_register,
     dataRdy   => dataRdy,
     dataOut   => open
@@ -433,6 +462,7 @@ port map(
      trigger_out     => trigger_out,
      busy            => runBusy,
      reset_counters  => reset_counters,
+     fifoRst         => fifoRst,
      timeout         => timeout,
      timeoutFlag     => timeoutFlag,
      running         => running

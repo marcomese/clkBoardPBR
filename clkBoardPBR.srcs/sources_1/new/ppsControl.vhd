@@ -26,6 +26,7 @@ port(
     rst        : in  std_logic;
     enable     : in  std_logic;
     clear      : in  std_logic;
+    trgIn      : in  std_logic;
     ppsAuto    : in  std_logic;
     ppsSel     : in  std_logic_vector(ppsNum-1 downto 0);
     ppsPres    : in  std_logic_vector(ppsNum-1 downto 0);
@@ -40,7 +41,9 @@ architecture Behavioral of ppsControl is
 
 signal   secCounter    : integer range 0 to clkFreq-1;
 
-signal   internalPPS,
+signal   enableFF,
+         runStarted,
+         internalPPS,
          ppsEdgeSig,
          secCounterEn,
          secCounterRst : std_logic;
@@ -52,22 +55,45 @@ signal   ppsCntSig     : unsigned(31 downto 0);
 
 begin
 
-ppsOut        <= ppsOutSig(0);
+runStarted    <= enable and not enableFF;
 
-ppsEdgeOut    <= ppsEdgeSig;
+ppsOut        <= ppsOutSig(0);
 
 ppsEdgeSlv(0) <= ppsEdgeSig;
 
-ppsCnt        <= std_logic_vector(ppsCntSig);
+runStrtProc: process(clk)
+begin
+    if rising_edge(clk) then
+        if rst = '1' then
+            enableFF <= '0';
+        else
+            enableFF <= enable;
+        end if;
+    end if;
+end process;
+
+ppsCntRegProc: process(clk)
+begin
+    if rising_edge(clk) then
+        if rst = '1' or clear = '1' or runStarted = '1' then
+            ppsCnt   <= (others => '0');
+        elsif trgIn = '1' then
+            ppsCnt   <= std_logic_vector(ppsCntSig);
+        end if;
+    end if;
+end process;
 
 ppsMuxInst: process(clk)
 begin
     if rising_edge(clk) then
         if rst = '1' or enable = '0' then
             ppsEdgeSig    <= '0';
+            ppsEdgeOut    <= '0';
             secCounterEn  <= '0';
-            secCounterRst <= '1'; 
+            secCounterRst <= '1';
         elsif enable = '1' then
+            ppsEdgeOut <= ppsEdgeSig;
+
             if ppsAuto = '1' then
                 ppsEdgeSig    <= internalPPS;
                 secCounterEn  <= '1';

@@ -1,7 +1,7 @@
 {
   "design": {
     "design_info": {
-      "boundary_crc": "0x2145B41CF8DF3E77",
+      "boundary_crc": "0x2145B41C4A25FCB1",
       "device": "xc7z020clg484-2",
       "gen_directory": "../../../../clkBoardPBR.gen/sources_1/bd/design_1",
       "name": "design_1",
@@ -825,12 +825,8 @@
         "left": "3",
         "right": "0",
         "parameters": {
-          "CLK_DOMAIN": {
-            "value": "design_1_processing_system7_0_0_FCLK_CLK1",
-            "value_src": "default"
-          },
           "FREQ_HZ": {
-            "value": "4e+07:4e+07:4e+07:4e+07",
+            "value": "40000000:40000000:40000000:40000000",
             "value_src": "ip_prop"
           },
           "FREQ_TOLERANCE_HZ": {
@@ -857,12 +853,8 @@
         "left": "3",
         "right": "0",
         "parameters": {
-          "CLK_DOMAIN": {
-            "value": "design_1_processing_system7_0_0_FCLK_CLK1",
-            "value_src": "default"
-          },
           "FREQ_HZ": {
-            "value": "4e+07:4e+07:4e+07:4e+07",
+            "value": "40000000:40000000:40000000:40000000",
             "value_src": "ip_prop"
           },
           "FREQ_TOLERANCE_HZ": {
@@ -1928,7 +1920,7 @@
         "inst_hier_path": "dataBuilder_0",
         "parameters": {
           "dataWords": {
-            "value": "6"
+            "value": "7"
           },
           "trgNum": {
             "value": "6"
@@ -1949,7 +1941,7 @@
                 "value_src": "constant"
               },
               "FREQ_HZ": {
-                "value": "1e+08",
+                "value": "100000000",
                 "value_src": "user_prop"
               },
               "CLK_DOMAIN": {
@@ -1983,6 +1975,11 @@
           "gtuRdy": {
             "direction": "I"
           },
+          "ppsCount": {
+            "direction": "I",
+            "left": "31",
+            "right": "0"
+          },
           "trgFlag": {
             "direction": "I",
             "left": "5",
@@ -2014,7 +2011,7 @@
           },
           "dataOut": {
             "direction": "O",
-            "left": "191",
+            "left": "223",
             "right": "0"
           }
         }
@@ -2375,6 +2372,9 @@
           },
           "gtu_sel": {
             "direction": "O"
+          },
+          "fifoRst": {
+            "direction": "O"
           }
         },
         "components": {
@@ -2428,7 +2428,7 @@
                     "value_src": "constant"
                   },
                   "FREQ_HZ": {
-                    "value": "1e+08",
+                    "value": "100000000",
                     "value_src": "user_prop"
                   },
                   "CLK_DOMAIN": {
@@ -2514,6 +2514,23 @@
                   }
                 }
               },
+              "fifoRst": {
+                "direction": "O",
+                "parameters": {
+                  "POLARITY": {
+                    "value": "ACTIVE_HIGH",
+                    "value_src": "user_prop"
+                  },
+                  "PortType": {
+                    "value": "undef",
+                    "value_src": "ip_prop"
+                  },
+                  "PortType.PROP_SRC": {
+                    "value": "false",
+                    "value_src": "ip_prop"
+                  }
+                }
+              },
               "timeout": {
                 "direction": "O"
               },
@@ -2564,7 +2581,7 @@
                     "value_src": "constant"
                   },
                   "FREQ_HZ": {
-                    "value": "1e+08",
+                    "value": "100000000",
                     "value_src": "user_prop"
                   },
                   "CLK_DOMAIN": {
@@ -2649,7 +2666,7 @@
                     "value_src": "constant"
                   },
                   "FREQ_HZ": {
-                    "value": "1e+08",
+                    "value": "100000000",
                     "value_src": "user_prop"
                   },
                   "CLK_DOMAIN": {
@@ -2824,7 +2841,7 @@
                     "value_src": "constant"
                   },
                   "FREQ_HZ": {
-                    "value": "1e+08",
+                    "value": "100000000",
                     "value_src": "user_prop"
                   },
                   "CLK_DOMAIN": {
@@ -2897,15 +2914,15 @@
           "Net1": {
             "ports": [
               "plToAxiSBusy",
-              "run_control_fsm_0/plToAxiSBusy",
-              "command_decoder_0/plToAxiSBusy"
+              "command_decoder_0/plToAxiSBusy",
+              "run_control_fsm_0/plToAxiSBusy"
             ]
           },
           "axis_data_fifo_0_prog_full": {
             "ports": [
               "fifoFull",
-              "run_control_fsm_0/fifoFull",
-              "command_decoder_0/fifoFull"
+              "command_decoder_0/fifoFull",
+              "run_control_fsm_0/fifoFull"
             ]
           },
           "command_decoder_0_cmd_busy": {
@@ -3051,8 +3068,8 @@
               "clk",
               "pulseExtender_0/clk",
               "trgFlagBuilder_0/clk",
-              "run_control_fsm_0/clock",
-              "command_decoder_0/clk"
+              "command_decoder_0/clk",
+              "run_control_fsm_0/clock"
             ]
           },
           "pulseExtender_0_sigOut": {
@@ -3066,8 +3083,8 @@
               "rst",
               "pulseExtender_0/rst",
               "trgFlagBuilder_0/rst",
-              "run_control_fsm_0/reset",
-              "command_decoder_0/rst"
+              "command_decoder_0/rst",
+              "run_control_fsm_0/reset"
             ]
           },
           "run_control_fsm_0_busy": {
@@ -3075,6 +3092,12 @@
               "run_control_fsm_0/busy",
               "runCtrlBusy",
               "command_decoder_0/runCtrlBusy"
+            ]
+          },
+          "run_control_fsm_0_fifoRst": {
+            "ports": [
+              "run_control_fsm_0/fifoRst",
+              "fifoRst"
             ]
           },
           "run_control_fsm_0_fsmState": {
@@ -3119,8 +3142,8 @@
           "synchronizers_0_busySync": {
             "ports": [
               "busy",
-              "run_control_fsm_0/busy_in",
-              "command_decoder_0/busy"
+              "command_decoder_0/busy",
+              "run_control_fsm_0/busy_in"
             ]
           },
           "synchronizers_0_extTrgSync": {
@@ -3279,7 +3302,7 @@
                     "value_src": "constant"
                   },
                   "FREQ_HZ": {
-                    "value": "1e+08",
+                    "value": "100000000",
                     "value_src": "user_prop"
                   },
                   "CLK_DOMAIN": {
@@ -3340,7 +3363,7 @@
                     "value_src": "constant"
                   },
                   "FREQ_HZ": {
-                    "value": "1e+08",
+                    "value": "100000000",
                     "value_src": "user_prop"
                   },
                   "CLK_DOMAIN": {
@@ -3413,7 +3436,7 @@
                     "value_src": "constant"
                   },
                   "FREQ_HZ": {
-                    "value": "1e+08",
+                    "value": "100000000",
                     "value_src": "user_prop"
                   },
                   "CLK_DOMAIN": {
@@ -3478,7 +3501,7 @@
                     "value_src": "constant"
                   },
                   "FREQ_HZ": {
-                    "value": "1e+08",
+                    "value": "100000000",
                     "value_src": "user_prop"
                   },
                   "CLK_DOMAIN": {
@@ -3532,7 +3555,7 @@
                     "value_src": "constant"
                   },
                   "FREQ_HZ": {
-                    "value": "1e+08",
+                    "value": "100000000",
                     "value_src": "user_prop"
                   },
                   "CLK_DOMAIN": {
@@ -3748,11 +3771,11 @@
           "processing_system7_0_FCLK_CLK0": {
             "ports": [
               "clk",
-              "aliveDeadTCounter_0/clk",
               "trgCounter_0/clk",
               "reg_event_number_0/clock",
               "counterRstCtrl_0/clk",
-              "GTUcounter_0/clk"
+              "GTUcounter_0/clk",
+              "aliveDeadTCounter_0/clk"
             ]
           },
           "reg_event_number_0_ready": {
@@ -3800,11 +3823,11 @@
           "rst_ps7_0_100M_peripheral_reset": {
             "ports": [
               "rst",
-              "aliveDeadTCounter_0/rst",
               "trgCounter_0/rst",
               "reg_event_number_0/reset",
               "counterRstCtrl_0/rst",
-              "GTUcounter_0/rst"
+              "GTUcounter_0/rst",
+              "aliveDeadTCounter_0/rst"
             ]
           },
           "run_control_fsm_0_busy": {
@@ -3816,9 +3839,9 @@
           "run_control_fsm_0_trigger_out": {
             "ports": [
               "trgIn",
-              "aliveDeadTCounter_0/trgIn",
               "reg_event_number_0/load",
-              "GTUcounter_0/trigger"
+              "GTUcounter_0/trigger",
+              "aliveDeadTCounter_0/trgIn"
             ]
           },
           "synchronizers_0_trgSync": {
@@ -4165,7 +4188,7 @@
                     "value_src": "constant"
                   },
                   "FREQ_HZ": {
-                    "value": "1e+08",
+                    "value": "100000000",
                     "value_src": "user_prop"
                   },
                   "CLK_DOMAIN": {
@@ -4584,7 +4607,7 @@
           },
           "dataIn": {
             "direction": "I",
-            "left": "191",
+            "left": "223",
             "right": "0"
           },
           "write": {
@@ -4679,7 +4702,7 @@
                 "value": "1"
               },
               "rawDataSize": {
-                "value": "192"
+                "value": "224"
               }
             }
           },
@@ -5066,6 +5089,9 @@
           },
           "enable": {
             "direction": "I"
+          },
+          "trgIn": {
+            "direction": "I"
           }
         },
         "components": {
@@ -5101,7 +5127,7 @@
                     "value_src": "constant"
                   },
                   "FREQ_HZ": {
-                    "value": "1e+08",
+                    "value": "100000000",
                     "value_src": "user_prop"
                   },
                   "CLK_DOMAIN": {
@@ -5163,7 +5189,7 @@
                     "value_src": "constant"
                   },
                   "FREQ_HZ": {
-                    "value": "1e+08",
+                    "value": "100000000",
                     "value_src": "user_prop"
                   },
                   "CLK_DOMAIN": {
@@ -5192,6 +5218,9 @@
                     "value_src": "user_prop"
                   }
                 }
+              },
+              "trgIn": {
+                "direction": "I"
               },
               "ppsAuto": {
                 "direction": "I"
@@ -5294,6 +5323,12 @@
               "ppsIn",
               "ppsPresent_0/ppsIn",
               "ppsControl_0/ppsEdgeIn"
+            ]
+          },
+          "trgIn_1": {
+            "ports": [
+              "trgIn",
+              "ppsControl_0/trgIn"
             ]
           }
         }
@@ -5767,7 +5802,7 @@
                 "direction": "I",
                 "parameters": {
                   "FREQ_HZ": {
-                    "value": "1e+08",
+                    "value": "100000000",
                     "value_src": "user_prop"
                   },
                   "CLK_DOMAIN": {
@@ -5952,7 +5987,7 @@
                     "value_src": "constant"
                   },
                   "FREQ_HZ": {
-                    "value": "1e+08",
+                    "value": "100000000",
                     "value_src": "user_prop"
                   },
                   "CLK_DOMAIN": {
@@ -6011,7 +6046,7 @@
                     "value_src": "constant"
                   },
                   "FREQ_HZ": {
-                    "value": "1e+08",
+                    "value": "100000000",
                     "value_src": "user_prop"
                   },
                   "CLK_DOMAIN": {
@@ -6070,7 +6105,7 @@
                     "value_src": "constant"
                   },
                   "FREQ_HZ": {
-                    "value": "1e+08",
+                    "value": "100000000",
                     "value_src": "user_prop"
                   },
                   "CLK_DOMAIN": {
@@ -6129,7 +6164,7 @@
                     "value_src": "constant"
                   },
                   "FREQ_HZ": {
-                    "value": "1e+08",
+                    "value": "100000000",
                     "value_src": "user_prop"
                   },
                   "CLK_DOMAIN": {
@@ -6589,7 +6624,7 @@
                 "value_src": "constant"
               },
               "FREQ_HZ": {
-                "value": "1e+08",
+                "value": "100000000",
                 "value_src": "user_prop"
               },
               "CLK_DOMAIN": {
@@ -6776,6 +6811,12 @@
           "inBuffers/BUSY_IN_P"
         ]
       },
+      "Op1_1": {
+        "ports": [
+          "cmdAndRunCtrl/fifoRst",
+          "fifoDMA/Op1"
+        ]
+      },
       "PPS_1": {
         "ports": [
           "ppsPresAndCtrl/ppsEdgeOut",
@@ -6786,15 +6827,15 @@
       "aliveDeadTCounter_0_aliveT": {
         "ports": [
           "counters/aliveT",
-          "dataBuilder_0/aliveT",
-          "axiPLRegs/registerIn9"
+          "axiPLRegs/registerIn9",
+          "dataBuilder_0/aliveT"
         ]
       },
       "aliveDeadTCounter_0_deadT": {
         "ports": [
           "counters/deadT",
-          "dataBuilder_0/deadT",
-          "axiPLRegs/registerIn10"
+          "axiPLRegs/registerIn10",
+          "dataBuilder_0/deadT"
         ]
       },
       "aliveDeadTCounter_0_ready": {
@@ -6860,8 +6901,7 @@
       "cmdAndRunCtrl_reset_counters": {
         "ports": [
           "cmdAndRunCtrl/reset_counters",
-          "counters/rstFromRun",
-          "fifoDMA/Op1"
+          "counters/rstFromRun"
         ]
       },
       "cmdAndRunCtrl_send_nack": {
@@ -7093,13 +7133,13 @@
           "ppsPresAndCtrl/clk",
           "axiPLRegs/s00_axi_aclk",
           "inBuffers/clk",
-          "dataBuilder_0/clk",
           "outBuffers/clk",
           "axi_smc/aclk",
           "processing_system7_0/M_AXI_GP0_ACLK",
           "processing_system7_0/S_AXI_ACP_ACLK",
           "rst_ps7_0_100M/slowest_sync_clk",
-          "gtuCtrl_0/clk"
+          "gtuCtrl_0/clk",
+          "dataBuilder_0/clk"
         ]
       },
       "processing_system7_0_FCLK_CLK1": {
@@ -7136,7 +7176,8 @@
       "registerIn8_1": {
         "ports": [
           "ppsPresAndCtrl/ppsCnt",
-          "axiPLRegs/registerIn8"
+          "axiPLRegs/registerIn8",
+          "dataBuilder_0/ppsCount"
         ]
       },
       "rstAll_1": {
@@ -7182,10 +7223,10 @@
           "cmdAndRunCtrl/rst",
           "counters/rst",
           "ppsPresAndCtrl/rst",
-          "dataBuilder_0/rst",
           "inBuffers/rst",
           "outBuffers/rst",
-          "gtuCtrl_0/rst"
+          "gtuCtrl_0/rst",
+          "dataBuilder_0/rst"
         ]
       },
       "run_control_fsm_0_busy": {
@@ -7200,7 +7241,8 @@
           "cmdAndRunCtrl/trigger_out",
           "counters/trgIn",
           "outBuffers/In3",
-          "interruptConcat/In4"
+          "interruptConcat/In4",
+          "ppsPresAndCtrl/trgIn"
         ]
       },
       "synchronizers_0_trgSync": {
@@ -7213,8 +7255,8 @@
       "trgFlagBuilder_0_triggerFlags": {
         "ports": [
           "cmdAndRunCtrl/triggerFlags",
-          "dataBuilder_0/trgFlag",
-          "axiPLRegs/In0"
+          "axiPLRegs/In0",
+          "dataBuilder_0/trgFlag"
         ]
       },
       "trigger_ext_1": {
