@@ -8,6 +8,7 @@ end tb_runControl;
 architecture Behavioral of tb_runControl is
 
 constant clkPeriod    : time     := 10 ns;
+constant clkTrgPeriod : time     := 5 ns;
 constant zynqNum      : positive := 4;
 constant ppsNum       : positive := 3;
 constant extTrgNum    : positive := 2;
@@ -123,10 +124,22 @@ signal adTReady : std_logic := '0';
 signal aliveT   : std_logic_vector(31 downto 0) := (others => '0');
 signal deadT    : std_logic_vector(31 downto 0) := (others => '0');
 
+-- synchronizers: ingressi asincroni di scheda (stimolo) e uscite sincronizzate
+signal clkTrg      : std_logic := '1';   -- 200 MHz
+signal trgInRaw    : std_logic_vector(zynqNum-1 downto 0)   := (others => '0');
+signal busyInRaw   : std_logic_vector(zynqNum-1 downto 0)   := (others => '1');
+signal extTrgInRaw : std_logic_vector(extTrgNum-1 downto 0) := (others => '0');
+signal ppsInRaw    : std_logic_vector(ppsNum-1 downto 0)    := (others => '0');
+signal extGtuInRaw : std_logic := '0';
+signal ppsSync     : std_logic_vector(ppsNum-1 downto 0);
+signal extTrgSync  : std_logic_vector(extTrgNum-1 downto 0);
+signal extGtuSync  : std_logic;
+
 begin
 
 rst    <= '0' after clkPeriod*5;
 clk    <= not clk after clkPeriod/2;
+clkTrg <= not clkTrg after clkTrgPeriod/2;   -- 200 MHz
 
 -- external PPS on channel 0: one clock-wide pulse every 200 clocks
 --ppsGen: process(clk)
@@ -157,7 +170,7 @@ begin
     wait until rst = '0';
     wait for clkPeriod*2;
     
-    busy <= (others => '0');
+    busyInRaw <= (others => '0');
 
     sendCmd(MSG_ZYNQ0_ON);
     wait for clkPeriod*5;
@@ -180,22 +193,22 @@ begin
     sendCmd(MSG_START_RUN);
     wait for 15 us;
 
-    sendCmd(MSG_TRIGGER);
-    wait for 80 us;
+--    sendCmd(MSG_TRIGGER);
+--    wait for 80 us;
 
-    sendCmd(MSG_TRIGGER);
-    wait for 180 us;
+--    sendCmd(MSG_TRIGGER);
+--    wait for 180 us;
 
-    sendCmd(MSG_TRIGGER);
-    wait for 230 us;
+--    sendCmd(MSG_TRIGGER);
+--    wait for 230 us;
 
-    sendCmd(MSG_TRIGGER);
-    wait for 307 us;
+--    sendCmd(MSG_TRIGGER);
+--    wait for 307 us;
     
-    sendCmd(MSG_TRIGGER);
-    wait for 329 us;
+--    sendCmd(MSG_TRIGGER);
+--    wait for 329 us;
 
-    sendCmd(MSG_TRIGGER);
+--    sendCmd(MSG_TRIGGER);
 
 --    busy <= "0111";
 --    wait for clkPeriod*10;
@@ -204,24 +217,24 @@ begin
 --    trigger_in <= "0010";
 --    wait for clkPeriod;
 --    trigger_in <= "0000";
-    wait for 5 us;
+--    wait for 5 us;
 
-    sendCmd(MSG_STOP_RUN);
-    wait for clkPeriod*5;
+--    sendCmd(MSG_STOP_RUN);
+--    wait for clkPeriod*5;
 
 --    wait for clkPeriod*1000;
 
 --    sendCmd(MSG_START_RUN);
 --    wait for clkPeriod*5;
 
---    busy <= "0110";
+    busyInRaw <= "0110";
 
---    wait for clkPeriod*100;
+    wait for clkPeriod*100;
 
---    trigger_in <= "1010";
---    wait for clkPeriod;
---    trigger_in <= "0000";
---    wait for clkPeriod*180;
+    trgInRaw <= "1010";
+    wait for clkTrgPeriod;
+    trgInRaw <= "0000";
+    wait for clkPeriod*180;
 
 --    sendCmd(MSG_STOP_RUN);
 --    wait for clkPeriod*5;
@@ -251,13 +264,14 @@ end process;
 
 aliveDeadTInst: entity work.aliveDeadTCounter
 port map(
-    clk    => clk,
-    rst    => rst,
-    busy   => runBusy,
-    trgIn  => trigger_out,
-    ready  => adTReady,
-    aliveT => aliveT,
-    deadT  => deadT
+    clk     => clk,
+    rst     => rst,
+    busy    => runBusy,
+    running => running,
+    trgIn   => trigger_out,
+    ready   => adTReady,
+    aliveT  => aliveT,
+    deadT   => deadT
 );
 
 gtuGenInst: entity work.gtuGenerator
@@ -273,6 +287,39 @@ port map(
     gtuTick  => gtuTick
 );
 
+syncInst: entity work.synchronizers
+generic map(
+    zynqNum   => zynqNum,
+    ppsNum    => ppsNum,
+    extTrgNum => extTrgNum
+)
+port map(
+    clk        => clk,
+    clkTrg     => clkTrg,
+    extGtuIn   => extGtuInRaw,
+    trgIn      => trgInRaw,
+    busyIn     => busyInRaw,
+    ppsIn      => ppsInRaw,
+    extTrgIn   => extTrgInRaw,
+    extGtuSync => extGtuSync,
+    trgSync    => trigger_in,
+    busySync   => busy,
+    ppsSync    => ppsSync,
+    extTrgSync => extTrgSync
+);
+
+extTrgEdgeInst: entity work.edgeDetectors
+generic map(
+    sigRst => 1,
+    sigNum => extTrgNum
+)
+port map(
+    clk    => clk,
+    rst    => rst,
+    sigIn  => extTrgSync,
+    sigOut => trigger_ext
+);
+
 ppsEdgeInst: entity work.edgeDetectors
 generic map(
     sigRst => 1,
@@ -281,7 +328,7 @@ generic map(
 port map(
     clk    => clk,
     rst    => rst,
-    sigIn  => ppsIn,
+    sigIn  => ppsSync,
     sigOut => ppsEdge
 );
 

@@ -25,6 +25,7 @@ generic(
 );
 port(
     clk        : in  std_logic;
+    clkTrg     : in  std_logic;
     extGtuIn   : in  std_logic;
     trgIn      : in  std_logic_vector(zynqNum-1 downto 0);
     busyIn     : in  std_logic_vector(zynqNum-1 downto 0);
@@ -39,6 +40,8 @@ port(
 end synchronizers;
 
 architecture Behavioral of synchronizers is
+
+signal trgSampled    : std_logic_vector(zynqNum-1 downto 0);
 
 signal extGtuInSig,
        extGtuSyncSig : std_logic_vector(0 downto 0);
@@ -64,20 +67,40 @@ port map (
     dest_out => extGtuSyncSig
 );
 
-trgSyncInst: xpm_cdc_array_single
+trgSmplInst: xpm_cdc_array_single
 generic map (
     DEST_SYNC_FF   => 2,
-    INIT_SYNC_FF   => 0,
+    INIT_SYNC_FF   => 1,
     SIM_ASSERT_CHK => 0,
     SRC_INPUT_REG  => 0,
     WIDTH          => zynqNum
 )
 port map (
     src_clk  => '0',
-    dest_clk => clk,
+    dest_clk => clkTrg,
     src_in   => trgIn,
-    dest_out => trgSync
+    dest_out => trgSampled
 );
+
+trgSyncGen: for i in 0 to zynqNum-1 generate
+begin
+    trgSyncInst: xpm_cdc_pulse
+    generic map(
+        DEST_SYNC_FF   => 2,
+        INIT_SYNC_FF   => 1,
+        REG_OUTPUT     => 0,
+        RST_USED       => 0,
+        SIM_ASSERT_CHK => 0
+    )
+    port map(
+        src_clk    => clkTrg,
+        src_rst    => '0',
+        dest_clk   => clk,
+        dest_rst   => '0',
+        src_pulse  => trgSampled(i),
+        dest_pulse => trgSync(i)
+    );
+end generate;
 
 busySyncInst: xpm_cdc_array_single
 generic map (
