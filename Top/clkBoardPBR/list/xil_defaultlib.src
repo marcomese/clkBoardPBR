@@ -16,6 +16,6 @@ clkBoardPBR.srcs/sources_1/new/synchronizers.vhd 93
 clkBoardPBR.srcs/sources_1/new/edgeDetectors.vhd 93
 clkBoardPBR.srcs/sources_1/new/clockGenerator.vhd 93
 clkBoardPBR.srcs/sources_1/new/gtuGenerator.vhd 93
-Projects/clkBoardPBR/clkBoardPBR.srcs/sources_1/new/gtuCtrl.vhd 93
+clkBoardPBR.srcs/sources_1/new/gtuCtrl.vhd 93
 clkBoardPBR.gen/sources_1/bd/design_1/hdl/design_1_wrapper.vhd top=design_1_wrapper 93
 clkBoardPBR.srcs/sources_1/new/trgValidation.vhd 93

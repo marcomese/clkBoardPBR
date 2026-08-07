@@ -2531,10 +2531,6 @@
               "fifoRst": {
                 "direction": "O",
                 "parameters": {
-                  "POLARITY": {
-                    "value": "ACTIVE_HIGH",
-                    "value_src": "user_prop"
-                  },
                   "PortType": {
                     "value": "undef",
                     "value_src": "ip_prop"
@@ -3081,9 +3077,9 @@
             "ports": [
               "clk",
               "pulseExtender_0/clk",
-              "trgFlagBuilder_0/clk",
               "command_decoder_0/clk",
-              "run_control_fsm_0/clock"
+              "run_control_fsm_0/clock",
+              "trgFlagBuilder_0/clk"
             ]
           },
           "pulseExtender_0_sigOut": {
@@ -3096,9 +3092,9 @@
             "ports": [
               "rst",
               "pulseExtender_0/rst",
-              "trgFlagBuilder_0/rst",
               "command_decoder_0/rst",
-              "run_control_fsm_0/reset"
+              "run_control_fsm_0/reset",
+              "trgFlagBuilder_0/rst"
             ]
           },
           "run_control_fsm_0_busy": {
@@ -3130,8 +3126,8 @@
             "ports": [
               "run_control_fsm_0/running",
               "run",
-              "trgFlagBuilder_0/running",
-              "command_decoder_0/running"
+              "command_decoder_0/running",
+              "trgFlagBuilder_0/running"
             ]
           },
           "run_control_fsm_0_timeout": {
@@ -3408,13 +3404,7 @@
                 "direction": "I"
               },
               "clear": {
-                "direction": "I",
-                "parameters": {
-                  "POLARITY": {
-                    "value": "ACTIVE_HIGH",
-                    "value_src": "user_prop"
-                  }
-                }
+                "direction": "I"
               },
               "dataReady": {
                 "direction": "I"
@@ -3636,13 +3626,7 @@
                 }
               },
               "rstGtuOut": {
-                "direction": "O",
-                "parameters": {
-                  "POLARITY": {
-                    "value": "ACTIVE_HIGH",
-                    "value_src": "user_prop"
-                  }
-                }
+                "direction": "O"
               },
               "rstTrgOut": {
                 "direction": "O"
@@ -3791,9 +3775,9 @@
               "clk",
               "trgCounter_0/clk",
               "reg_event_number_0/clock",
-              "counterRstCtrl_0/clk",
               "GTUcounter_0/clk",
-              "aliveDeadTCounter_0/clk"
+              "aliveDeadTCounter_0/clk",
+              "counterRstCtrl_0/clk"
             ]
           },
           "reg_event_number_0_ready": {
@@ -3843,9 +3827,9 @@
               "rst",
               "trgCounter_0/rst",
               "reg_event_number_0/reset",
-              "counterRstCtrl_0/rst",
               "GTUcounter_0/rst",
-              "aliveDeadTCounter_0/rst"
+              "aliveDeadTCounter_0/rst",
+              "counterRstCtrl_0/rst"
             ]
           },
           "run_control_fsm_0_busy": {

@@ -25,9 +25,11 @@ signal clk,
        pps3En  : std_logic := '1';
 
 signal enable,
-       clear   : std_logic := '0';
+       clear,
+       trgIn   : std_logic := '0';
 
-signal ppsOut  : std_logic;
+signal ppsOut     : std_logic;
+signal ppsEdgeOut : std_logic;
 
 signal ppsCnt  : std_logic_vector(31 downto 0);
 
@@ -87,16 +89,18 @@ generic map(
     ppsNum   => ppsNum
 )
 port map(
-    clk       => clk,
-    rst       => rst,
-    enable    => enable,
-    clear     => clear,
-    ppsAuto   => ppsAuto,
-    ppsSel    => ppsSel,
-    ppsPres   => ppsPres,
-    ppsEdgeIn => ppsEdge,
-    ppsOut    => ppsOut,
-    ppsCnt    => ppsCnt
+    clk        => clk,
+    rst        => rst,
+    enable     => enable,
+    clear      => clear,
+    trgIn      => trgIn,
+    ppsAuto    => ppsAuto,
+    ppsSel     => ppsSel,
+    ppsPres    => ppsPres,
+    ppsEdgeIn  => ppsEdge,
+    ppsOut     => ppsOut,
+    ppsEdgeOut => ppsEdgeOut,
+    ppsCnt     => ppsCnt
 );
 
 end Behavioral;
