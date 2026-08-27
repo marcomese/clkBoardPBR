@@ -48,44 +48,36 @@ signal ppsSampled    : std_logic_vector(ppsNum-1 downto 0);
 
 signal extTrgSampled : std_logic_vector(extTrgNum-1 downto 0);
 
-signal extGtuInSig,
-       extGtuSmplSig,
-       extGtuSyncSig : std_logic_vector(0 downto 0);
+signal extGtuSampled : std_logic;
 
 begin
 
-extGtuInSig(0) <= extGtuIn;
-
-extGtuSync     <= extGtuSyncSig(0);
-
-extGtuSmplInst: xpm_cdc_array_single
+extGtuSmplInst: xpm_cdc_single
 generic map (
     DEST_SYNC_FF   => 2,
     INIT_SYNC_FF   => 1,
     SIM_ASSERT_CHK => 0,
-    SRC_INPUT_REG  => 0,
-    WIDTH          => 1
+    SRC_INPUT_REG  => 0
 )
 port map (
     src_clk  => '0',
     dest_clk => clkSmpl,
-    src_in   => extGtuInSig,
-    dest_out => extGtuSmplSig
+    src_in   => extGtuIn,
+    dest_out => extGtuSampled
 );
 
-extGtuSyncInst: xpm_cdc_array_single
+extGtuSyncInst: xpm_cdc_single
 generic map (
     DEST_SYNC_FF   => 2,
     INIT_SYNC_FF   => 1,
     SIM_ASSERT_CHK => 0,
-    SRC_INPUT_REG  => 0,
-    WIDTH          => 1
+    SRC_INPUT_REG  => 0
 )
 port map (
     src_clk  => clkSmpl,
     dest_clk => clk,
-    src_in   => extGtuSmplSig,
-    dest_out => extGtuSyncSig
+    src_in   => extGtuSampled,
+    dest_out => extGtuSync
 );
 
 trgSmplInst: xpm_cdc_array_single

@@ -52,7 +52,6 @@
         "pulseExtender_0": "",
         "busy_OBUFDS": "",
         "l1TrigOut_OBUFDS": "",
-        "clk40Out_BUFGCE": "",
         "clk40Out_OBUFDS1": "",
         "clk40Out_OBUFDS2": "",
         "clk40Out_OBUFDS3": "",
@@ -97,7 +96,9 @@
         "extGtuEdge": ""
       },
       "axi_smc": "",
-      "gtuCtrl_0": ""
+      "gtuCtrl_0": "",
+      "clk40Out_BUFGCE": "",
+      "clk40MCounter_0": ""
     },
     "interface_ports": {
       "DDR": {
@@ -1932,7 +1933,7 @@
         "inst_hier_path": "dataBuilder_0",
         "parameters": {
           "dataWords": {
-            "value": "7"
+            "value": "8"
           },
           "trgNum": {
             "value": "6"
@@ -1987,6 +1988,14 @@
           "gtuRdy": {
             "direction": "I"
           },
+          "clk40MCount": {
+            "direction": "I",
+            "left": "31",
+            "right": "0"
+          },
+          "clk40MRdy": {
+            "direction": "I"
+          },
           "ppsCount": {
             "direction": "I",
             "left": "31",
@@ -2023,7 +2032,7 @@
           },
           "dataOut": {
             "direction": "O",
-            "left": "223",
+            "left": "255",
             "right": "0"
           }
         }
@@ -3892,10 +3901,6 @@
             "left": "0",
             "right": "0"
           },
-          "clk_in": {
-            "type": "clk",
-            "direction": "I"
-          },
           "PPS_OUT_P": {
             "type": "clk",
             "direction": "O",
@@ -3985,11 +3990,6 @@
             "left": "0",
             "right": "0"
           },
-          "BUFGCE_CE": {
-            "direction": "I",
-            "left": "0",
-            "right": "0"
-          },
           "OBUF_DS_N_2": {
             "type": "clk",
             "direction": "O",
@@ -4000,6 +4000,12 @@
             "type": "clk",
             "direction": "O",
             "left": "3",
+            "right": "0"
+          },
+          "OBUF_IN1": {
+            "type": "clk",
+            "direction": "I",
+            "left": "0",
             "right": "0"
           }
         },
@@ -4242,18 +4248,6 @@
               }
             }
           },
-          "clk40Out_BUFGCE": {
-            "vlnv": "xilinx.com:ip:util_ds_buf:2.2",
-            "ip_revision": "7",
-            "xci_name": "design_1_util_ds_buf_1_5",
-            "xci_path": "ip\\design_1_util_ds_buf_1_5\\design_1_util_ds_buf_1_5.xci",
-            "inst_hier_path": "outBuffers/clk40Out_BUFGCE",
-            "parameters": {
-              "C_BUF_TYPE": {
-                "value": "BUFGCE"
-              }
-            }
-          },
           "clk40Out_OBUFDS1": {
             "vlnv": "xilinx.com:ip:util_ds_buf:2.2",
             "ip_revision": "7",
@@ -4348,12 +4342,6 @@
           }
         },
         "nets": {
-          "BUFGCE_CE_1": {
-            "ports": [
-              "BUFGCE_CE",
-              "clk40Out_BUFGCE/BUFGCE_CE"
-            ]
-          },
           "In3_1": {
             "ports": [
               "In3",
@@ -4395,7 +4383,7 @@
           },
           "clk40Out_BUFGCE_BUFGCE_O": {
             "ports": [
-              "clk40Out_BUFGCE/BUFGCE_O",
+              "OBUF_IN1",
               "clk40Out_OBUFDS0/OBUF_IN",
               "clk40Out_OBUFDS1/OBUF_IN",
               "clk40Out_OBUFDS2/OBUF_IN",
@@ -4460,12 +4448,6 @@
             "ports": [
               "clk",
               "pulseExtender_0/clk"
-            ]
-          },
-          "clk_in_1": {
-            "ports": [
-              "clk_in",
-              "clk40Out_BUFGCE/BUFGCE_I"
             ]
           },
           "extTrg_OBUFDS_1_OBUF_DS_N": {
@@ -4607,7 +4589,7 @@
           },
           "dataIn": {
             "direction": "I",
-            "left": "223",
+            "left": "255",
             "right": "0"
           },
           "write": {
@@ -4702,7 +4684,7 @@
                 "value": "1"
               },
               "rawDataSize": {
-                "value": "224"
+                "value": "256"
               }
             }
           },
@@ -6121,8 +6103,8 @@
           "clk_1": {
             "ports": [
               "clk",
-              "synchronizers_0/clk",
-              "extGtuEdge/clk"
+              "extGtuEdge/clk",
+              "synchronizers_0/clk"
             ]
           },
           "extGtuBUFDS_IBUF_OUT": {
@@ -6486,6 +6468,108 @@
             "direction": "O"
           }
         }
+      },
+      "clk40Out_BUFGCE": {
+        "vlnv": "xilinx.com:ip:util_ds_buf:2.2",
+        "ip_revision": "7",
+        "xci_name": "design_1_util_ds_buf_1_5",
+        "xci_path": "ip\\design_1_util_ds_buf_1_5\\design_1_util_ds_buf_1_5.xci",
+        "inst_hier_path": "clk40Out_BUFGCE",
+        "parameters": {
+          "C_BUF_TYPE": {
+            "value": "BUFGCE"
+          }
+        }
+      },
+      "clk40MCounter_0": {
+        "vlnv": "xilinx.com:module_ref:clk40MCounter:1.0",
+        "ip_revision": "1",
+        "xci_name": "design_1_clk40MCounter_0_0",
+        "xci_path": "ip\\design_1_clk40MCounter_0_0\\design_1_clk40MCounter_0_0.xci",
+        "inst_hier_path": "clk40MCounter_0",
+        "parameters": {
+          "trgDelay": {
+            "value": "4"
+          }
+        },
+        "reference_info": {
+          "ref_type": "hdl",
+          "ref_name": "clk40MCounter",
+          "boundary_crc": "0x0"
+        },
+        "ports": {
+          "clk": {
+            "type": "clk",
+            "direction": "I",
+            "parameters": {
+              "ASSOCIATED_RESET": {
+                "value": "rst",
+                "value_src": "constant"
+              },
+              "FREQ_HZ": {
+                "value": "100000000",
+                "value_src": "user_prop"
+              },
+              "CLK_DOMAIN": {
+                "value": "design_1_processing_system7_0_0_FCLK_CLK0",
+                "value_src": "default_prop"
+              }
+            }
+          },
+          "clk40M": {
+            "direction": "I",
+            "parameters": {
+              "FREQ_HZ": {
+                "value": "40000000",
+                "value_src": "ip_prop"
+              },
+              "PHASE": {
+                "value": "0.0",
+                "value_src": "ip_prop"
+              },
+              "CLK_DOMAIN": {
+                "value": "design_1_processing_system7_0_0_FCLK_CLK1",
+                "value_src": "ip_prop"
+              },
+              "PortWidth": {
+                "value": "4",
+                "value_src": "default_prop"
+              }
+            }
+          },
+          "rst": {
+            "type": "rst",
+            "direction": "I",
+            "parameters": {
+              "POLARITY": {
+                "value": "ACTIVE_HIGH"
+              }
+            }
+          },
+          "enable": {
+            "direction": "I"
+          },
+          "clear": {
+            "direction": "I",
+            "parameters": {
+              "POLARITY": {
+                "value": "ACTIVE_HIGH",
+                "value_src": "user_prop"
+              }
+            }
+          },
+          "trgIn": {
+            "direction": "I"
+          },
+          "ready": {
+            "direction": "O"
+          },
+          "clk40MCnt": {
+            "direction": "O",
+            "left": "31",
+            "right": "0"
+          }
+        }
       }
     },
     "interface_nets": {
@@ -6705,6 +6789,25 @@
           "cmdAndRunCtrl/busy"
         ]
       },
+      "clk40MCounter_0_clk40MCnt": {
+        "ports": [
+          "clk40MCounter_0/clk40MCnt",
+          "dataBuilder_0/clk40MCount"
+        ]
+      },
+      "clk40MCounter_0_ready": {
+        "ports": [
+          "clk40MCounter_0/ready",
+          "dataBuilder_0/clk40MRdy"
+        ]
+      },
+      "clk40Out_BUFGCE_BUFGCE_O": {
+        "ports": [
+          "clk40Out_BUFGCE/BUFGCE_O",
+          "outBuffers/OBUF_IN1",
+          "clk40MCounter_0/clk40M"
+        ]
+      },
       "cmdAndRunCtrl_configure_GPS": {
         "ports": [
           "cmdAndRunCtrl/configure_GPS",
@@ -6740,8 +6843,9 @@
           "cmdAndRunCtrl/run",
           "counters/run",
           "ppsPresAndCtrl/enable",
-          "outBuffers/BUFGCE_CE",
-          "gtuCtrl_0/enable"
+          "gtuCtrl_0/enable",
+          "clk40Out_BUFGCE/BUFGCE_CE",
+          "clk40MCounter_0/enable"
         ]
       },
       "command_decoder_0_status_register": {
@@ -6963,14 +7067,15 @@
           "processing_system7_0/M_AXI_GP0_ACLK",
           "processing_system7_0/S_AXI_ACP_ACLK",
           "rst_ps7_0_100M/slowest_sync_clk",
-          "dataBuilder_0/clk",
-          "gtuCtrl_0/clk"
+          "gtuCtrl_0/clk",
+          "clk40MCounter_0/clk",
+          "dataBuilder_0/clk"
         ]
       },
       "processing_system7_0_FCLK_CLK1": {
         "ports": [
           "processing_system7_0/FCLK_CLK1",
-          "outBuffers/clk_in"
+          "clk40Out_BUFGCE/BUFGCE_I"
         ]
       },
       "processing_system7_0_FCLK_CLK2": {
@@ -7015,7 +7120,8 @@
         "ports": [
           "cmdAndRunCtrl/reset_all_counters",
           "counters/rstAll",
-          "ppsPresAndCtrl/clear"
+          "ppsPresAndCtrl/clear",
+          "clk40MCounter_0/clear"
         ]
       },
       "rstEvt_1": {
@@ -7056,8 +7162,9 @@
           "ppsPresAndCtrl/rst",
           "inBuffers/rst",
           "outBuffers/rst",
-          "dataBuilder_0/rst",
-          "gtuCtrl_0/rst"
+          "gtuCtrl_0/rst",
+          "clk40MCounter_0/rst",
+          "dataBuilder_0/rst"
         ]
       },
       "run_control_fsm_0_busy": {
@@ -7073,7 +7180,8 @@
           "counters/trgIn",
           "outBuffers/In3",
           "interruptConcat/In4",
-          "ppsPresAndCtrl/trgIn"
+          "ppsPresAndCtrl/trgIn",
+          "clk40MCounter_0/trgIn"
         ]
       },
       "synchronizers_0_trgSync": {

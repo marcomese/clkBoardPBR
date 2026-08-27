@@ -17,25 +17,27 @@ use IEEE.STD_LOGIC_MISC.ALL;
 
 entity dataBuilder is
 generic(
-    trgNum    : integer;
-    dataWords : integer  -- number of 32 bit words in data
+    trgNum      : integer;
+    dataWords   : integer  -- number of 32 bit words in data
 );
 port(
-    clk       : in  std_logic;
-    rst       : in  std_logic;
-    evtNum    : in  std_logic_vector(31 downto 0);
-    evtRdy    : in  std_logic;
-    gtuCount  : in  std_logic_vector(31 downto 0);
-    gtuRdy    : in  std_logic;
-    ppsCount  : in  std_logic_vector(31 downto 0);
-    trgFlag   : in  std_logic_vector(trgNum-1 downto 0);
-    trgFRdy   : in  std_logic;
-    aliveT    : in  std_logic_vector(31 downto 0);
-    deadT     : in  std_logic_vector(31 downto 0);
-    aDTRdy    : in  std_logic;
-    statusReg : in  std_logic_vector(31 downto 0);
-    dataRdy   : out std_logic;
-    dataOut   : out std_logic_vector(32*dataWords-1 downto 0)
+    clk         : in  std_logic;
+    rst         : in  std_logic;
+    evtNum      : in  std_logic_vector(31 downto 0);
+    evtRdy      : in  std_logic;
+    gtuCount    : in  std_logic_vector(31 downto 0);
+    gtuRdy      : in  std_logic;
+    clk40MCount : in  std_logic_vector(31 downto 0);
+    clk40MRdy   : in  std_logic;
+    ppsCount    : in  std_logic_vector(31 downto 0);
+    trgFlag     : in  std_logic_vector(trgNum-1 downto 0);
+    trgFRdy     : in  std_logic;
+    aliveT      : in  std_logic_vector(31 downto 0);
+    deadT       : in  std_logic_vector(31 downto 0);
+    aDTRdy      : in  std_logic;
+    statusReg   : in  std_logic_vector(31 downto 0);
+    dataRdy     : out std_logic;
+    dataOut     : out std_logic_vector(32*dataWords-1 downto 0)
 );
 end dataBuilder;
 
@@ -43,7 +45,7 @@ architecture Behavioral of dataBuilder is
 
 signal dRdySig    : std_logic;
 
-signal rdySig     : std_logic_vector(3 downto 0);
+signal rdySig     : std_logic_vector(4 downto 0);
 
 signal trgFlagSig : std_logic_vector(31 downto 0);
 
@@ -61,12 +63,13 @@ begin
             dataOut <= (others => '0');
         elsif dRdySig = '1' then
             dataRdy <= '1';
-            dataOut <= evtNum     &
-                       gtuCount   &
-                       ppsCount   & 
-                       trgFlagSig & 
-                       aliveT     &
-                       deadT      &
+            dataOut <= evtNum      &
+                       gtuCount    &
+                       ppsCount    &
+                       clk40MCount &
+                       trgFlagSig  & 
+                       aliveT      &
+                       deadT       &
                        statusReg;
         end if;
     end if;
@@ -80,6 +83,10 @@ begin
             dRdySig <= '0';
         else
             dRdySig <= and_reduce(rdySig);
+
+            if clk40MRdy = '1' then
+                rdySig(4) <= '1';
+            end if;
 
             if evtRdy = '1' then
                 rdySig(3) <= '1';
