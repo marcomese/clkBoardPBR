@@ -25,7 +25,7 @@ generic(
 );
 port(
     clk        : in  std_logic;
-    clkTrg     : in  std_logic;
+    clkSmpl    : in  std_logic;
     extGtuIn   : in  std_logic;
     trgIn      : in  std_logic_vector(zynqNum-1 downto 0);
     busyIn     : in  std_logic_vector(zynqNum-1 downto 0);
@@ -41,9 +41,15 @@ end synchronizers;
 
 architecture Behavioral of synchronizers is
 
-signal trgSampled    : std_logic_vector(zynqNum-1 downto 0);
+signal trgSampled,
+       busySampled   : std_logic_vector(zynqNum-1 downto 0);
+
+signal ppsSampled    : std_logic_vector(ppsNum-1 downto 0);
+
+signal extTrgSampled : std_logic_vector(extTrgNum-1 downto 0);
 
 signal extGtuInSig,
+       extGtuSmplSig,
        extGtuSyncSig : std_logic_vector(0 downto 0);
 
 begin
@@ -52,18 +58,33 @@ extGtuInSig(0) <= extGtuIn;
 
 extGtuSync     <= extGtuSyncSig(0);
 
-extGtuSyncInst: xpm_cdc_array_single
+extGtuSmplInst: xpm_cdc_array_single
 generic map (
     DEST_SYNC_FF   => 2,
-    INIT_SYNC_FF   => 0,
+    INIT_SYNC_FF   => 1,
     SIM_ASSERT_CHK => 0,
     SRC_INPUT_REG  => 0,
     WIDTH          => 1
 )
 port map (
     src_clk  => '0',
-    dest_clk => clk,
+    dest_clk => clkSmpl,
     src_in   => extGtuInSig,
+    dest_out => extGtuSmplSig
+);
+
+extGtuSyncInst: xpm_cdc_array_single
+generic map (
+    DEST_SYNC_FF   => 2,
+    INIT_SYNC_FF   => 1,
+    SIM_ASSERT_CHK => 0,
+    SRC_INPUT_REG  => 0,
+    WIDTH          => 1
+)
+port map (
+    src_clk  => clkSmpl,
+    dest_clk => clk,
+    src_in   => extGtuSmplSig,
     dest_out => extGtuSyncSig
 );
 
@@ -77,7 +98,7 @@ generic map (
 )
 port map (
     src_clk  => '0',
-    dest_clk => clkTrg,
+    dest_clk => clkSmpl,
     src_in   => trgIn,
     dest_out => trgSampled
 );
@@ -93,7 +114,7 @@ begin
         SIM_ASSERT_CHK => 0
     )
     port map(
-        src_clk    => clkTrg,
+        src_clk    => clkSmpl,
         src_rst    => '0',
         dest_clk   => clk,
         dest_rst   => '0',
@@ -102,49 +123,104 @@ begin
     );
 end generate;
 
-busySyncInst: xpm_cdc_array_single
+busySmplInst: xpm_cdc_array_single
 generic map (
     DEST_SYNC_FF   => 2,
-    INIT_SYNC_FF   => 0,
+    INIT_SYNC_FF   => 1,
     SIM_ASSERT_CHK => 0,
     SRC_INPUT_REG  => 0,
     WIDTH          => zynqNum
 )
 port map (
     src_clk  => '0',
-    dest_clk => clk,
+    dest_clk => clkSmpl,
     src_in   => busyIn,
+    dest_out => busySampled
+);
+
+busySyncInst: xpm_cdc_array_single
+generic map (
+    DEST_SYNC_FF   => 2,
+    INIT_SYNC_FF   => 1,
+    SIM_ASSERT_CHK => 0,
+    SRC_INPUT_REG  => 0,
+    WIDTH          => zynqNum
+)
+port map (
+    src_clk  => clkSmpl,
+    dest_clk => clk,
+    src_in   => busySampled,
     dest_out => busySync
 );
 
 ppsSyncInst: xpm_cdc_array_single
 generic map (
     DEST_SYNC_FF   => 2,
-    INIT_SYNC_FF   => 0,
+    INIT_SYNC_FF   => 1,
     SIM_ASSERT_CHK => 0,
     SRC_INPUT_REG  => 0,
     WIDTH          => ppsNum
 )
 port map (
     src_clk  => '0',
-    dest_clk => clk,
+    dest_clk => clkSmpl,
     src_in   => ppsIn,
-    dest_out => ppsSync
+    dest_out => ppsSampled
 );
+
+ppsSyncGen: for i in 0 to ppsNum-1 generate
+begin
+    ppsSyncInst: xpm_cdc_pulse
+    generic map(
+        DEST_SYNC_FF   => 2,
+        INIT_SYNC_FF   => 1,
+        REG_OUTPUT     => 0,
+        RST_USED       => 0,
+        SIM_ASSERT_CHK => 0
+    )
+    port map(
+        src_clk    => clkSmpl,
+        src_rst    => '0',
+        dest_clk   => clk,
+        dest_rst   => '0',
+        src_pulse  => ppsSampled(i),
+        dest_pulse => ppsSync(i)
+    );
+end generate;
 
 extTrgSyncInst: xpm_cdc_array_single
 generic map (
     DEST_SYNC_FF   => 2,
-    INIT_SYNC_FF   => 0,
+    INIT_SYNC_FF   => 1,
     SIM_ASSERT_CHK => 0,
     SRC_INPUT_REG  => 0,
     WIDTH          => extTrgNum
 )
 port map (
     src_clk  => '0',
-    dest_clk => clk,
+    dest_clk => clkSmpl,
     src_in   => extTrgIn,
-    dest_out => extTrgSync
+    dest_out => extTrgSampled
 );
+
+extTrgSyncGen: for i in 0 to extTrgNum-1 generate
+begin
+    extTrgSyncInst: xpm_cdc_pulse
+    generic map(
+        DEST_SYNC_FF   => 2,
+        INIT_SYNC_FF   => 1,
+        REG_OUTPUT     => 0,
+        RST_USED       => 0,
+        SIM_ASSERT_CHK => 0
+    )
+    port map(
+        src_clk    => clkSmpl,
+        src_rst    => '0',
+        dest_clk   => clk,
+        dest_rst   => '0',
+        src_pulse  => extTrgSampled(i),
+        dest_pulse => extTrgSync(i)
+    );
+end generate;
 
 end Behavioral;

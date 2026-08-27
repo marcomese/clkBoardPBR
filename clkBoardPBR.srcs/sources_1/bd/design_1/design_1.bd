@@ -93,10 +93,8 @@
         "synchronizers_0": "",
         "ppsConcat": "",
         "ppsInBUFDS": "",
-        "extTrgEdge": "",
-        "ppsEdge": "",
-        "extGtuEdge": "",
-        "extGtuBUFDS": ""
+        "extGtuBUFDS": "",
+        "extGtuEdge": ""
       },
       "axi_smc": "",
       "gtuCtrl_0": ""
@@ -5738,7 +5736,7 @@
             "left": "0",
             "right": "0"
           },
-          "clkTrg": {
+          "clkSmpl": {
             "direction": "I"
           }
         },
@@ -5816,7 +5814,7 @@
                   }
                 }
               },
-              "clkTrg": {
+              "clkSmpl": {
                 "direction": "I",
                 "parameters": {
                   "FREQ_HZ": {
@@ -5980,123 +5978,12 @@
             "xci_path": "ip\\design_1_util_ds_buf_0_5\\design_1_util_ds_buf_0_5.xci",
             "inst_hier_path": "inBuffers/ppsInBUFDS"
           },
-          "extTrgEdge": {
-            "vlnv": "xilinx.com:module_ref:edgeDetectors:1.0",
-            "ip_revision": "1",
-            "xci_name": "design_1_edgeDetectors_1_0",
-            "xci_path": "ip\\design_1_edgeDetectors_1_0\\design_1_edgeDetectors_1_0.xci",
-            "inst_hier_path": "inBuffers/extTrgEdge",
-            "parameters": {
-              "sigNum": {
-                "value": "2"
-              },
-              "sigRst": {
-                "value": "1"
-              }
-            },
-            "reference_info": {
-              "ref_type": "hdl",
-              "ref_name": "edgeDetectors",
-              "boundary_crc": "0x0"
-            },
-            "ports": {
-              "clk": {
-                "type": "clk",
-                "direction": "I",
-                "parameters": {
-                  "ASSOCIATED_RESET": {
-                    "value": "rst",
-                    "value_src": "constant"
-                  },
-                  "FREQ_HZ": {
-                    "value": "100000000",
-                    "value_src": "user_prop"
-                  },
-                  "CLK_DOMAIN": {
-                    "value": "design_1_processing_system7_0_0_FCLK_CLK0",
-                    "value_src": "default_prop"
-                  }
-                }
-              },
-              "rst": {
-                "type": "rst",
-                "direction": "I",
-                "parameters": {
-                  "POLARITY": {
-                    "value": "ACTIVE_HIGH"
-                  }
-                }
-              },
-              "sigIn": {
-                "direction": "I",
-                "left": "1",
-                "right": "0"
-              },
-              "sigOut": {
-                "direction": "O",
-                "left": "1",
-                "right": "0"
-              }
-            }
-          },
-          "ppsEdge": {
-            "vlnv": "xilinx.com:module_ref:edgeDetectors:1.0",
-            "ip_revision": "1",
-            "xci_name": "design_1_edgeDetectors_0_1",
-            "xci_path": "ip\\design_1_edgeDetectors_0_1\\design_1_edgeDetectors_0_1.xci",
-            "inst_hier_path": "inBuffers/ppsEdge",
-            "parameters": {
-              "sigNum": {
-                "value": "3"
-              },
-              "sigRst": {
-                "value": "1"
-              }
-            },
-            "reference_info": {
-              "ref_type": "hdl",
-              "ref_name": "edgeDetectors",
-              "boundary_crc": "0x0"
-            },
-            "ports": {
-              "clk": {
-                "type": "clk",
-                "direction": "I",
-                "parameters": {
-                  "ASSOCIATED_RESET": {
-                    "value": "rst",
-                    "value_src": "constant"
-                  },
-                  "FREQ_HZ": {
-                    "value": "100000000",
-                    "value_src": "user_prop"
-                  },
-                  "CLK_DOMAIN": {
-                    "value": "design_1_processing_system7_0_0_FCLK_CLK0",
-                    "value_src": "default_prop"
-                  }
-                }
-              },
-              "rst": {
-                "type": "rst",
-                "direction": "I",
-                "parameters": {
-                  "POLARITY": {
-                    "value": "ACTIVE_HIGH"
-                  }
-                }
-              },
-              "sigIn": {
-                "direction": "I",
-                "left": "2",
-                "right": "0"
-              },
-              "sigOut": {
-                "direction": "O",
-                "left": "2",
-                "right": "0"
-              }
-            }
+          "extGtuBUFDS": {
+            "vlnv": "xilinx.com:ip:util_ds_buf:2.2",
+            "ip_revision": "7",
+            "xci_name": "design_1_util_ds_buf_0_8",
+            "xci_path": "ip\\design_1_util_ds_buf_0_8\\design_1_util_ds_buf_0_8.xci",
+            "inst_hier_path": "inBuffers/extGtuBUFDS"
           },
           "extGtuEdge": {
             "vlnv": "xilinx.com:module_ref:edgeDetectors:1.0",
@@ -6156,13 +6043,6 @@
                 "right": "0"
               }
             }
-          },
-          "extGtuBUFDS": {
-            "vlnv": "xilinx.com:ip:util_ds_buf:2.2",
-            "ip_revision": "7",
-            "xci_name": "design_1_util_ds_buf_0_8",
-            "xci_path": "ip\\design_1_util_ds_buf_0_8\\design_1_util_ds_buf_0_8.xci",
-            "inst_hier_path": "inBuffers/extGtuBUFDS"
           }
         },
         "nets": {
@@ -6234,29 +6114,15 @@
           },
           "clkTrg_1": {
             "ports": [
-              "clkTrg",
-              "synchronizers_0/clkTrg"
+              "clkSmpl",
+              "synchronizers_0/clkSmpl"
             ]
           },
           "clk_1": {
             "ports": [
               "clk",
-              "extTrgEdge/clk",
-              "ppsEdge/clk",
-              "extGtuEdge/clk",
-              "synchronizers_0/clk"
-            ]
-          },
-          "edgeDetectors_0_sigOut1": {
-            "ports": [
-              "ppsEdge/sigOut",
-              "ppsSync"
-            ]
-          },
-          "edgeDetectors_1_sigOut": {
-            "ports": [
-              "extTrgEdge/sigOut",
-              "extTrgSync"
+              "synchronizers_0/clk",
+              "extGtuEdge/clk"
             ]
           },
           "extGtuBUFDS_IBUF_OUT": {
@@ -6298,8 +6164,6 @@
           "rst_1": {
             "ports": [
               "rst",
-              "extTrgEdge/rst",
-              "ppsEdge/rst",
               "extGtuEdge/rst"
             ]
           },
@@ -6312,20 +6176,20 @@
           "synchronizers_0_extGtuSync": {
             "ports": [
               "synchronizers_0/extGtuSync",
-              "extGtuEdge/sigIn",
-              "extGtuSync"
+              "extGtuSync",
+              "extGtuEdge/sigIn"
             ]
           },
           "synchronizers_0_extTrgSync": {
             "ports": [
               "synchronizers_0/extTrgSync",
-              "extTrgEdge/sigIn"
+              "extTrgSync"
             ]
           },
           "synchronizers_0_ppsSync": {
             "ports": [
               "synchronizers_0/ppsSync",
-              "ppsEdge/sigIn"
+              "ppsSync"
             ]
           },
           "synchronizers_0_trgSync": {
@@ -6876,8 +6740,8 @@
           "cmdAndRunCtrl/run",
           "counters/run",
           "ppsPresAndCtrl/enable",
-          "gtuCtrl_0/enable",
-          "outBuffers/BUFGCE_CE"
+          "outBuffers/BUFGCE_CE",
+          "gtuCtrl_0/enable"
         ]
       },
       "command_decoder_0_status_register": {
@@ -7099,8 +6963,8 @@
           "processing_system7_0/M_AXI_GP0_ACLK",
           "processing_system7_0/S_AXI_ACP_ACLK",
           "rst_ps7_0_100M/slowest_sync_clk",
-          "gtuCtrl_0/clk",
-          "dataBuilder_0/clk"
+          "dataBuilder_0/clk",
+          "gtuCtrl_0/clk"
         ]
       },
       "processing_system7_0_FCLK_CLK1": {
@@ -7112,7 +6976,7 @@
       "processing_system7_0_FCLK_CLK2": {
         "ports": [
           "processing_system7_0/FCLK_CLK2",
-          "inBuffers/clkTrg"
+          "inBuffers/clkSmpl"
         ]
       },
       "processing_system7_0_FCLK_RESET0_N": {
@@ -7192,8 +7056,8 @@
           "ppsPresAndCtrl/rst",
           "inBuffers/rst",
           "outBuffers/rst",
-          "gtuCtrl_0/rst",
-          "dataBuilder_0/rst"
+          "dataBuilder_0/rst",
+          "gtuCtrl_0/rst"
         ]
       },
       "run_control_fsm_0_busy": {
