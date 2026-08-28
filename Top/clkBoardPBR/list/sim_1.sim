@@ -2,6 +2,8 @@
 #Aggiunto manualmente: Init.sh non ha catturato il fileset sim_1
 #lib=xil_defaultlib: i testbench devono stare nella stessa libreria dei sorgenti,
 #altrimenti "work" dentro il testbench punta alla libreria sim_1 e le entity non si risolvono
+clkBoardPBR.srcs/sim_1/new/tb_clk40MCounter.vhd lib=xil_defaultlib
+clkBoardPBR.srcs/sim_1/new/tb_clk40MCounterSimple.vhd lib=xil_defaultlib
 clkBoardPBR.srcs/sim_1/new/tb_dataBuilder.vhd lib=xil_defaultlib
 clkBoardPBR.srcs/sim_1/new/tb_edgeDetectors.vhd lib=xil_defaultlib
 clkBoardPBR.srcs/sim_1/new/tb_gtuGenerator.vhd lib=xil_defaultlib
