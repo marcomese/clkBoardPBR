@@ -43,6 +43,7 @@ port(
     pps_trg            : out std_logic;
     ext_trg_en         : out std_logic_vector(extTrgNum-1 downto 0);
     gtu_sel            : out std_logic;
+    clk40M_sel         : out std_logic;
     -- pulse outputs
     release_busy       : out std_logic;
     trg_command        : out std_logic;
@@ -93,6 +94,8 @@ constant MSG_GPS_AUTO_ON     : std_logic_vector(31 downto 0) := X"69966996";
 constant MSG_GPS_AUTO_NO     : std_logic_vector(31 downto 0) := X"96699669";
 constant MSG_GTU_INTERNAL_ON : std_logic_vector(31 downto 0) := X"FFFF0000";
 constant MSG_GTU_INTERNAL_NO : std_logic_vector(31 downto 0) := X"0000FFFF";
+constant MSG_CLK40_INT_ON    : std_logic_vector(31 downto 0) := X"AAAA5555";
+constant MSG_CLK40_INT_NO    : std_logic_vector(31 downto 0) := X"5555AAAA";
 
 constant STATUS_USED         : integer := 12 + extTrgNum + 2*ppsNum + 2*zynqNum + zynqNum;
 constant STATUS_PAD          : integer := 32 - STATUS_USED;
@@ -165,6 +168,7 @@ begin
             pps_trg_s    <= '0';
             ext_trg_en_s <= (others => '0');
             gtu_sel      <= '0';
+            clk40M_sel   <= '0';
             timeOutFF    <= '0';
         else
             dataRecvFF <= data_received;
@@ -211,6 +215,8 @@ begin
                     when MSG_NO_ZYNQ3        => zynq_en_s(3)       <= '0';
                     when MSG_GTU_INTERNAL_ON => gtu_sel            <= '1';
                     when MSG_GTU_INTERNAL_NO => gtu_sel            <= '0';
+                    when MSG_CLK40_INT_ON    => clk40M_sel         <= '1';
+                    when MSG_CLK40_INT_NO    => clk40M_sel         <= '0';
                     when others              => send_nack          <= '1';
                 end case;
             end if;

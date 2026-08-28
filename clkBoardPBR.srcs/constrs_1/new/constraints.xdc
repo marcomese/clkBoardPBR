@@ -372,10 +372,10 @@ set_property DIFF_TERM TRUE [get_ports {EXT_TRIG_IN_P[0]}]
 set_property DIFF_TERM TRUE [get_ports {EXT_TRIG_IN_N[0]}]
 
 # CLK40_IN7 [INPUT] B33_L7
-#set_property PACKAGE_PIN AA22 [get_ports CLK40_IN_P]
-#set_property PACKAGE_PIN AB22 [get_ports CLK40_IN_N]
-#set_property IOSTANDARD LVDS_25 [get_ports CLK40_IN_P]
-#set_property IOSTANDARD LVDS_25 [get_ports CLK40_IN_N]
+set_property PACKAGE_PIN AA22 [get_ports CLK40_IN_P]
+set_property PACKAGE_PIN AB22 [get_ports CLK40_IN_N]
+set_property IOSTANDARD LVDS_25 [get_ports CLK40_IN_P]
+set_property IOSTANDARD LVDS_25 [get_ports CLK40_IN_N]
 
 set_property BITSTREAM.CONFIG.UNUSEDPIN PULLUP [current_design]
 set_property BITSTREAM.GENERAL.COMPRESS TRUE [current_design]

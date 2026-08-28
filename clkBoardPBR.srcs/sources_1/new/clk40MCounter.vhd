@@ -17,14 +17,18 @@ use IEEE.NUMERIC_STD.ALL;
 library xpm;
 use xpm.vcomponents.all;
 
+library UNISIM;
+use UNISIM.vcomponents.all;
+
 entity clk40MCounter is
 generic(
     trgDelay  : integer
 );
 port(
     clk       : in  std_logic;
-    clk40M    : in  std_logic;
+    clkSmpl   : in  std_logic;
     rst       : in  std_logic;
+    clk40M    : in  std_logic;
     enable    : in  std_logic;
     clear     : in  std_logic;
     trgIn     : in  std_logic;
@@ -35,7 +39,11 @@ end clk40MCounter;
 
 architecture Behavioral of clk40MCounter is
 
-signal clear40M      : std_logic;
+signal rstSmpl,
+       enableSmpl,
+       clearSmpl,
+       clk40MFF,
+       clk40MREdge   : std_logic;
 
 signal trgDelBuf     : std_logic_vector(trgDelay-1 downto 0);
 
@@ -45,7 +53,9 @@ signal clk40MCntSync : std_logic_vector(31 downto 0);
 
 begin
 
-ready <= trgDelBuf(0);
+ready       <= trgDelBuf(0);
+
+clk40MREdge <= clk40M and not clk40MFF;
 
 clearSyncInst: xpm_cdc_pulse
 generic map(
@@ -58,21 +68,51 @@ generic map(
 port map(
     src_clk    => clk,
     src_rst    => '0',
-    dest_clk   => clk40M,
+    dest_clk   => clkSmpl,
     dest_rst   => '0',
     src_pulse  => clear,
-    dest_pulse => clear40M
+    dest_pulse => clearSmpl
 );
 
-clk40MCntInst: process(clk40M, enable)
+rstTrgInst: xpm_cdc_sync_rst
+generic map(
+    DEST_SYNC_FF   => 2,
+    INIT           => 1,
+    INIT_SYNC_FF   => 1,
+    SIM_ASSERT_CHK => 0
+)
+port map(
+    src_rst  => rst,
+    dest_clk => clkSmpl,
+    dest_rst => rstSmpl
+);
+
+enableTrgInst: xpm_cdc_single
+generic map(
+    DEST_SYNC_FF   => 2,
+    INIT_SYNC_FF   => 1,
+    SIM_ASSERT_CHK => 0,
+    SRC_INPUT_REG  => 0
+)
+port map(
+    src_clk  => clk,
+    src_in   => enable,
+    dest_clk => clkSmpl,
+    dest_out => enableSmpl
+);
+
+clk40MCntInst: process(clkSmpl)
 begin
-    if enable = '0' then
-        clk40MCounter <= (others => '0');
-    else
-        if rising_edge(clk40M) then
-            if clear40M = '1' then
+    if rising_edge(clkSmpl) then
+        if rstSmpl = '1' then
+            clk40MFF      <= '0';
+            clk40MCounter <= (others => '0');
+        else
+            clk40MFF <= clk40M;
+
+            if clearSmpl = '1' or enableSmpl = '0' then
                 clk40MCounter <= (others => '0');
-            else
+            elsif clk40MREdge = '1' then
                 clk40MCounter <= clk40MCounter + 1;
             end if;
         end if;
@@ -89,7 +129,7 @@ generic map (
     WIDTH                 => 32
 )
 port map (
-    src_clk      => clk40M,
+    src_clk      => clkSmpl,
     src_in_bin   => std_logic_vector(clk40MCounter),
     dest_clk     => clk,
     dest_out_bin => clk40MCntSync

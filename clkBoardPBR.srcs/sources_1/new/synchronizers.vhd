@@ -19,36 +19,37 @@ use xpm.vcomponents.all;
 
 entity synchronizers is
 generic(
-    zynqNum    : integer;
-    ppsNum     : integer;
-    extTrgNum  : integer
+    zynqNum       : integer;
+    ppsNum        : integer;
+    extTrgNum     : integer
 );
 port(
-    clk        : in  std_logic;
-    clkSmpl    : in  std_logic;
-    extGtuIn   : in  std_logic;
-    trgIn      : in  std_logic_vector(zynqNum-1 downto 0);
-    busyIn     : in  std_logic_vector(zynqNum-1 downto 0);
-    ppsIn      : in  std_logic_vector(ppsNum-1 downto 0);
-    extTrgIn   : in  std_logic_vector(extTrgNum-1 downto 0);
-    extGtuSync : out std_logic;
-    trgSync    : out std_logic_vector(zynqNum-1 downto 0);
-    busySync   : out std_logic_vector(zynqNum-1 downto 0);
-    ppsSync    : out std_logic_vector(ppsNum-1 downto 0);
-    extTrgSync : out std_logic_vector(extTrgNum-1 downto 0)
+    clk           : in  std_logic;
+    clkSmpl       : in  std_logic;
+    extGtuIn      : in  std_logic;
+    trgIn         : in  std_logic_vector(zynqNum-1 downto 0);
+    busyIn        : in  std_logic_vector(zynqNum-1 downto 0);
+    ppsIn         : in  std_logic_vector(ppsNum-1 downto 0);
+    extTrgIn      : in  std_logic_vector(extTrgNum-1 downto 0);
+    extGtuSync    : out std_logic;
+    trgSync       : out std_logic_vector(zynqNum-1 downto 0);
+    busySync      : out std_logic_vector(zynqNum-1 downto 0);
+    ppsSync       : out std_logic_vector(ppsNum-1 downto 0);
+    extTrgSync    : out std_logic_vector(extTrgNum-1 downto 0)
 );
 end synchronizers;
 
 architecture Behavioral of synchronizers is
 
 signal trgSampled,
-       busySampled   : std_logic_vector(zynqNum-1 downto 0);
+       busySampled      : std_logic_vector(zynqNum-1 downto 0);
 
-signal ppsSampled    : std_logic_vector(ppsNum-1 downto 0);
+signal ppsSampled       : std_logic_vector(ppsNum-1 downto 0);
 
-signal extTrgSampled : std_logic_vector(extTrgNum-1 downto 0);
+signal extTrgSampled    : std_logic_vector(extTrgNum-1 downto 0);
 
-signal extGtuSampled : std_logic;
+signal extGtuSampled,
+       extClk40MSampled : std_logic;
 
 begin
 
