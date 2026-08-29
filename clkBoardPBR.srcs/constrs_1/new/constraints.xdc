@@ -376,6 +376,8 @@ set_property PACKAGE_PIN AA22 [get_ports CLK40_IN_P]
 set_property PACKAGE_PIN AB22 [get_ports CLK40_IN_N]
 set_property IOSTANDARD LVDS_25 [get_ports CLK40_IN_P]
 set_property IOSTANDARD LVDS_25 [get_ports CLK40_IN_N]
+set_property DIFF_TERM TRUE [get_ports {CLK40_IN_P}]
+set_property DIFF_TERM TRUE [get_ports {CLK40_IN_N}]
 
 set_property BITSTREAM.CONFIG.UNUSEDPIN PULLUP [current_design]
 set_property BITSTREAM.GENERAL.COMPRESS TRUE [current_design]
