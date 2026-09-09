@@ -79,6 +79,7 @@ type state_values is(
     trg_PPS_state,
     busy_cpu_state,
     busy_zynq_state,
+    busy_zynq_managed, -- unexpected zynq busy, watched by the timeout
     busy_state       -- system is busy during run
 );
 
@@ -95,6 +96,7 @@ begin
         when busy_cpu_state   => return x"7";
         when busy_zynq_state  => return x"8";
         when busy_state       => return x"9";
+        when busy_zynq_managed => return x"A";
     end case;
 end function;
 
@@ -110,8 +112,9 @@ signal busy_i,
        busy_s,
        triggerOr,
        triggerOutSig,
-       runValFF,
-       runValFalling,
+       runActiveSig,
+       runActiveFF,
+       runActiveFalling,
        runningSig,
        timeoutSig,
        fifoRstSig,
@@ -119,6 +122,7 @@ signal busy_i,
        tOutEnFF,
        tOutEnRise,
        tOutRst,
+       busyZynqMng,
        mstrAcqStatus    : std_logic;
 
 signal extTrgMasked     : std_logic_vector(extTrgNum-1 downto 0);
@@ -152,7 +156,9 @@ trigger_out    <= triggerOutSig;
 
 busy           <= busy_s or fifoFull;
 
-runValFalling  <= runValFF and not run_val;
+runActiveSig   <= run_val and not timeoutSig;
+
+runActiveFalling <= runActiveFF and not runActiveSig;
 
 running        <= runningSig;
 
@@ -162,7 +168,11 @@ fifoRst        <= fifoRstSig;
 
 mstrAcqStatus  <= acqStatusIn or not triggerExtMask(0);
 
-tOutEn         <= (run_val and not runningSig) and mstrAcqStatus;
+busyZynqMng    <= '1' when pres_state = busy_zynq_managed else '0';
+
+reset_counters_i <= runActiveSig and not runningSig;
+
+tOutEn         <= ((run_val and not runningSig) or busyZynqMng) and mstrAcqStatus;
 
 tOutEnRise     <= tOutEn and not tOutEnFF;
 
@@ -170,14 +180,14 @@ runningProc: process(clock)
 begin
     if rising_edge(clock) then
         if reset = '1' then
-            runValFF   <= '0';
-            runningSig <= '0';
+            runActiveFF <= '0';
+            runningSig  <= '0';
         else
-            runValFF <= run_val;
+            runActiveFF <= runActiveSig;
 
-            if run_val = '1' and busy_zynq = '0' and mstrAcqStatus = '1' then
+            if runActiveSig = '1' and busy_zynq = '0' then
                 runningSig <= '1';
-            elsif runValFalling = '1' then
+            elsif runActiveFalling = '1' then
                 runningSig <= '0';
             end if;
         end if;
@@ -253,7 +263,7 @@ begin
 end process;
 
 COMB_PROC: process(pres_state, triggerOr, busy_zynq, N_gtu,
-                   run_val, cmd_busy, trigger_command,
+                   runActiveSig, cmd_busy, trigger_command,
                    GTU_count, trigger_ext, PPS, extTrgMasked, fifoFull, ppsTrgEn, plToAxiSBusy,
                    release_busy, mstrAcqStatus)
 begin
@@ -261,82 +271,80 @@ begin
     
     case pres_state is
         when idle_state =>
-            if run_val = '0' then
+            if runActiveSig = '0' then
                 next_state <= idle_state;
-            elsif run_val = '1' and busy_zynq = '0' and mstrAcqStatus = '1' then
-                next_state <= start_run_state;
             else
-                next_state <= idle_state;
+                next_state <= start_run_state;
             end if;
         
         when start_run_state =>
-            if run_val = '0' then
+            if runActiveSig = '0' then
                 next_state <= idle_state;
-            elsif run_val = '1' and cmd_busy = '1' then
+            elsif runActiveSig = '1' and cmd_busy = '1' then
                 next_state <= busy_CPU_state;
-            elsif run_val = '1' and busy_zynq = '1' then
-                next_state <= busy_zynq_state;
+            elsif runActiveSig = '1' and busy_zynq = '1' then
+                next_state <= busy_zynq_managed;
             else
                 next_state <= wait_trg_state;
             end if;
         
         when wait_trg_state =>
-            if run_val = '0' then
+            if runActiveSig = '0' then
                     next_state <= idle_state;
-            elsif run_val = '1' and busy_zynq = '1' then
-                    next_state <= busy_zynq_state;
-            elsif run_val = '1' and triggerOr = '1' and fifoFull = '0' then
+            elsif runActiveSig = '1' and busy_zynq = '1' then
+                    next_state <= busy_zynq_managed;
+            elsif runActiveSig = '1' and mstrAcqStatus = '1' and triggerOr = '1' and fifoFull = '0' then
                     next_state <= trgOr_state;
-            elsif run_val = '1' and unsigned(extTrgMasked) /= 0 and fifoFull = '0' then
+            elsif runActiveSig = '1' and mstrAcqStatus = '1' and unsigned(extTrgMasked) /= 0 and fifoFull = '0' then
                     next_state <= trg_ext_state;
-            elsif run_val = '1' and trigger_command = '1' and fifoFull = '0' then
+            elsif runActiveSig = '1' and mstrAcqStatus = '1' and trigger_command = '1' and fifoFull = '0' then
                     next_state <= trg_cpu_state;
-            elsif run_val = '1' and PPS = '1' and ppsTrgEn = '1' and fifoFull = '0' then
+            elsif runActiveSig = '1' and mstrAcqStatus = '1' and PPS = '1' and ppsTrgEn = '1' and fifoFull = '0' then
                     next_state <= trg_PPS_state;
-            elsif run_val = '1' and cmd_busy = '1' then
+            elsif runActiveSig = '1' and cmd_busy = '1' then
                     next_state <= busy_CPU_state;
             else
                 next_state <= wait_trg_state;
             end if;
         
         when trgOr_state =>
-            if run_val = '0' then
+            if runActiveSig = '0' then
                 next_state <= idle_state;
-            elsif run_val = '1' and cmd_busy = '1' then
+            elsif runActiveSig = '1' and cmd_busy = '1' then
                 next_state <= busy_CPU_state;
             else
                 next_state <= busy_state;
             end if;
         
         when trg_cpu_state =>
-            if run_val = '0' then
+            if runActiveSig = '0' then
                 next_state <= idle_state;
-            elsif run_val = '1' and cmd_busy = '1' then
+            elsif runActiveSig = '1' and cmd_busy = '1' then
                 next_state <= busy_CPU_state;
             else
                 next_state <= busy_state;
             end if;
         
         when trg_ext_state =>
-            if run_val = '0' then
+            if runActiveSig = '0' then
                 next_state <= idle_state;
-            elsif run_val = '1' and cmd_busy = '1' then
+            elsif runActiveSig = '1' and cmd_busy = '1' then
                 next_state <= busy_CPU_state;
             else
                 next_state <= busy_state;
             end if;
         
         when trg_PPS_state =>
-            if run_val = '0' then
+            if runActiveSig = '0' then
                 next_state <= idle_state;
-            elsif run_val = '1' and cmd_busy = '1' then
+            elsif runActiveSig = '1' and cmd_busy = '1' then
                 next_state <= busy_CPU_state;
             else
                 next_state <= busy_state;
             end if;
         
         when busy_CPU_state =>
-            if run_val = '0' then
+            if runActiveSig = '0' then
                 next_state <= idle_state;
             elsif cmd_busy = '0' then
                 next_state <= wait_trg_state;
@@ -345,7 +353,7 @@ begin
             end if;
         
         when busy_state =>
-            if run_val = '0' then
+            if runActiveSig = '0' then
                 next_state <= idle_state;
             elsif release_busy = '1' then
                 next_state <= wait_trg_state;
@@ -356,7 +364,7 @@ begin
             end if;
         
         when busy_zynq_state =>
-            if run_val = '0' then
+            if runActiveSig = '0' then
                 next_state <= idle_state;
             elsif release_busy = '1' then
                 next_state <= wait_trg_state;
@@ -365,7 +373,18 @@ begin
             else
                 next_state <= busy_zynq_state;
             end if;
-        
+
+        when busy_zynq_managed =>
+            if runActiveSig = '0' then
+                next_state <= idle_state;
+            elsif release_busy = '1' then
+                next_state <= wait_trg_state;
+            elsif (busy_zynq = '0') and (plToAxiSBusy = '0') then
+                next_state <= wait_trg_state;
+            else
+                next_state <= busy_zynq_managed;
+            end if;
+
         when others =>
             next_state <= idle_state;
         end case;
@@ -376,66 +395,60 @@ begin
     if next_state = idle_state then
         busy_i           <= '1' ;
         trigger_out_i    <= '0' ;
-        reset_counters_i <= '0' ;
         busy_trg_i       <= '0';
     
     elsif next_state = start_run_state then
         busy_i           <= '1' ;
         trigger_out_i    <= '0' ;
-        reset_counters_i <= '1' ;
         busy_trg_i       <= '0';
     
     elsif next_state = wait_trg_state then
         busy_i           <= '0' ;
         trigger_out_i    <= '0' ;
-        reset_counters_i <= '0' ;
         busy_trg_i       <= '0';
     
     elsif next_state = trg_PPS_state then
         busy_i           <= '0' ;
         trigger_out_i    <= '1' ;
-        reset_counters_i <= '0' ;
         busy_trg_i       <= '0';
     
     elsif next_state = trg_ext_state then
         busy_i           <= '0' ;
         trigger_out_i    <= '1' ;
-        reset_counters_i <= '0' ;
         busy_trg_i       <= '0';
     
     elsif next_state = trg_cpu_state then
         busy_i           <= '0' ;
         trigger_out_i    <= '1' ;
-        reset_counters_i <= '0' ;
         busy_trg_i       <= '0';
     
     elsif next_state = trgOr_state then
         busy_i           <= '0' ;
         trigger_out_i    <= '1' ;
-        reset_counters_i <= '0' ;
         busy_trg_i       <= '0';
     
     elsif next_state = busy_cpu_state then
         busy_i           <= '1' ;
         trigger_out_i    <= '0' ;
-        reset_counters_i <= '0' ;
         busy_trg_i       <= '0';
     
     elsif next_state = busy_zynq_state then
         busy_i           <= '1' ;
         trigger_out_i    <= '0' ;
-        reset_counters_i <= '0' ;
+        busy_trg_i       <= '0';
+    
+    elsif next_state = busy_zynq_managed then
+        busy_i           <= '1' ;
+        trigger_out_i    <= '0' ;
         busy_trg_i       <= '0';
     
     elsif next_state = busy_state then
         busy_i           <= '1' ;
         trigger_out_i    <= '0' ;
-        reset_counters_i <= '0' ;
         busy_trg_i       <= '1';
     else
         busy_i           <= '1' ;
         trigger_out_i    <= '0' ;
-        reset_counters_i <= '0' ;
         busy_trg_i       <= '0';
     end if;
 end process;

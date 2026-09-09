@@ -105,9 +105,7 @@ signal dataRecvFF,
        run_s,
        cmd_busy_s,
        pps_auto_s,
-       pps_trg_s,
-       timeOutFF,
-       timeOutRise  : std_logic;
+       pps_trg_s    : std_logic;
 
 signal ext_trg_en_s : std_logic_vector(extTrgNum-1 downto 0) := (others => '0');
 signal zynq_en_s    : std_logic_vector(zynqNum-1 downto 0)   := (others => '0');
@@ -123,7 +121,6 @@ pps_auto     <= pps_auto_s;
 pps_trg      <= pps_trg_s;
 ext_trg_en   <= ext_trg_en_s;
 dataRecvFall <= dataRecvFF and not data_received;
-timeOutRise  <= timeOut and not timeOutFF;
 
 status_register <=  std_logic_vector(to_unsigned(0, STATUS_PAD)) &
                     busy            &   -- zynqNum   bit
@@ -169,14 +166,8 @@ begin
             ext_trg_en_s <= (others => '0');
             gtu_sel      <= '0';
             clk40M_sel   <= '0';
-            timeOutFF    <= '0';
         else
             dataRecvFF <= data_received;
-            timeOutFF  <= timeOut;
-
-            if timeoutRise = '1' then
-                run_s <= '0';
-            end if;
 
             if dataRecvFall = '1' then
                 case command_in is
