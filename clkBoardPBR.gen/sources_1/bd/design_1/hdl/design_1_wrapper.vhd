@@ -2,7 +2,7 @@
 --Copyright 2022-2025 Advanced Micro Devices, Inc. All Rights Reserved.
 ----------------------------------------------------------------------------------
 --Tool Version: Vivado v.2024.2.2 (win64) Build 6060944 Thu Mar 06 19:10:01 MST 2025
---Date        : Sat Aug 29 14:14:43 2026
+--Date        : Wed Sep  9 13:41:14 2026
 --Host        : MARCOMPUTER running 64-bit major release  (build 9200)
 --Command     : generate_target design_1_wrapper.bd
 --Design      : design_1_wrapper
@@ -14,6 +14,10 @@ library UNISIM;
 use UNISIM.VCOMPONENTS.ALL;
 entity design_1_wrapper is
   port (
+    ACQ_STATUS_IN_N : in STD_LOGIC_VECTOR ( 0 to 0 );
+    ACQ_STATUS_IN_P : in STD_LOGIC_VECTOR ( 0 to 0 );
+    ACQ_STATUS_OUT_N : out STD_LOGIC_VECTOR ( 3 downto 0 );
+    ACQ_STATUS_OUT_P : out STD_LOGIC_VECTOR ( 3 downto 0 );
     BUSY_IN_N : in STD_LOGIC_VECTOR ( 3 downto 0 );
     BUSY_IN_P : in STD_LOGIC_VECTOR ( 3 downto 0 );
     BUSY_OUT_N : out STD_LOGIC_VECTOR ( 0 to 0 );
@@ -117,12 +121,20 @@ architecture STRUCTURE of design_1_wrapper is
     CLK40_OUT_N : out STD_LOGIC_VECTOR ( 3 downto 0 );
     CLK40_OUT_P : out STD_LOGIC_VECTOR ( 3 downto 0 );
     CLK40_IN_N : in STD_LOGIC_VECTOR ( 0 to 0 );
-    CLK40_IN_P : in STD_LOGIC_VECTOR ( 0 to 0 )
+    CLK40_IN_P : in STD_LOGIC_VECTOR ( 0 to 0 );
+    ACQ_STATUS_IN_N : in STD_LOGIC_VECTOR ( 0 to 0 );
+    ACQ_STATUS_IN_P : in STD_LOGIC_VECTOR ( 0 to 0 );
+    ACQ_STATUS_OUT_N : out STD_LOGIC_VECTOR ( 3 downto 0 );
+    ACQ_STATUS_OUT_P : out STD_LOGIC_VECTOR ( 3 downto 0 )
   );
   end component design_1;
 begin
 design_1_i: component design_1
      port map (
+      ACQ_STATUS_IN_N(0) => ACQ_STATUS_IN_N(0),
+      ACQ_STATUS_IN_P(0) => ACQ_STATUS_IN_P(0),
+      ACQ_STATUS_OUT_N(3 downto 0) => ACQ_STATUS_OUT_N(3 downto 0),
+      ACQ_STATUS_OUT_P(3 downto 0) => ACQ_STATUS_OUT_P(3 downto 0),
       BUSY_IN_N(3 downto 0) => BUSY_IN_N(3 downto 0),
       BUSY_IN_P(3 downto 0) => BUSY_IN_P(3 downto 0),
       BUSY_OUT_N(0) => BUSY_OUT_N(0),

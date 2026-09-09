@@ -14,8 +14,8 @@
 --
 --
 --      4: 2026_05_22: adapted for PBR experiment (M. Mese)
---                     fixed GTU_count CDC 
--- Description: 
+--                     fixed GTU_count CDC
+-- Description:
 --
 -- run control for Clock Board (EUSO-SPB2/PBR)
 --
@@ -39,11 +39,11 @@ generic(
 );
 port(
     reset           : in  std_logic;
-    clock           : in  std_logic;  
+    clock           : in  std_logic;
     gtuTick         : in  std_logic;
     fsmState        : out std_logic_vector(3 downto 0);
-    trigger_in      : in  std_logic_vector(zynqNum-1 downto 0); 
-    busy_in         : in  std_logic_vector(zynqNum-1 downto 0); 
+    trigger_in      : in  std_logic_vector(zynqNum-1 downto 0);
+    busy_in         : in  std_logic_vector(zynqNum-1 downto 0);
     zynq_on         : in  std_logic_vector(zynqNum-1 downto 0);
     run_val         : in  std_logic;
     cmd_busy        : in  std_logic;
@@ -56,12 +56,13 @@ port(
     N_gtu           : in  std_logic_vector(nGtuLen-1 downto 0);
     plToAxiSBusy    : in  std_logic;
     fifoFull        : in  std_logic;
+    acqStatusIn     : in  std_logic;
     trigger_out     : out std_logic;
     busy            : out std_logic;
     reset_counters  : out std_logic;
     fifoRst         : out std_logic;
     timeout         : out std_logic;
-    timeoutFlag     : out std_logic_vector(zynqNum-1 downto 0); 
+    timeoutFlag     : out std_logic_vector(zynqNum-1 downto 0);
     running         : out std_logic
 );
 end run_control_fsm;
@@ -97,7 +98,7 @@ begin
     end case;
 end function;
 
-signal pres_state, 
+signal pres_state,
        next_state       : state_values;
 
 signal busy_i,
@@ -113,10 +114,12 @@ signal busy_i,
        runValFalling,
        runningSig,
        timeoutSig,
+       fifoRstSig,
        tOutEn,
        tOutEnFF,
        tOutEnRise,
-       tOutRst          : std_logic;
+       tOutRst,
+       mstrAcqStatus    : std_logic;
 
 signal extTrgMasked     : std_logic_vector(extTrgNum-1 downto 0);
 
@@ -127,8 +130,6 @@ signal GTU_count        : unsigned(7 downto 0);
 signal tOutCnt          : unsigned(bitsNum(nClkTOut)-1 downto 0);
 
 signal idleCnt          : integer range 0 to nClkRst-1;
-
-signal fifoRstSig       : std_logic;
 
 signal busyAndZynq,
        triggerAndZynq   : std_logic_vector(zynqNum-1 downto 0);
@@ -159,7 +160,9 @@ timeout        <= timeoutSig;
 
 fifoRst        <= fifoRstSig;
 
-tOutEn         <= run_val and not runningSig;
+mstrAcqStatus  <= acqStatusIn or not triggerExtMask(0);
+
+tOutEn         <= (run_val and not runningSig) and mstrAcqStatus;
 
 tOutEnRise     <= tOutEn and not tOutEnFF;
 
@@ -172,7 +175,7 @@ begin
         else
             runValFF <= run_val;
 
-            if run_val = '1' and busy_zynq = '0' then
+            if run_val = '1' and busy_zynq = '0' and mstrAcqStatus = '1' then
                 runningSig <= '1';
             elsif runValFalling = '1' then
                 runningSig <= '0';
@@ -229,7 +232,7 @@ end process;
 SYNC_PROC: process(clock)
 begin
     if rising_edge(clock) then
-        if reset = '1' then 
+        if reset = '1' then
             busy_s         <= '0' ;
             triggerOutSig  <= '0' ;
             reset_counters <= '0' ;
@@ -250,9 +253,9 @@ begin
 end process;
 
 COMB_PROC: process(pres_state, triggerOr, busy_zynq, N_gtu,
-                   run_val, cmd_busy, trigger_command, 
+                   run_val, cmd_busy, trigger_command,
                    GTU_count, trigger_ext, PPS, extTrgMasked, fifoFull, ppsTrgEn, plToAxiSBusy,
-                   release_busy)
+                   release_busy, mstrAcqStatus)
 begin
     next_state <= pres_state;
     
@@ -260,7 +263,7 @@ begin
         when idle_state =>
             if run_val = '0' then
                 next_state <= idle_state;
-            elsif run_val = '1' and busy_zynq = '0' then
+            elsif run_val = '1' and busy_zynq = '0' and mstrAcqStatus = '1' then
                 next_state <= start_run_state;
             else
                 next_state <= idle_state;
@@ -274,20 +277,20 @@ begin
             elsif run_val = '1' and busy_zynq = '1' then
                 next_state <= busy_zynq_state;
             else
-                next_state <= wait_trg_state; 
+                next_state <= wait_trg_state;
             end if;
         
         when wait_trg_state =>
             if run_val = '0' then
                     next_state <= idle_state;
             elsif run_val = '1' and busy_zynq = '1' then
-                    next_state <= busy_zynq_state;            
+                    next_state <= busy_zynq_state;
             elsif run_val = '1' and triggerOr = '1' and fifoFull = '0' then
                     next_state <= trgOr_state;
-            elsif run_val = '1' and trigger_command = '1' and fifoFull = '0' then
-                    next_state <= trg_cpu_state;
             elsif run_val = '1' and unsigned(extTrgMasked) /= 0 and fifoFull = '0' then
                     next_state <= trg_ext_state;
+            elsif run_val = '1' and trigger_command = '1' and fifoFull = '0' then
+                    next_state <= trg_cpu_state;
             elsif run_val = '1' and PPS = '1' and ppsTrgEn = '1' and fifoFull = '0' then
                     next_state <= trg_PPS_state;
             elsif run_val = '1' and cmd_busy = '1' then
@@ -296,48 +299,48 @@ begin
                 next_state <= wait_trg_state;
             end if;
         
-        when trgOr_state => 
+        when trgOr_state =>
             if run_val = '0' then
                 next_state <= idle_state;
             elsif run_val = '1' and cmd_busy = '1' then
                 next_state <= busy_CPU_state;
-            else 
+            else
                 next_state <= busy_state;
             end if;
         
-        when trg_cpu_state => 
+        when trg_cpu_state =>
             if run_val = '0' then
                 next_state <= idle_state;
             elsif run_val = '1' and cmd_busy = '1' then
                 next_state <= busy_CPU_state;
-            else 
+            else
                 next_state <= busy_state;
             end if;
         
-        when trg_ext_state => 
+        when trg_ext_state =>
             if run_val = '0' then
                 next_state <= idle_state;
             elsif run_val = '1' and cmd_busy = '1' then
                 next_state <= busy_CPU_state;
-            else 
+            else
                 next_state <= busy_state;
             end if;
         
-        when trg_PPS_state => 
+        when trg_PPS_state =>
             if run_val = '0' then
                 next_state <= idle_state;
             elsif run_val = '1' and cmd_busy = '1' then
                 next_state <= busy_CPU_state;
-            else 
+            else
                 next_state <= busy_state;
             end if;
         
-        when busy_CPU_state => 
+        when busy_CPU_state =>
             if run_val = '0' then
                 next_state <= idle_state;
             elsif cmd_busy = '0' then
                 next_state <= wait_trg_state;
-            else 
+            else
                 next_state <= busy_CPU_state;
             end if;
         
@@ -382,49 +385,49 @@ begin
         reset_counters_i <= '1' ;
         busy_trg_i       <= '0';
     
-    elsif next_state = wait_trg_state then 
+    elsif next_state = wait_trg_state then
         busy_i           <= '0' ;
         trigger_out_i    <= '0' ;
         reset_counters_i <= '0' ;
         busy_trg_i       <= '0';
     
-    elsif next_state = trg_PPS_state then 
+    elsif next_state = trg_PPS_state then
         busy_i           <= '0' ;
         trigger_out_i    <= '1' ;
         reset_counters_i <= '0' ;
         busy_trg_i       <= '0';
     
-    elsif next_state = trg_ext_state then 
+    elsif next_state = trg_ext_state then
         busy_i           <= '0' ;
         trigger_out_i    <= '1' ;
         reset_counters_i <= '0' ;
         busy_trg_i       <= '0';
     
-    elsif next_state = trg_cpu_state then 
+    elsif next_state = trg_cpu_state then
         busy_i           <= '0' ;
         trigger_out_i    <= '1' ;
         reset_counters_i <= '0' ;
         busy_trg_i       <= '0';
     
-    elsif next_state = trgOr_state then 
+    elsif next_state = trgOr_state then
         busy_i           <= '0' ;
         trigger_out_i    <= '1' ;
         reset_counters_i <= '0' ;
         busy_trg_i       <= '0';
     
-    elsif next_state = busy_cpu_state then  
+    elsif next_state = busy_cpu_state then
         busy_i           <= '1' ;
         trigger_out_i    <= '0' ;
         reset_counters_i <= '0' ;
         busy_trg_i       <= '0';
     
-    elsif next_state = busy_zynq_state then  
+    elsif next_state = busy_zynq_state then
         busy_i           <= '1' ;
         trigger_out_i    <= '0' ;
         reset_counters_i <= '0' ;
         busy_trg_i       <= '0';
     
-    elsif next_state = busy_state then  
+    elsif next_state = busy_state then
         busy_i           <= '1' ;
         trigger_out_i    <= '0' ;
         reset_counters_i <= '0' ;
@@ -434,15 +437,15 @@ begin
         trigger_out_i    <= '0' ;
         reset_counters_i <= '0' ;
         busy_trg_i       <= '0';
-    end if; 
+    end if;
 end process;
 
--- after a trigger the system is in busy for N_GTU ( 1 < n_GTU < 128 ) 
+-- after a trigger the system is in busy for N_GTU ( 1 < n_GTU < 128 )
 -- reset = trigger_out
 gtuCntProc: process(clock)
 begin
     if rising_edge(clock) then
-        if reset= '1' or triggerOutSig = '1' then 
+        if reset= '1' or triggerOutSig = '1' then
             GTU_count <= (others => '0');
         elsif gtuTick = '1' and busy_trg = '1' then -- the counter is enabled only if the trigger has been received from one of the zynq boards
             if GTU_count < unsigned(N_GTU)-1  then

@@ -1,7 +1,7 @@
 {
   "design": {
     "design_info": {
-      "boundary_crc": "0x356D898B7ADC4F0E",
+      "boundary_crc": "0x5F850421435B6DBC",
       "device": "xc7z020clg484-2",
       "gen_directory": "../../../../clkBoardPBR.gen/sources_1/bd/design_1",
       "name": "design_1",
@@ -56,7 +56,9 @@
         "clk40Out_OBUFDS2": "",
         "clk40Out_OBUFDS3": "",
         "clk40NConcat": "",
-        "clk40PConcat": ""
+        "clk40PConcat": "",
+        "util_ds_buf_0": "",
+        "acqStatusOutConcat": ""
       },
       "fifoDMA": {
         "axi_dma_0": "",
@@ -94,7 +96,8 @@
         "ppsInBUFDS": "",
         "extGtuBUFDS": "",
         "extGtuEdge": "",
-        "extClk40MBUFDS": ""
+        "extClk40MBUFDS": "",
+        "util_ds_buf_0": ""
       },
       "axi_smc": "",
       "gtuCtrl_0": "",
@@ -911,6 +914,110 @@
             "value": "design_1_CLK40_IN_P",
             "value_src": "default"
           },
+          "FREQ_HZ": {
+            "value": "100000000",
+            "value_src": "default"
+          },
+          "FREQ_TOLERANCE_HZ": {
+            "value": "0",
+            "value_src": "default"
+          },
+          "INSERT_VIP": {
+            "value": "0",
+            "value_src": "default"
+          },
+          "PHASE": {
+            "value": "0.0",
+            "value_src": "default"
+          }
+        }
+      },
+      "ACQ_STATUS_IN_N": {
+        "type": "clk",
+        "direction": "I",
+        "left": "0",
+        "right": "0",
+        "parameters": {
+          "CLK_DOMAIN": {
+            "value": "design_1_ACQ_STATUS_IN_N",
+            "value_src": "default"
+          },
+          "FREQ_HZ": {
+            "value": "100000000",
+            "value_src": "default"
+          },
+          "FREQ_TOLERANCE_HZ": {
+            "value": "0",
+            "value_src": "default"
+          },
+          "INSERT_VIP": {
+            "value": "0",
+            "value_src": "default"
+          },
+          "PHASE": {
+            "value": "0.0",
+            "value_src": "default"
+          }
+        }
+      },
+      "ACQ_STATUS_IN_P": {
+        "type": "clk",
+        "direction": "I",
+        "left": "0",
+        "right": "0",
+        "parameters": {
+          "CLK_DOMAIN": {
+            "value": "design_1_ACQ_STATUS_IN_P",
+            "value_src": "default"
+          },
+          "FREQ_HZ": {
+            "value": "100000000",
+            "value_src": "default"
+          },
+          "FREQ_TOLERANCE_HZ": {
+            "value": "0",
+            "value_src": "default"
+          },
+          "INSERT_VIP": {
+            "value": "0",
+            "value_src": "default"
+          },
+          "PHASE": {
+            "value": "0.0",
+            "value_src": "default"
+          }
+        }
+      },
+      "ACQ_STATUS_OUT_N": {
+        "type": "clk",
+        "direction": "O",
+        "left": "3",
+        "right": "0",
+        "parameters": {
+          "FREQ_HZ": {
+            "value": "100000000",
+            "value_src": "default"
+          },
+          "FREQ_TOLERANCE_HZ": {
+            "value": "0",
+            "value_src": "default"
+          },
+          "INSERT_VIP": {
+            "value": "0",
+            "value_src": "default"
+          },
+          "PHASE": {
+            "value": "0.0",
+            "value_src": "default"
+          }
+        }
+      },
+      "ACQ_STATUS_OUT_P": {
+        "type": "clk",
+        "direction": "O",
+        "left": "3",
+        "right": "0",
+        "parameters": {
           "FREQ_HZ": {
             "value": "100000000",
             "value_src": "default"
@@ -2455,6 +2562,15 @@
           },
           "clk40M_sel": {
             "direction": "O"
+          },
+          "acqStatusIn": {
+            "direction": "I"
+          },
+          "run1": {
+            "type": "clk",
+            "direction": "O",
+            "left": "0",
+            "right": "0"
           }
         },
         "components": {
@@ -2577,6 +2693,9 @@
                 "direction": "I"
               },
               "fifoFull": {
+                "direction": "I"
+              },
+              "acqStatusIn": {
                 "direction": "I"
               },
               "trigger_out": {
@@ -3033,15 +3152,21 @@
           "Net1": {
             "ports": [
               "plToAxiSBusy",
-              "run_control_fsm_0/plToAxiSBusy",
-              "command_decoder_0/plToAxiSBusy"
+              "command_decoder_0/plToAxiSBusy",
+              "run_control_fsm_0/plToAxiSBusy"
+            ]
+          },
+          "acqStatusIn_1": {
+            "ports": [
+              "acqStatusIn",
+              "run_control_fsm_0/acqStatusIn"
             ]
           },
           "axis_data_fifo_0_prog_full": {
             "ports": [
               "fifoFull",
-              "run_control_fsm_0/fifoFull",
-              "command_decoder_0/fifoFull"
+              "command_decoder_0/fifoFull",
+              "run_control_fsm_0/fifoFull"
             ]
           },
           "command_decoder_0_clk40M_sel": {
@@ -3125,6 +3250,7 @@
           "command_decoder_0_run": {
             "ports": [
               "command_decoder_0/run",
+              "run1",
               "run_control_fsm_0/run_val"
             ]
           },
@@ -3192,9 +3318,9 @@
             "ports": [
               "clk",
               "pulseExtender_0/clk",
-              "run_control_fsm_0/clock",
               "trgFlagBuilder_0/clk",
-              "command_decoder_0/clk"
+              "command_decoder_0/clk",
+              "run_control_fsm_0/clock"
             ]
           },
           "pulseExtender_0_sigOut": {
@@ -3207,9 +3333,9 @@
             "ports": [
               "rst",
               "pulseExtender_0/rst",
-              "run_control_fsm_0/reset",
               "trgFlagBuilder_0/rst",
-              "command_decoder_0/rst"
+              "command_decoder_0/rst",
+              "run_control_fsm_0/reset"
             ]
           },
           "run_control_fsm_0_busy": {
@@ -3267,8 +3393,8 @@
           "synchronizers_0_busySync": {
             "ports": [
               "busy",
-              "run_control_fsm_0/busy_in",
-              "command_decoder_0/busy"
+              "command_decoder_0/busy",
+              "run_control_fsm_0/busy_in"
             ]
           },
           "synchronizers_0_extTrgSync": {
@@ -4135,6 +4261,24 @@
             "direction": "I",
             "left": "0",
             "right": "0"
+          },
+          "OBUF_IN": {
+            "type": "clk",
+            "direction": "I",
+            "left": "0",
+            "right": "0"
+          },
+          "OBUF_DS_N_3": {
+            "type": "clk",
+            "direction": "O",
+            "left": "3",
+            "right": "0"
+          },
+          "OBUF_DS_P_3": {
+            "type": "clk",
+            "direction": "O",
+            "left": "3",
+            "right": "0"
           }
         },
         "components": {
@@ -4467,6 +4611,49 @@
                 "value": "4"
               }
             }
+          },
+          "util_ds_buf_0": {
+            "vlnv": "xilinx.com:ip:util_ds_buf:2.2",
+            "ip_revision": "7",
+            "xci_name": "design_1_util_ds_buf_0_11",
+            "xci_path": "ip\\design_1_util_ds_buf_0_11\\design_1_util_ds_buf_0_11.xci",
+            "inst_hier_path": "outBuffers/util_ds_buf_0",
+            "parameters": {
+              "C_BUF_TYPE": {
+                "value": "OBUFDS"
+              },
+              "C_SIZE": {
+                "value": "4"
+              }
+            }
+          },
+          "acqStatusOutConcat": {
+            "vlnv": "xilinx.com:inline_hdl:ilconcat:1.0",
+            "parameters": {
+              "IN0_WIDTH": {
+                "value": "1",
+                "value_src": "propagated",
+                "value_mode": "auto"
+              },
+              "IN1_WIDTH": {
+                "value": "1",
+                "value_src": "propagated",
+                "value_mode": "auto"
+              },
+              "IN2_WIDTH": {
+                "value": "1",
+                "value_src": "propagated",
+                "value_mode": "auto"
+              },
+              "IN3_WIDTH": {
+                "value": "1",
+                "value_src": "propagated",
+                "value_mode": "auto"
+              },
+              "NUM_PORTS": {
+                "value": "4"
+              }
+            }
           }
         },
         "nets": {
@@ -4489,6 +4676,15 @@
             "ports": [
               "runCtrlBusy",
               "busy_OBUFDS/OBUF_IN"
+            ]
+          },
+          "OBUF_IN_2": {
+            "ports": [
+              "OBUF_IN",
+              "acqStatusOutConcat/In0",
+              "acqStatusOutConcat/In3",
+              "acqStatusOutConcat/In2",
+              "acqStatusOutConcat/In1"
             ]
           },
           "busy_OBUFDS_OBUF_DS_N": {
@@ -4602,6 +4798,12 @@
               "GTU_CLK_OUT_P"
             ]
           },
+          "ilconcat_0_dout": {
+            "ports": [
+              "acqStatusOutConcat/dout",
+              "util_ds_buf_0/OBUF_IN"
+            ]
+          },
           "ilconcat_0_dout1": {
             "ports": [
               "extTrgOutConcat/dout",
@@ -4669,10 +4871,22 @@
               "PPS_OUT_N"
             ]
           },
+          "util_ds_buf_0_OBUF_DS_N1": {
+            "ports": [
+              "util_ds_buf_0/OBUF_DS_N",
+              "OBUF_DS_N_3"
+            ]
+          },
           "util_ds_buf_0_OBUF_DS_P": {
             "ports": [
               "ppsOut_OBUFDS/OBUF_DS_P",
               "PPS_OUT_P"
+            ]
+          },
+          "util_ds_buf_0_OBUF_DS_P1": {
+            "ports": [
+              "util_ds_buf_0/OBUF_DS_P",
+              "OBUF_DS_P_3"
             ]
           }
         }
@@ -5876,6 +6090,21 @@
             "direction": "O",
             "left": "0",
             "right": "0"
+          },
+          "IBUF_DS_N_4": {
+            "type": "clk",
+            "direction": "I",
+            "left": "0",
+            "right": "0"
+          },
+          "IBUF_DS_P_4": {
+            "type": "clk",
+            "direction": "I",
+            "left": "0",
+            "right": "0"
+          },
+          "acqStatusSync": {
+            "direction": "O"
           }
         },
         "components": {
@@ -5986,6 +6215,23 @@
                   }
                 }
               },
+              "acqStatusIn": {
+                "direction": "I",
+                "parameters": {
+                  "FREQ_HZ": {
+                    "value": "100000000",
+                    "value_src": "ip_prop"
+                  },
+                  "PHASE": {
+                    "value": "0.0",
+                    "value_src": "ip_prop"
+                  },
+                  "CLK_DOMAIN": {
+                    "value": "design_1_ACQ_STATUS_IN_N",
+                    "value_src": "ip_prop"
+                  }
+                }
+              },
               "trgIn": {
                 "direction": "I",
                 "left": "3",
@@ -6067,6 +6313,9 @@
                 }
               },
               "extGtuSync": {
+                "direction": "O"
+              },
+              "acqStatusSync": {
                 "direction": "O"
               },
               "trgSync": {
@@ -6188,6 +6437,13 @@
             "xci_name": "design_1_extClk40MBUFDS_0",
             "xci_path": "ip\\design_1_extClk40MBUFDS_0_2\\design_1_extClk40MBUFDS_0.xci",
             "inst_hier_path": "inBuffers/extClk40MBUFDS"
+          },
+          "util_ds_buf_0": {
+            "vlnv": "xilinx.com:ip:util_ds_buf:2.2",
+            "ip_revision": "7",
+            "xci_name": "design_1_util_ds_buf_0_10",
+            "xci_path": "ip\\design_1_util_ds_buf_0_10\\design_1_util_ds_buf_0_10.xci",
+            "inst_hier_path": "inBuffers/util_ds_buf_0"
           }
         },
         "nets": {
@@ -6227,6 +6483,12 @@
               "extClk40MBUFDS/IBUF_DS_N"
             ]
           },
+          "IBUF_DS_N_4_1": {
+            "ports": [
+              "IBUF_DS_N_4",
+              "util_ds_buf_0/IBUF_DS_N"
+            ]
+          },
           "IBUF_DS_P_0_1": {
             "ports": [
               "TRIG_L1_IN_P",
@@ -6261,6 +6523,12 @@
             "ports": [
               "IBUF_DS_P_3",
               "extClk40MBUFDS/IBUF_DS_P"
+            ]
+          },
+          "IBUF_DS_P_4_1": {
+            "ports": [
+              "IBUF_DS_P_4",
+              "util_ds_buf_0/IBUF_DS_P"
             ]
           },
           "busyInBUFDS_IBUF_OUT": {
@@ -6330,6 +6598,12 @@
               "extGtuEdge/rst"
             ]
           },
+          "synchronizers_0_acqStatusSync": {
+            "ports": [
+              "synchronizers_0/acqStatusSync",
+              "acqStatusSync"
+            ]
+          },
           "synchronizers_0_busySync": {
             "ports": [
               "synchronizers_0/busySync",
@@ -6365,6 +6639,12 @@
             "ports": [
               "trgInBUFDS/IBUF_OUT",
               "synchronizers_0/trgIn"
+            ]
+          },
+          "util_ds_buf_0_IBUF_OUT": {
+            "ports": [
+              "util_ds_buf_0/IBUF_OUT",
+              "synchronizers_0/acqStatusIn"
             ]
           }
         }
@@ -6935,6 +7215,12 @@
           "inBuffers/IBUF_DS_N_3"
         ]
       },
+      "IBUF_DS_N_0_6": {
+        "ports": [
+          "ACQ_STATUS_IN_N",
+          "inBuffers/IBUF_DS_N_4"
+        ]
+      },
       "IBUF_DS_N_1_1": {
         "ports": [
           "BUSY_IN_N",
@@ -6971,10 +7257,22 @@
           "inBuffers/IBUF_DS_P_3"
         ]
       },
+      "IBUF_DS_P_0_6": {
+        "ports": [
+          "ACQ_STATUS_IN_P",
+          "inBuffers/IBUF_DS_P_4"
+        ]
+      },
       "IBUF_DS_P_1_1": {
         "ports": [
           "BUSY_IN_P",
           "inBuffers/BUSY_IN_P"
+        ]
+      },
+      "OBUF_IN_1": {
+        "ports": [
+          "cmdAndRunCtrl/run1",
+          "outBuffers/OBUF_IN"
         ]
       },
       "Op1_1": {
@@ -6988,6 +7286,12 @@
           "ppsPresAndCtrl/ppsEdgeOut",
           "cmdAndRunCtrl/PPS",
           "counters/pps"
+        ]
+      },
+      "acqStatusIn_1": {
+        "ports": [
+          "inBuffers/acqStatusSync",
+          "cmdAndRunCtrl/acqStatusIn"
         ]
       },
       "aliveDeadTCounter_0_aliveT": {
@@ -7274,6 +7578,12 @@
           "CLK40_OUT_N"
         ]
       },
+      "outBuffers_OBUF_DS_N_3": {
+        "ports": [
+          "outBuffers/OBUF_DS_N_3",
+          "ACQ_STATUS_OUT_N"
+        ]
+      },
       "outBuffers_OBUF_DS_P_0": {
         "ports": [
           "outBuffers/OBUF_DS_P_0",
@@ -7290,6 +7600,12 @@
         "ports": [
           "outBuffers/OBUF_DS_P_2",
           "CLK40_OUT_P"
+        ]
+      },
+      "outBuffers_OBUF_DS_P_3": {
+        "ports": [
+          "outBuffers/OBUF_DS_P_3",
+          "ACQ_STATUS_OUT_P"
         ]
       },
       "plToAxiSBusy_1": {

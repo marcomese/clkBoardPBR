@@ -11,20 +11,30 @@ end tb_clk40MCounter;
 
 architecture Behavioral of tb_clk40MCounter is
 
-constant clkPeriod    : time := 10 ns;
-constant clk40MPeriod : time := 25 ns;
+constant clkPeriod     : time := 10 ns;
+constant clkSmplPeriod : time := 5 ns;
+constant clk40MPeriod  : time := 25 ns;
 
 -- swept range of trgDelay (0 is not supported: trgDelBuf would be a null range)
 constant nMin         : integer := 1;
 constant nMax         : integer := 7;
 
--- number of distinct trigger phases: clk and clk40M repeat their relative
--- phase every 50 ns, i.e. every 5 clk periods
+-- number of distinct trigger phases: clk, clkSmpl and clk40M repeat their
+-- relative phase every 50 ns, i.e. every 5 clk periods
 constant phaseNum     : integer := 5;
+
+-- The table printed by stimProc gives, for every phase and every trgDelay, the
+-- difference between the latched value and the number of 40 MHz cycles the
+-- BUFGCE had actually emitted at the trigger instant. The smallest trgDelay
+-- whose column is zero on all phases is the minimum that guarantees the record
+-- carries the count at the trigger and not an older one. Expected latency to
+-- cover: 2 clkSmpl cycles for the edge detector in the counter, 1 clkSmpl plus
+-- 2 clk for xpm_cdc_gray (src_gray_ff, dest_graysync_ff, REG_OUTPUT = 0).
 
 type cntArr_t is array(nMin to nMax) of std_logic_vector(31 downto 0);
 
 signal clk       : std_logic := '1';
+signal clkSmpl   : std_logic := '1';
 signal clk40M    : std_logic := '1';
 signal clk40MSig : std_logic;
 signal rst       : std_logic := '1';
@@ -41,9 +51,11 @@ signal refAtTrg  : integer := 0;
 
 begin
 
-clk    <= not clk after clkPeriod/2;
+clk     <= not clk after clkPeriod/2;
 
-clk40M <= not clk40M after clk40MPeriod/2;
+clkSmpl <= not clkSmpl after clkSmplPeriod/2;
+
+clk40M  <= not clk40M after clk40MPeriod/2;
 
 clk40MBUFGCEInst: BUFGCE
 port map(
@@ -68,6 +80,7 @@ dutGen: for n in nMin to nMax generate
     )
     port map(
         clk       => clk,
+        clkSmpl   => clkSmpl,
         clk40M    => clk40MSig,
         rst       => rst,
         enable    => enable,

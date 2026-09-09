@@ -27,11 +27,13 @@ port(
     clk           : in  std_logic;
     clkSmpl       : in  std_logic;
     extGtuIn      : in  std_logic;
+    acqStatusIn   : in  std_logic;
     trgIn         : in  std_logic_vector(zynqNum-1 downto 0);
     busyIn        : in  std_logic_vector(zynqNum-1 downto 0);
     ppsIn         : in  std_logic_vector(ppsNum-1 downto 0);
     extTrgIn      : in  std_logic_vector(extTrgNum-1 downto 0);
     extGtuSync    : out std_logic;
+    acqStatusSync : out std_logic;
     trgSync       : out std_logic_vector(zynqNum-1 downto 0);
     busySync      : out std_logic_vector(zynqNum-1 downto 0);
     ppsSync       : out std_logic_vector(ppsNum-1 downto 0);
@@ -49,7 +51,8 @@ signal ppsSampled       : std_logic_vector(ppsNum-1 downto 0);
 signal extTrgSampled    : std_logic_vector(extTrgNum-1 downto 0);
 
 signal extGtuSampled,
-       extClk40MSampled : std_logic;
+       extClk40MSampled,
+       acqStatusSampled : std_logic;
 
 begin
 
@@ -79,6 +82,34 @@ port map (
     dest_clk => clk,
     src_in   => extGtuSampled,
     dest_out => extGtuSync
+);
+
+acqStatusSmplInst: xpm_cdc_single
+generic map (
+    DEST_SYNC_FF   => 2,
+    INIT_SYNC_FF   => 1,
+    SIM_ASSERT_CHK => 0,
+    SRC_INPUT_REG  => 0
+)
+port map (
+    src_clk  => '0',
+    dest_clk => clkSmpl,
+    src_in   => acqStatusIn,
+    dest_out => acqStatusSampled
+);
+
+acqStatusSyncInst: xpm_cdc_single
+generic map (
+    DEST_SYNC_FF   => 2,
+    INIT_SYNC_FF   => 1,
+    SIM_ASSERT_CHK => 0,
+    SRC_INPUT_REG  => 0
+)
+port map (
+    src_clk  => clkSmpl,
+    dest_clk => clk,
+    src_in   => acqStatusSampled,
+    dest_out => acqStatusSync
 );
 
 trgSmplInst: xpm_cdc_array_single
@@ -118,7 +149,7 @@ end generate;
 
 busySmplInst: xpm_cdc_array_single
 generic map (
-    DEST_SYNC_FF   => 2,
+    DEST_SYNC_FF   => 5, -- 3 additional 200MHz register to cope with the delay with respect to the trgIn
     INIT_SYNC_FF   => 1,
     SIM_ASSERT_CHK => 0,
     SRC_INPUT_REG  => 0,
@@ -181,7 +212,7 @@ begin
     );
 end generate;
 
-extTrgSyncInst: xpm_cdc_array_single
+extTrgSmplInst: xpm_cdc_array_single
 generic map (
     DEST_SYNC_FF   => 2,
     INIT_SYNC_FF   => 1,
@@ -199,21 +230,21 @@ port map (
 extTrgSyncGen: for i in 0 to extTrgNum-1 generate
 begin
     extTrgSyncInst: xpm_cdc_pulse
-    generic map(
-        DEST_SYNC_FF   => 2,
-        INIT_SYNC_FF   => 1,
-        REG_OUTPUT     => 0,
-        RST_USED       => 0,
-        SIM_ASSERT_CHK => 0
-    )
-    port map(
-        src_clk    => clkSmpl,
-        src_rst    => '0',
-        dest_clk   => clk,
-        dest_rst   => '0',
-        src_pulse  => extTrgSampled(i),
-        dest_pulse => extTrgSync(i)
-    );
+generic map(
+    DEST_SYNC_FF   => 2,
+    INIT_SYNC_FF   => 1,
+    REG_OUTPUT     => 0,
+    RST_USED       => 0,
+    SIM_ASSERT_CHK => 0
+)
+port map(
+    src_clk    => clkSmpl,
+    src_rst    => '0',
+    dest_clk   => clk,
+    dest_rst   => '0',
+    src_pulse  => extTrgSampled(i),
+    dest_pulse => extTrgSync(i)
+);
 end generate;
 
 end Behavioral;
