@@ -178,7 +178,7 @@ set_property PACKAGE_PIN K18 [get_ports CLK40_OUT_N[2]]
 set_property IOSTANDARD LVDS_25 [get_ports CLK40_OUT_P[2]]
 set_property IOSTANDARD LVDS_25 [get_ports CLK40_OUT_N[2]]
 
-# ACQ_STATUS_OUT[2] [OUTPUT] B35_L
+# ACQ_STATUS_OUT[2] [OUTPUT] B35_L21
 set_property PACKAGE_PIN E19 [get_ports ACQ_STATUS_OUT_P[2]]
 set_property PACKAGE_PIN E20 [get_ports ACQ_STATUS_OUT_N[2]]
 set_property IOSTANDARD LVDS_25 [get_ports ACQ_STATUS_OUT_P[2]]
@@ -228,7 +228,7 @@ set_property PACKAGE_PIN AB12 [get_ports CLK40_OUT_N[3]]
 set_property IOSTANDARD LVDS_25 [get_ports CLK40_OUT_P[3]]
 set_property IOSTANDARD LVDS_25 [get_ports CLK40_OUT_N[3]]
 
-# ACQ_STATUS_OUT[3] [OUTPUT] B35_L
+# ACQ_STATUS_OUT[3] [OUTPUT] B33_L12
 set_property PACKAGE_PIN Y18 [get_ports ACQ_STATUS_OUT_P[3]]
 set_property PACKAGE_PIN AA18 [get_ports ACQ_STATUS_OUT_N[3]]
 set_property IOSTANDARD LVDS_25 [get_ports ACQ_STATUS_OUT_P[3]]
@@ -278,6 +278,12 @@ set_property PACKAGE_PIN AB6 [get_ports CLK40_OUT_N[4]]
 set_property IOSTANDARD LVDS_25 [get_ports CLK40_OUT_P[4]]
 set_property IOSTANDARD LVDS_25 [get_ports CLK40_OUT_N[4]]
 
+# ACQ_STATUS_OUT[4] [OUTPUT] B13_L20
+set_property PACKAGE_PIN T4 [get_ports ACQ_STATUS_OUT_P[4]]
+set_property PACKAGE_PIN U4 [get_ports ACQ_STATUS_OUT_N[4]]
+set_property IOSTANDARD LVDS_25 [get_ports ACQ_STATUS_OUT_P[4]]
+set_property IOSTANDARD LVDS_25 [get_ports ACQ_STATUS_OUT_N[4]]
+
 ###############################################################################
 ## JLVDS4&5B - Connettore 5 (Bank 13)
 ###############################################################################
@@ -322,6 +328,12 @@ set_property PACKAGE_PIN W10 [get_ports CLK40_OUT_N[5]]
 set_property IOSTANDARD LVDS_25 [get_ports CLK40_OUT_P[5]]
 set_property IOSTANDARD LVDS_25 [get_ports CLK40_OUT_N[5]]
 
+# ACQ_STATUS_OUT[5] [OUTPUT] B13_L2
+set_property PACKAGE_PIN V8 [get_ports ACQ_STATUS_OUT_P[5]]
+set_property PACKAGE_PIN W8 [get_ports ACQ_STATUS_OUT_N[5]]
+set_property IOSTANDARD LVDS_25 [get_ports ACQ_STATUS_OUT_P[5]]
+set_property IOSTANDARD LVDS_25 [get_ports ACQ_STATUS_OUT_N[5]]
+
 ###############################################################################
 ## JLVDS6&7A - Connettore 6 (Bank 34 + Bank 33 + Bank 13)
 ###############################################################################
@@ -365,6 +377,12 @@ set_property PACKAGE_PIN U12 [get_ports CLK40_OUT_P[6]]
 set_property PACKAGE_PIN U11 [get_ports CLK40_OUT_N[6]]
 set_property IOSTANDARD LVDS_25 [get_ports CLK40_OUT_P[6]]
 set_property IOSTANDARD LVDS_25 [get_ports CLK40_OUT_N[6]]
+
+# ACQ_STATUS_OUT[6] [OUTPUT] B13_L6
+set_property PACKAGE_PIN U10 [get_ports ACQ_STATUS_OUT_P[6]]
+set_property PACKAGE_PIN U9  [get_ports ACQ_STATUS_OUT_N[6]]
+set_property IOSTANDARD LVDS_25 [get_ports ACQ_STATUS_OUT_P[6]]
+set_property IOSTANDARD LVDS_25 [get_ports ACQ_STATUS_OUT_N[6]]
 
 ##############################################################################
 # JLVDS6&7B - Connettore 7 (Bank 33 + Bank 34) - DIREZIONE INVERTITA
