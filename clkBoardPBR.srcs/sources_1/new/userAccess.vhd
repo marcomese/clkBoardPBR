@@ -16,9 +16,6 @@ use IEEE.STD_LOGIC_1164.ALL;
 library UNISIM;
 use UNISIM.VComponents.all;
 
-library xpm;
-use xpm.vcomponents.all;
-
 entity userAccess is
 port(
     clk          : in  std_logic;
