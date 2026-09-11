@@ -61,7 +61,7 @@ port map (
 usrAccessProc: process(clk)
 begin
     if rising_edge(clk) then
-        if usrAccessVal = '1' then
+        if usrAccessSync = '1' then
             usrAccessFF <= usrAccessData;
         end if;
     end if;
