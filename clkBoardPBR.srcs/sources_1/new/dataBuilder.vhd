@@ -18,6 +18,7 @@ use IEEE.STD_LOGIC_MISC.ALL;
 entity dataBuilder is
 generic(
     trgNum      : integer;
+    statusLen   : integer;
     dataWords   : integer  -- number of 32 bit words in data
 );
 port(
@@ -35,7 +36,7 @@ port(
     aliveT      : in  std_logic_vector(31 downto 0);
     deadT       : in  std_logic_vector(31 downto 0);
     aDTRdy      : in  std_logic;
-    statusReg   : in  std_logic_vector(31 downto 0);
+    statusReg   : in  std_logic_vector(statusLen-1 downto 0);
     dataRdy     : out std_logic;
     dataOut     : out std_logic_vector(32*dataWords-1 downto 0)
 );

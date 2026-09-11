@@ -18,12 +18,17 @@ entity command_decoder is
 generic(
     extTrgNum : positive;
     zynqNum   : positive;
-    ppsNum    : positive
+    ppsNum    : positive;
+    statusLen : positive
 );
 port(
     clk                : in  std_logic;
     rst                : in  std_logic;
     command_in         : in  std_logic_vector(31 downto 0);
+    arg0In             : in  std_logic_vector(31 downto 0);
+    arg1In             : in  std_logic_vector(31 downto 0);
+    arg2In             : in  std_logic_vector(31 downto 0);
+    cmdFlag            : in  std_logic_vector(3 downto 0);
     data_received      : in  std_logic;
     fsmState           : in  std_logic_vector(3 downto 0);
     ppsPres            : in  std_logic_vector(ppsNum-1 downto 0);
@@ -54,7 +59,7 @@ port(
     reset_all_counters : out std_logic;
     send_nack          : out std_logic;
     -- status register
-    status_register    : out std_logic_vector(31 downto 0)
+    status_register    : out std_logic_vector(statusLen-1 downto 0)
 );
 end command_decoder;
 
@@ -98,7 +103,7 @@ constant MSG_CLK40_INT_ON    : std_logic_vector(31 downto 0) := X"AAAA5555";
 constant MSG_CLK40_INT_NO    : std_logic_vector(31 downto 0) := X"5555AAAA";
 
 constant STATUS_USED         : integer := 12 + extTrgNum + 2*ppsNum + 2*zynqNum + zynqNum;
-constant STATUS_PAD          : integer := 32 - STATUS_USED;
+constant STATUS_PAD          : integer := statusLen - STATUS_USED;
 
 signal dataRecvFF,
        dataRecvFall,
@@ -139,7 +144,7 @@ status_register <=  std_logic_vector(to_unsigned(0, STATUS_PAD)) &
                     runCtrlBusy     &   -- 1 bit  -> 1
                     running;            -- 1 bit  -> 0
 
-assert STATUS_USED <= 32
+assert STATUS_USED <= statusLen
     report "status_register overflow: ridurre extTrgNum/zynqNum/ppsNum"
     severity failure;
 

@@ -239,120 +239,132 @@ set_property IOSTANDARD LVDS_25 [get_ports ACQ_STATUS_OUT_N[3]]
 ###############################################################################
 
 ## GTU_CLK_OUT[4] [OUTPUT] B13_L15 (DQS)
-#set_property PACKAGE_PIN AB2 [get_ports GTU_CLK_OUT_P[4]]
-#set_property PACKAGE_PIN AB1 [get_ports GTU_CLK_OUT_N[4]]
-#set_property IOSTANDARD LVDS_25 [get_ports GTU_CLK_OUT_P[4]]
-#set_property IOSTANDARD LVDS_25 [get_ports GTU_CLK_OUT_N[4]]
+set_property PACKAGE_PIN AB2 [get_ports GTU_CLK_OUT_P[4]]
+set_property PACKAGE_PIN AB1 [get_ports GTU_CLK_OUT_N[4]]
+set_property IOSTANDARD LVDS_25 [get_ports GTU_CLK_OUT_P[4]]
+set_property IOSTANDARD LVDS_25 [get_ports GTU_CLK_OUT_N[4]]
 
 ## 1PPS_OUT[4] [OUTPUT] B13_L22
-#set_property PACKAGE_PIN U6 [get_ports PPS_OUT_P[4]]
-#set_property PACKAGE_PIN U5 [get_ports PPS_OUT_N[4]]
-#set_property IOSTANDARD LVDS_25 [get_ports PPS_OUT_P[4]]
-#set_property IOSTANDARD LVDS_25 [get_ports PPS_OUT_N[4]]
+set_property PACKAGE_PIN U6 [get_ports PPS_OUT_P[4]]
+set_property PACKAGE_PIN U5 [get_ports PPS_OUT_N[4]]
+set_property IOSTANDARD LVDS_25 [get_ports PPS_OUT_P[4]]
+set_property IOSTANDARD LVDS_25 [get_ports PPS_OUT_N[4]]
 
 ## TRIG_L1_IN4 [INPUT] B13_L21 (DQS)
-#set_property PACKAGE_PIN V5 [get_ports TRIG_L1_IN_P[4]]
-#set_property PACKAGE_PIN V4 [get_ports TRIG_L1_IN_N[4]]
-#set_property IOSTANDARD LVDS_25 [get_ports TRIG_L1_IN_P[4]]
-#set_property IOSTANDARD LVDS_25 [get_ports TRIG_L1_IN_N[4]]
+set_property PACKAGE_PIN V5 [get_ports TRIG_L1_IN_P[4]]
+set_property PACKAGE_PIN V4 [get_ports TRIG_L1_IN_N[4]]
+set_property IOSTANDARD LVDS_25 [get_ports TRIG_L1_IN_P[4]]
+set_property IOSTANDARD LVDS_25 [get_ports TRIG_L1_IN_N[4]]
+set_property DIFF_TERM TRUE [get_ports {TRIG_L1_IN_P[4]}]
+set_property DIFF_TERM TRUE [get_ports {TRIG_L1_IN_N[4]}]
 
 ## BUSY_IN4 [INPUT] B13_L23
-#set_property PACKAGE_PIN V7 [get_ports BUSY_IN_P[4]]
-#set_property PACKAGE_PIN W7 [get_ports BUSY_IN_N[4]]
-#set_property IOSTANDARD LVDS_25 [get_ports BUSY_IN_P[4]]
-#set_property IOSTANDARD LVDS_25 [get_ports BUSY_IN_N[4]]
+set_property PACKAGE_PIN V7 [get_ports BUSY_IN_P[4]]
+set_property PACKAGE_PIN W7 [get_ports BUSY_IN_N[4]]
+set_property IOSTANDARD LVDS_25 [get_ports BUSY_IN_P[4]]
+set_property IOSTANDARD LVDS_25 [get_ports BUSY_IN_N[4]]
+set_property DIFF_TERM TRUE [get_ports {BUSY_IN_P[4]}]
+set_property DIFF_TERM TRUE [get_ports {BUSY_IN_N[4]}]
 
 ## EXT_TRIG_OUT[4] [OUTPUT] B13_L16
-#set_property PACKAGE_PIN AB5 [get_ports EXT_TRIG_OUT_P[4]]
-#set_property PACKAGE_PIN AB4 [get_ports EXT_TRIG_OUT_N[4]]
-#set_property IOSTANDARD LVDS_25 [get_ports EXT_TRIG_OUT_P[4]]
-#set_property IOSTANDARD LVDS_25 [get_ports EXT_TRIG_OUT_N[4]]
+set_property PACKAGE_PIN AB5 [get_ports EXT_TRIG_OUT_P[4]]
+set_property PACKAGE_PIN AB4 [get_ports EXT_TRIG_OUT_N[4]]
+set_property IOSTANDARD LVDS_25 [get_ports EXT_TRIG_OUT_P[4]]
+set_property IOSTANDARD LVDS_25 [get_ports EXT_TRIG_OUT_N[4]]
 
 ## CLK40_OUT[4] [OUTPUT] B13_L17
-#set_property PACKAGE_PIN AB7 [get_ports CLK40_OUT_P[4]]
-#set_property PACKAGE_PIN AB6 [get_ports CLK40_OUT_N[4]]
-#set_property IOSTANDARD LVDS_25 [get_ports CLK40_OUT_P[4]]
-#set_property IOSTANDARD LVDS_25 [get_ports CLK40_OUT_N[4]]
+set_property PACKAGE_PIN AB7 [get_ports CLK40_OUT_P[4]]
+set_property PACKAGE_PIN AB6 [get_ports CLK40_OUT_N[4]]
+set_property IOSTANDARD LVDS_25 [get_ports CLK40_OUT_P[4]]
+set_property IOSTANDARD LVDS_25 [get_ports CLK40_OUT_N[4]]
 
 ###############################################################################
 ## JLVDS4&5B - Connettore 5 (Bank 13)
 ###############################################################################
 
 ## GTU_CLK_OUT[5] [OUTPUT] B13_L24
-#set_property PACKAGE_PIN W6 [get_ports GTU_CLK_OUT_P[5]]
-#set_property PACKAGE_PIN W5 [get_ports GTU_CLK_OUT_N[5]]
-#set_property IOSTANDARD LVDS_25 [get_ports GTU_CLK_OUT_P[5]]
-#set_property IOSTANDARD LVDS_25 [get_ports GTU_CLK_OUT_N[5]]
+set_property PACKAGE_PIN W6 [get_ports GTU_CLK_OUT_P[5]]
+set_property PACKAGE_PIN W5 [get_ports GTU_CLK_OUT_N[5]]
+set_property IOSTANDARD LVDS_25 [get_ports GTU_CLK_OUT_P[5]]
+set_property IOSTANDARD LVDS_25 [get_ports GTU_CLK_OUT_N[5]]
 
 ## 1PPS_OUT[5] [OUTPUT] B13_L4
-#set_property PACKAGE_PIN V12 [get_ports PPS_OUT_P[5]]
-#set_property PACKAGE_PIN W12 [get_ports PPS_OUT_N[5]]
-#set_property IOSTANDARD LVDS_25 [get_ports PPS_OUT_P[5]]
-#set_property IOSTANDARD LVDS_25 [get_ports PPS_OUT_N[5]]
+set_property PACKAGE_PIN V12 [get_ports PPS_OUT_P[5]]
+set_property PACKAGE_PIN W12 [get_ports PPS_OUT_N[5]]
+set_property IOSTANDARD LVDS_25 [get_ports PPS_OUT_P[5]]
+set_property IOSTANDARD LVDS_25 [get_ports PPS_OUT_N[5]]
 
 ## TRIG_L1_IN5 [INPUT] B13_L19
-#set_property PACKAGE_PIN R6 [get_ports TRIG_L1_IN_P[5]]
-#set_property PACKAGE_PIN T6 [get_ports TRIG_L1_IN_N[5]]
-#set_property IOSTANDARD LVDS_25 [get_ports TRIG_L1_IN_P[5]]
-#set_property IOSTANDARD LVDS_25 [get_ports TRIG_L1_IN_N[5]]
+set_property PACKAGE_PIN R6 [get_ports TRIG_L1_IN_P[5]]
+set_property PACKAGE_PIN T6 [get_ports TRIG_L1_IN_N[5]]
+set_property IOSTANDARD LVDS_25 [get_ports TRIG_L1_IN_P[5]]
+set_property IOSTANDARD LVDS_25 [get_ports TRIG_L1_IN_N[5]]
+set_property DIFF_TERM TRUE [get_ports {TRIG_L1_IN_P[5]}]
+set_property DIFF_TERM TRUE [get_ports {TRIG_L1_IN_N[5]}]
 
 ## BUSY_IN5 [INPUT] B13_L18
-#set_property PACKAGE_PIN Y4  [get_ports BUSY_IN_P[5]]
-#set_property PACKAGE_PIN AA4 [get_ports BUSY_IN_N[5]]
-#set_property IOSTANDARD LVDS_25 [get_ports BUSY_IN_P[5]]
-#set_property IOSTANDARD LVDS_25 [get_ports BUSY_IN_N[5]]
+set_property PACKAGE_PIN Y4  [get_ports BUSY_IN_P[5]]
+set_property PACKAGE_PIN AA4 [get_ports BUSY_IN_N[5]]
+set_property IOSTANDARD LVDS_25 [get_ports BUSY_IN_P[5]]
+set_property IOSTANDARD LVDS_25 [get_ports BUSY_IN_N[5]]
+set_property DIFF_TERM TRUE [get_ports {BUSY_IN_P[5]}]
+set_property DIFF_TERM TRUE [get_ports {BUSY_IN_N[5]}]
 
 ## EXT_TRIG_OUT[5] [OUTPUT] B13_L13 (MRCC)
-#set_property PACKAGE_PIN Y6 [get_ports EXT_TRIG_OUT_P[5]]
-#set_property PACKAGE_PIN Y5 [get_ports EXT_TRIG_OUT_N[5]]
-#set_property IOSTANDARD LVDS_25 [get_ports EXT_TRIG_OUT_P[5]]
-#set_property IOSTANDARD LVDS_25 [get_ports EXT_TRIG_OUT_N[5]]
+set_property PACKAGE_PIN Y6 [get_ports EXT_TRIG_OUT_P[5]]
+set_property PACKAGE_PIN Y5 [get_ports EXT_TRIG_OUT_N[5]]
+set_property IOSTANDARD LVDS_25 [get_ports EXT_TRIG_OUT_P[5]]
+set_property IOSTANDARD LVDS_25 [get_ports EXT_TRIG_OUT_N[5]]
 
 ## CLK40_OUT[5] [OUTPUT] B13_L3 (DQS)
-#set_property PACKAGE_PIN W11 [get_ports CLK40_OUT_P[5]]
-#set_property PACKAGE_PIN W10 [get_ports CLK40_OUT_N[5]]
-#set_property IOSTANDARD LVDS_25 [get_ports CLK40_OUT_P[5]]
-#set_property IOSTANDARD LVDS_25 [get_ports CLK40_OUT_N[5]]
+set_property PACKAGE_PIN W11 [get_ports CLK40_OUT_P[5]]
+set_property PACKAGE_PIN W10 [get_ports CLK40_OUT_N[5]]
+set_property IOSTANDARD LVDS_25 [get_ports CLK40_OUT_P[5]]
+set_property IOSTANDARD LVDS_25 [get_ports CLK40_OUT_N[5]]
 
 ###############################################################################
 ## JLVDS6&7A - Connettore 6 (Bank 34 + Bank 33 + Bank 13)
 ###############################################################################
 
 ## GTU_CLK_OUT[6] [OUTPUT] B34_L9 (DQS)
-#set_property PACKAGE_PIN J20 [get_ports GTU_CLK_OUT_P[6]]
-#set_property PACKAGE_PIN K21 [get_ports GTU_CLK_OUT_N[6]]
-#set_property IOSTANDARD LVDS_25 [get_ports GTU_CLK_OUT_P[6]]
-#set_property IOSTANDARD LVDS_25 [get_ports GTU_CLK_OUT_N[6]]
+set_property PACKAGE_PIN J20 [get_ports GTU_CLK_OUT_P[6]]
+set_property PACKAGE_PIN K21 [get_ports GTU_CLK_OUT_N[6]]
+set_property IOSTANDARD LVDS_25 [get_ports GTU_CLK_OUT_P[6]]
+set_property IOSTANDARD LVDS_25 [get_ports GTU_CLK_OUT_N[6]]
 
 ## 1PPS_OUT[6] [OUTPUT] B34_L22
-#set_property PACKAGE_PIN R19 [get_ports PPS_OUT_P[6]]
-#set_property PACKAGE_PIN T19 [get_ports PPS_OUT_N[6]]
-#set_property IOSTANDARD LVDS_25 [get_ports PPS_OUT_P[6]]
-#set_property IOSTANDARD LVDS_25 [get_ports PPS_OUT_N[6]]
+set_property PACKAGE_PIN R19 [get_ports PPS_OUT_P[6]]
+set_property PACKAGE_PIN T19 [get_ports PPS_OUT_N[6]]
+set_property IOSTANDARD LVDS_25 [get_ports PPS_OUT_P[6]]
+set_property IOSTANDARD LVDS_25 [get_ports PPS_OUT_N[6]]
 
 ## TRIG_L1_IN6 [INPUT] B33_L13 (MRCC)
-#set_property PACKAGE_PIN W17 [get_ports TRIG_L1_IN_P[6]]
-#set_property PACKAGE_PIN W18 [get_ports TRIG_L1_IN_N[6]]
-#set_property IOSTANDARD LVDS_25 [get_ports TRIG_L1_IN_P[6]]
-#set_property IOSTANDARD LVDS_25 [get_ports TRIG_L1_IN_N[6]]
+set_property PACKAGE_PIN W17 [get_ports TRIG_L1_IN_P[6]]
+set_property PACKAGE_PIN W18 [get_ports TRIG_L1_IN_N[6]]
+set_property IOSTANDARD LVDS_25 [get_ports TRIG_L1_IN_P[6]]
+set_property IOSTANDARD LVDS_25 [get_ports TRIG_L1_IN_N[6]]
+set_property DIFF_TERM TRUE [get_ports {TRIG_L1_IN_P[6]}]
+set_property DIFF_TERM TRUE [get_ports {TRIG_L1_IN_N[6]}]
 
 ## BUSY_IN6 [INPUT] B34_L14 (SRCC)
-#set_property PACKAGE_PIN N19 [get_ports BUSY_IN_P[6]]
-#set_property PACKAGE_PIN N20 [get_ports BUSY_IN_N[6]]
-#set_property IOSTANDARD LVDS_25 [get_ports BUSY_IN_P[6]]
-#set_property IOSTANDARD LVDS_25 [get_ports BUSY_IN_N[6]]
+set_property PACKAGE_PIN N19 [get_ports BUSY_IN_P[6]]
+set_property PACKAGE_PIN N20 [get_ports BUSY_IN_N[6]]
+set_property IOSTANDARD LVDS_25 [get_ports BUSY_IN_P[6]]
+set_property IOSTANDARD LVDS_25 [get_ports BUSY_IN_N[6]]
+set_property DIFF_TERM TRUE [get_ports {BUSY_IN_P[6]}]
+set_property DIFF_TERM TRUE [get_ports {BUSY_IN_N[6]}]
 
 ## EXT_TRIG_OUT[6] [OUTPUT] B34_L8
-#set_property PACKAGE_PIN J21 [get_ports EXT_TRIG_OUT_P[6]]
-#set_property PACKAGE_PIN J22 [get_ports EXT_TRIG_OUT_N[6]]
-#set_property IOSTANDARD LVDS_25 [get_ports EXT_TRIG_OUT_P[6]]
-#set_property IOSTANDARD LVDS_25 [get_ports EXT_TRIG_OUT_N[6]]
+set_property PACKAGE_PIN J21 [get_ports EXT_TRIG_OUT_P[6]]
+set_property PACKAGE_PIN J22 [get_ports EXT_TRIG_OUT_N[6]]
+set_property IOSTANDARD LVDS_25 [get_ports EXT_TRIG_OUT_P[6]]
+set_property IOSTANDARD LVDS_25 [get_ports EXT_TRIG_OUT_N[6]]
 
 ## CLK40_OUT[6] [OUTPUT] B13_L5
-#set_property PACKAGE_PIN U12 [get_ports CLK40_OUT_P[6]]
-#set_property PACKAGE_PIN U11 [get_ports CLK40_OUT_N[6]]
-#set_property IOSTANDARD LVDS_25 [get_ports CLK40_OUT_P[6]]
-#set_property IOSTANDARD LVDS_25 [get_ports CLK40_OUT_N[6]]
+set_property PACKAGE_PIN U12 [get_ports CLK40_OUT_P[6]]
+set_property PACKAGE_PIN U11 [get_ports CLK40_OUT_N[6]]
+set_property IOSTANDARD LVDS_25 [get_ports CLK40_OUT_P[6]]
+set_property IOSTANDARD LVDS_25 [get_ports CLK40_OUT_N[6]]
 
 ##############################################################################
 # JLVDS6&7B - Connettore 7 (Bank 33 + Bank 34) - DIREZIONE INVERTITA
