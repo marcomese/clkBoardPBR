@@ -2,7 +2,7 @@
 --Copyright 2022-2025 Advanced Micro Devices, Inc. All Rights Reserved.
 ----------------------------------------------------------------------------------
 --Tool Version: Vivado v.2024.2.2 (win64) Build 6060944 Thu Mar 06 19:10:01 MST 2025
---Date        : Wed Sep  9 16:13:59 2026
+--Date        : Fri Sep 11 11:05:50 2026
 --Host        : MARCOMPUTER running 64-bit major release  (build 9200)
 --Command     : generate_target design_1_wrapper.bd
 --Design      : design_1_wrapper
@@ -16,16 +16,16 @@ entity design_1_wrapper is
   port (
     ACQ_STATUS_IN_N : in STD_LOGIC_VECTOR ( 0 to 0 );
     ACQ_STATUS_IN_P : in STD_LOGIC_VECTOR ( 0 to 0 );
-    ACQ_STATUS_OUT_N : out STD_LOGIC_VECTOR ( 3 downto 0 );
-    ACQ_STATUS_OUT_P : out STD_LOGIC_VECTOR ( 3 downto 0 );
-    BUSY_IN_N : in STD_LOGIC_VECTOR ( 3 downto 0 );
-    BUSY_IN_P : in STD_LOGIC_VECTOR ( 3 downto 0 );
+    ACQ_STATUS_OUT_N : out STD_LOGIC_VECTOR ( 6 downto 0 );
+    ACQ_STATUS_OUT_P : out STD_LOGIC_VECTOR ( 6 downto 0 );
+    BUSY_IN_N : in STD_LOGIC_VECTOR ( 6 downto 0 );
+    BUSY_IN_P : in STD_LOGIC_VECTOR ( 6 downto 0 );
     BUSY_OUT_N : out STD_LOGIC_VECTOR ( 0 to 0 );
     BUSY_OUT_P : out STD_LOGIC_VECTOR ( 0 to 0 );
     CLK40_IN_N : in STD_LOGIC_VECTOR ( 0 to 0 );
     CLK40_IN_P : in STD_LOGIC_VECTOR ( 0 to 0 );
-    CLK40_OUT_N : out STD_LOGIC_VECTOR ( 3 downto 0 );
-    CLK40_OUT_P : out STD_LOGIC_VECTOR ( 3 downto 0 );
+    CLK40_OUT_N : out STD_LOGIC_VECTOR ( 6 downto 0 );
+    CLK40_OUT_P : out STD_LOGIC_VECTOR ( 6 downto 0 );
     DDR_addr : inout STD_LOGIC_VECTOR ( 14 downto 0 );
     DDR_ba : inout STD_LOGIC_VECTOR ( 2 downto 0 );
     DDR_cas_n : inout STD_LOGIC;
@@ -43,8 +43,8 @@ entity design_1_wrapper is
     DDR_we_n : inout STD_LOGIC;
     EXT_TRIG_IN_N : in STD_LOGIC_VECTOR ( 1 downto 0 );
     EXT_TRIG_IN_P : in STD_LOGIC_VECTOR ( 1 downto 0 );
-    EXT_TRIG_OUT_N : out STD_LOGIC_VECTOR ( 3 downto 0 );
-    EXT_TRIG_OUT_P : out STD_LOGIC_VECTOR ( 3 downto 0 );
+    EXT_TRIG_OUT_N : out STD_LOGIC_VECTOR ( 6 downto 0 );
+    EXT_TRIG_OUT_P : out STD_LOGIC_VECTOR ( 6 downto 0 );
     FIXED_IO_ddr_vrn : inout STD_LOGIC;
     FIXED_IO_ddr_vrp : inout STD_LOGIC;
     FIXED_IO_mio : inout STD_LOGIC_VECTOR ( 53 downto 0 );
@@ -54,14 +54,14 @@ entity design_1_wrapper is
     GPS_EN : out STD_LOGIC_VECTOR ( 1 downto 0 );
     GTU_CLK_IN_N : in STD_LOGIC_VECTOR ( 0 to 0 );
     GTU_CLK_IN_P : in STD_LOGIC_VECTOR ( 0 to 0 );
-    GTU_CLK_OUT_N : out STD_LOGIC_VECTOR ( 3 downto 0 );
-    GTU_CLK_OUT_P : out STD_LOGIC_VECTOR ( 3 downto 0 );
+    GTU_CLK_OUT_N : out STD_LOGIC_VECTOR ( 6 downto 0 );
+    GTU_CLK_OUT_P : out STD_LOGIC_VECTOR ( 6 downto 0 );
     PPS_IN_N : in STD_LOGIC_VECTOR ( 0 to 0 );
     PPS_IN_P : in STD_LOGIC_VECTOR ( 0 to 0 );
-    PPS_OUT_N : out STD_LOGIC_VECTOR ( 3 downto 0 );
-    PPS_OUT_P : out STD_LOGIC_VECTOR ( 3 downto 0 );
-    TRIG_L1_IN_N : in STD_LOGIC_VECTOR ( 3 downto 0 );
-    TRIG_L1_IN_P : in STD_LOGIC_VECTOR ( 3 downto 0 );
+    PPS_OUT_N : out STD_LOGIC_VECTOR ( 6 downto 0 );
+    PPS_OUT_P : out STD_LOGIC_VECTOR ( 6 downto 0 );
+    TRIG_L1_IN_N : in STD_LOGIC_VECTOR ( 6 downto 0 );
+    TRIG_L1_IN_P : in STD_LOGIC_VECTOR ( 6 downto 0 );
     TRIG_L1_OUT_N : out STD_LOGIC_VECTOR ( 0 to 0 );
     TRIG_L1_OUT_P : out STD_LOGIC_VECTOR ( 0 to 0 );
     gps_1pps_ext : in STD_LOGIC_VECTOR ( 1 downto 0 );
@@ -95,17 +95,7 @@ architecture STRUCTURE of design_1_wrapper is
     FIXED_IO_ps_clk : inout STD_LOGIC;
     FIXED_IO_ps_porb : inout STD_LOGIC;
     GPS_EN : out STD_LOGIC_VECTOR ( 1 downto 0 );
-    GTU_CLK_OUT_N : out STD_LOGIC_VECTOR ( 3 downto 0 );
-    GTU_CLK_OUT_P : out STD_LOGIC_VECTOR ( 3 downto 0 );
-    EXT_TRIG_OUT_N : out STD_LOGIC_VECTOR ( 3 downto 0 );
-    EXT_TRIG_OUT_P : out STD_LOGIC_VECTOR ( 3 downto 0 );
-    TRIG_L1_IN_N : in STD_LOGIC_VECTOR ( 3 downto 0 );
-    TRIG_L1_IN_P : in STD_LOGIC_VECTOR ( 3 downto 0 );
-    BUSY_IN_N : in STD_LOGIC_VECTOR ( 3 downto 0 );
-    BUSY_IN_P : in STD_LOGIC_VECTOR ( 3 downto 0 );
     gps_1pps_ext : in STD_LOGIC_VECTOR ( 1 downto 0 );
-    PPS_OUT_N : out STD_LOGIC_VECTOR ( 3 downto 0 );
-    PPS_OUT_P : out STD_LOGIC_VECTOR ( 3 downto 0 );
     gps_rxd : in STD_LOGIC_VECTOR ( 1 downto 0 );
     gps_txd : out STD_LOGIC_VECTOR ( 1 downto 0 );
     PPS_IN_N : in STD_LOGIC_VECTOR ( 0 to 0 );
@@ -118,14 +108,24 @@ architecture STRUCTURE of design_1_wrapper is
     EXT_TRIG_IN_P : in STD_LOGIC_VECTOR ( 1 downto 0 );
     GTU_CLK_IN_N : in STD_LOGIC_VECTOR ( 0 to 0 );
     GTU_CLK_IN_P : in STD_LOGIC_VECTOR ( 0 to 0 );
-    CLK40_OUT_N : out STD_LOGIC_VECTOR ( 3 downto 0 );
-    CLK40_OUT_P : out STD_LOGIC_VECTOR ( 3 downto 0 );
     CLK40_IN_N : in STD_LOGIC_VECTOR ( 0 to 0 );
     CLK40_IN_P : in STD_LOGIC_VECTOR ( 0 to 0 );
     ACQ_STATUS_IN_N : in STD_LOGIC_VECTOR ( 0 to 0 );
     ACQ_STATUS_IN_P : in STD_LOGIC_VECTOR ( 0 to 0 );
-    ACQ_STATUS_OUT_N : out STD_LOGIC_VECTOR ( 3 downto 0 );
-    ACQ_STATUS_OUT_P : out STD_LOGIC_VECTOR ( 3 downto 0 )
+    TRIG_L1_IN_N : in STD_LOGIC_VECTOR ( 6 downto 0 );
+    TRIG_L1_IN_P : in STD_LOGIC_VECTOR ( 6 downto 0 );
+    BUSY_IN_N : in STD_LOGIC_VECTOR ( 6 downto 0 );
+    BUSY_IN_P : in STD_LOGIC_VECTOR ( 6 downto 0 );
+    PPS_OUT_N : out STD_LOGIC_VECTOR ( 6 downto 0 );
+    PPS_OUT_P : out STD_LOGIC_VECTOR ( 6 downto 0 );
+    EXT_TRIG_OUT_N : out STD_LOGIC_VECTOR ( 6 downto 0 );
+    EXT_TRIG_OUT_P : out STD_LOGIC_VECTOR ( 6 downto 0 );
+    GTU_CLK_OUT_N : out STD_LOGIC_VECTOR ( 6 downto 0 );
+    GTU_CLK_OUT_P : out STD_LOGIC_VECTOR ( 6 downto 0 );
+    CLK40_OUT_N : out STD_LOGIC_VECTOR ( 6 downto 0 );
+    CLK40_OUT_P : out STD_LOGIC_VECTOR ( 6 downto 0 );
+    ACQ_STATUS_OUT_N : out STD_LOGIC_VECTOR ( 6 downto 0 );
+    ACQ_STATUS_OUT_P : out STD_LOGIC_VECTOR ( 6 downto 0 )
   );
   end component design_1;
 begin
@@ -133,16 +133,16 @@ design_1_i: component design_1
      port map (
       ACQ_STATUS_IN_N(0) => ACQ_STATUS_IN_N(0),
       ACQ_STATUS_IN_P(0) => ACQ_STATUS_IN_P(0),
-      ACQ_STATUS_OUT_N(3 downto 0) => ACQ_STATUS_OUT_N(3 downto 0),
-      ACQ_STATUS_OUT_P(3 downto 0) => ACQ_STATUS_OUT_P(3 downto 0),
-      BUSY_IN_N(3 downto 0) => BUSY_IN_N(3 downto 0),
-      BUSY_IN_P(3 downto 0) => BUSY_IN_P(3 downto 0),
+      ACQ_STATUS_OUT_N(6 downto 0) => ACQ_STATUS_OUT_N(6 downto 0),
+      ACQ_STATUS_OUT_P(6 downto 0) => ACQ_STATUS_OUT_P(6 downto 0),
+      BUSY_IN_N(6 downto 0) => BUSY_IN_N(6 downto 0),
+      BUSY_IN_P(6 downto 0) => BUSY_IN_P(6 downto 0),
       BUSY_OUT_N(0) => BUSY_OUT_N(0),
       BUSY_OUT_P(0) => BUSY_OUT_P(0),
       CLK40_IN_N(0) => CLK40_IN_N(0),
       CLK40_IN_P(0) => CLK40_IN_P(0),
-      CLK40_OUT_N(3 downto 0) => CLK40_OUT_N(3 downto 0),
-      CLK40_OUT_P(3 downto 0) => CLK40_OUT_P(3 downto 0),
+      CLK40_OUT_N(6 downto 0) => CLK40_OUT_N(6 downto 0),
+      CLK40_OUT_P(6 downto 0) => CLK40_OUT_P(6 downto 0),
       DDR_addr(14 downto 0) => DDR_addr(14 downto 0),
       DDR_ba(2 downto 0) => DDR_ba(2 downto 0),
       DDR_cas_n => DDR_cas_n,
@@ -160,8 +160,8 @@ design_1_i: component design_1
       DDR_we_n => DDR_we_n,
       EXT_TRIG_IN_N(1 downto 0) => EXT_TRIG_IN_N(1 downto 0),
       EXT_TRIG_IN_P(1 downto 0) => EXT_TRIG_IN_P(1 downto 0),
-      EXT_TRIG_OUT_N(3 downto 0) => EXT_TRIG_OUT_N(3 downto 0),
-      EXT_TRIG_OUT_P(3 downto 0) => EXT_TRIG_OUT_P(3 downto 0),
+      EXT_TRIG_OUT_N(6 downto 0) => EXT_TRIG_OUT_N(6 downto 0),
+      EXT_TRIG_OUT_P(6 downto 0) => EXT_TRIG_OUT_P(6 downto 0),
       FIXED_IO_ddr_vrn => FIXED_IO_ddr_vrn,
       FIXED_IO_ddr_vrp => FIXED_IO_ddr_vrp,
       FIXED_IO_mio(53 downto 0) => FIXED_IO_mio(53 downto 0),
@@ -171,14 +171,14 @@ design_1_i: component design_1
       GPS_EN(1 downto 0) => GPS_EN(1 downto 0),
       GTU_CLK_IN_N(0) => GTU_CLK_IN_N(0),
       GTU_CLK_IN_P(0) => GTU_CLK_IN_P(0),
-      GTU_CLK_OUT_N(3 downto 0) => GTU_CLK_OUT_N(3 downto 0),
-      GTU_CLK_OUT_P(3 downto 0) => GTU_CLK_OUT_P(3 downto 0),
+      GTU_CLK_OUT_N(6 downto 0) => GTU_CLK_OUT_N(6 downto 0),
+      GTU_CLK_OUT_P(6 downto 0) => GTU_CLK_OUT_P(6 downto 0),
       PPS_IN_N(0) => PPS_IN_N(0),
       PPS_IN_P(0) => PPS_IN_P(0),
-      PPS_OUT_N(3 downto 0) => PPS_OUT_N(3 downto 0),
-      PPS_OUT_P(3 downto 0) => PPS_OUT_P(3 downto 0),
-      TRIG_L1_IN_N(3 downto 0) => TRIG_L1_IN_N(3 downto 0),
-      TRIG_L1_IN_P(3 downto 0) => TRIG_L1_IN_P(3 downto 0),
+      PPS_OUT_N(6 downto 0) => PPS_OUT_N(6 downto 0),
+      PPS_OUT_P(6 downto 0) => PPS_OUT_P(6 downto 0),
+      TRIG_L1_IN_N(6 downto 0) => TRIG_L1_IN_N(6 downto 0),
+      TRIG_L1_IN_P(6 downto 0) => TRIG_L1_IN_P(6 downto 0),
       TRIG_L1_OUT_N(0) => TRIG_L1_OUT_N(0),
       TRIG_L1_OUT_P(0) => TRIG_L1_OUT_P(0),
       gps_1pps_ext(1 downto 0) => gps_1pps_ext(1 downto 0),
