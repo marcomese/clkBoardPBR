@@ -90,13 +90,14 @@
         "L1_03_CounterReg": "",
         "cmdDecoderReg": "",
         "evtPPSGtuClk40Reg": "",
-        "aliveDeadFifoReg": "",
+        "aliveDeadMSFifoReg": "",
         "trgFlagPadding": "",
         "zeroPadding": "",
-        "L1_47_CounterReg": "",
+        "L1_46_Periods_CounterReg": "",
         "statusFlagsVerReg": "",
         "status0Slice": "",
-        "status1Slice": ""
+        "status1Slice": "",
+        "ilconcat_0": ""
       },
       "inBuffers": {
         "busyInBUFDS": "",
@@ -2576,6 +2577,21 @@
             "direction": "O",
             "left": "15",
             "right": "0"
+          },
+          "masterSlave": {
+            "direction": "O",
+            "left": "31",
+            "right": "0"
+          },
+          "selfTrgScale": {
+            "direction": "O",
+            "left": "2",
+            "right": "0"
+          },
+          "selfTrgPeriod": {
+            "direction": "O",
+            "left": "12",
+            "right": "0"
           }
         },
         "components": {
@@ -3032,6 +3048,11 @@
                 "left": "6",
                 "right": "0"
               },
+              "masterSlave": {
+                "direction": "O",
+                "left": "31",
+                "right": "0"
+              },
               "release_busy": {
                 "direction": "O"
               },
@@ -3242,8 +3263,8 @@
           "Net1": {
             "ports": [
               "plToAxiSBusy",
-              "command_decoder_0/plToAxiSBusy",
-              "run_control_fsm_0/plToAxiSBusy"
+              "run_control_fsm_0/plToAxiSBusy",
+              "command_decoder_0/plToAxiSBusy"
             ]
           },
           "acqStatusIn_1": {
@@ -3255,8 +3276,8 @@
           "axis_data_fifo_0_prog_full": {
             "ports": [
               "fifoFull",
-              "command_decoder_0/fifoFull",
-              "run_control_fsm_0/fifoFull"
+              "run_control_fsm_0/fifoFull",
+              "command_decoder_0/fifoFull"
             ]
           },
           "command_decoder_0_clk40M_sel": {
@@ -3305,6 +3326,12 @@
             "ports": [
               "command_decoder_0/gtu_sel",
               "gtu_sel"
+            ]
+          },
+          "command_decoder_0_masterSlave": {
+            "ports": [
+              "command_decoder_0/masterSlave",
+              "masterSlave"
             ]
           },
           "command_decoder_0_pps_trg": {
@@ -3359,13 +3386,15 @@
           "command_decoder_0_selfTrgPeriod": {
             "ports": [
               "command_decoder_0/selfTrgPeriod",
-              "selfTrigger_0/period"
+              "selfTrigger_0/period",
+              "selfTrgPeriod"
             ]
           },
           "command_decoder_0_selfTrgScale": {
             "ports": [
               "command_decoder_0/selfTrgScale",
-              "selfTrigger_0/scale"
+              "selfTrigger_0/scale",
+              "selfTrgScale"
             ]
           },
           "command_decoder_0_send_nack": {
@@ -3433,9 +3462,9 @@
               "clk",
               "pulseExtender_0/clk",
               "trgFlagBuilder_0/clk",
-              "command_decoder_0/clk",
               "run_control_fsm_0/clock",
-              "selfTrigger_0/clk"
+              "selfTrigger_0/clk",
+              "command_decoder_0/clk"
             ]
           },
           "pulseExtender_0_sigOut": {
@@ -3449,9 +3478,9 @@
               "rst",
               "pulseExtender_0/rst",
               "trgFlagBuilder_0/rst",
-              "command_decoder_0/rst",
               "run_control_fsm_0/reset",
-              "selfTrigger_0/rst"
+              "selfTrigger_0/rst",
+              "command_decoder_0/rst"
             ]
           },
           "run_control_fsm_0_busy": {
@@ -3515,8 +3544,8 @@
           "synchronizers_0_busySync": {
             "ports": [
               "busy",
-              "command_decoder_0/busy",
-              "run_control_fsm_0/busy_in"
+              "run_control_fsm_0/busy_in",
+              "command_decoder_0/busy"
             ]
           },
           "synchronizers_0_extTrgSync": {
@@ -6179,9 +6208,29 @@
             "left": "31",
             "right": "0"
           },
-          "registerIn3": {
+          "usrAccessIn": {
             "direction": "I",
             "left": "31",
+            "right": "0"
+          },
+          "masterSlaveIn": {
+            "direction": "I",
+            "left": "31",
+            "right": "0"
+          },
+          "gtuPrdIn": {
+            "direction": "I",
+            "left": "15",
+            "right": "0"
+          },
+          "selfScaleIn": {
+            "direction": "I",
+            "left": "2",
+            "right": "0"
+          },
+          "selfPeriodIn": {
+            "direction": "I",
+            "left": "12",
             "right": "0"
           }
         },
@@ -6207,12 +6256,12 @@
             "xci_path": "ip\\design_1_AXIStatusReg_0_2\\design_1_AXIStatusReg_0_2.xci",
             "inst_hier_path": "axiPLRegs/evtPPSGtuClk40Reg"
           },
-          "aliveDeadFifoReg": {
+          "aliveDeadMSFifoReg": {
             "vlnv": "mames:user:AXIStatusReg:1.0",
             "ip_revision": "4",
             "xci_name": "design_1_AXIStatusReg_0_4",
             "xci_path": "ip\\design_1_AXIStatusReg_0_4\\design_1_AXIStatusReg_0_4.xci",
-            "inst_hier_path": "axiPLRegs/aliveDeadFifoReg"
+            "inst_hier_path": "axiPLRegs/aliveDeadMSFifoReg"
           },
           "trgFlagPadding": {
             "vlnv": "xilinx.com:inline_hdl:ilconcat:1.0",
@@ -6240,12 +6289,12 @@
               }
             }
           },
-          "L1_47_CounterReg": {
+          "L1_46_Periods_CounterReg": {
             "vlnv": "mames:user:AXIStatusReg:1.0",
             "ip_revision": "4",
             "xci_name": "design_1_AXIStatusReg_0_5",
             "xci_path": "ip\\design_1_AXIStatusReg_0_5_1\\design_1_AXIStatusReg_0_5.xci",
-            "inst_hier_path": "axiPLRegs/L1_47_CounterReg"
+            "inst_hier_path": "axiPLRegs/L1_46_Periods_CounterReg"
           },
           "statusFlagsVerReg": {
             "vlnv": "mames:user:AXIStatusReg:1.0",
@@ -6278,18 +6327,41 @@
                 "value": "64"
               }
             }
+          },
+          "ilconcat_0": {
+            "vlnv": "xilinx.com:inline_hdl:ilconcat:1.0",
+            "parameters": {
+              "IN0_WIDTH": {
+                "value": "16",
+                "value_src": "propagated",
+                "value_mode": "auto"
+              },
+              "IN1_WIDTH": {
+                "value": "3",
+                "value_src": "propagated",
+                "value_mode": "auto"
+              },
+              "IN2_WIDTH": {
+                "value": "13",
+                "value_src": "propagated",
+                "value_mode": "auto"
+              },
+              "NUM_PORTS": {
+                "value": "3"
+              }
+            }
           }
         },
         "interface_nets": {
           "Conn1": {
             "interface_ports": [
-              "aliveDeadFifoReg/S00_AXI",
+              "aliveDeadMSFifoReg/S00_AXI",
               "S00_AXI3"
             ]
           },
           "Conn2": {
             "interface_ports": [
-              "L1_47_CounterReg/S00_AXI",
+              "L1_46_Periods_CounterReg/S00_AXI",
               "S00_AXI4"
             ]
           },
@@ -6343,6 +6415,24 @@
               "trgFlagPadding/In0"
             ]
           },
+          "In0_2": {
+            "ports": [
+              "gtuPrdIn",
+              "ilconcat_0/In0"
+            ]
+          },
+          "In1_1": {
+            "ports": [
+              "selfScaleIn",
+              "ilconcat_0/In1"
+            ]
+          },
+          "In2_1": {
+            "ports": [
+              "selfPeriodIn",
+              "ilconcat_0/In2"
+            ]
+          },
           "counters_Dout": {
             "ports": [
               "trg1CntIn",
@@ -6370,7 +6460,13 @@
           "fifoDataCountIn_1": {
             "ports": [
               "fifoDataCountIn",
-              "aliveDeadFifoReg/registerIn3"
+              "aliveDeadMSFifoReg/registerIn3"
+            ]
+          },
+          "ilconcat_0_dout": {
+            "ports": [
+              "ilconcat_0/dout",
+              "L1_46_Periods_CounterReg/registerIn3"
             ]
           },
           "ilconstant_0_dout": {
@@ -6391,8 +6487,8 @@
               "evtPPSGtuClk40Reg/s00_axi_aclk",
               "cmdDecoderReg/s00_axi_aclk",
               "L1_03_CounterReg/s00_axi_aclk",
-              "aliveDeadFifoReg/s00_axi_aclk",
-              "L1_47_CounterReg/s00_axi_aclk",
+              "aliveDeadMSFifoReg/s00_axi_aclk",
+              "L1_46_Periods_CounterReg/s00_axi_aclk",
               "statusFlagsVerReg/s00_axi_aclk"
             ]
           },
@@ -6405,25 +6501,31 @@
           "registerIn0_1": {
             "ports": [
               "trg4CntIn",
-              "L1_47_CounterReg/registerIn0"
+              "L1_46_Periods_CounterReg/registerIn0"
             ]
           },
           "registerIn10_1": {
             "ports": [
               "deadTIn",
-              "aliveDeadFifoReg/registerIn1"
+              "aliveDeadMSFifoReg/registerIn1"
             ]
           },
           "registerIn1_1": {
             "ports": [
               "trg5CntIn",
-              "L1_47_CounterReg/registerIn1"
+              "L1_46_Periods_CounterReg/registerIn1"
             ]
           },
           "registerIn2_1": {
             "ports": [
               "trg6Cntin",
-              "L1_47_CounterReg/registerIn2"
+              "L1_46_Periods_CounterReg/registerIn2"
+            ]
+          },
+          "registerIn2_2": {
+            "ports": [
+              "masterSlaveIn",
+              "aliveDeadMSFifoReg/registerIn2"
             ]
           },
           "registerIn3_1": {
@@ -6434,14 +6536,14 @@
           },
           "registerIn3_2": {
             "ports": [
-              "registerIn3",
+              "usrAccessIn",
               "statusFlagsVerReg/registerIn3"
             ]
           },
           "registerIn9_1": {
             "ports": [
               "aliveTIn",
-              "aliveDeadFifoReg/registerIn0"
+              "aliveDeadMSFifoReg/registerIn0"
             ]
           },
           "rst_ps7_0_100M_peripheral_aresetn": {
@@ -6450,8 +6552,8 @@
               "evtPPSGtuClk40Reg/s00_axi_aresetn",
               "cmdDecoderReg/s00_axi_aresetn",
               "L1_03_CounterReg/s00_axi_aresetn",
-              "aliveDeadFifoReg/s00_axi_aresetn",
-              "L1_47_CounterReg/s00_axi_aresetn",
+              "aliveDeadMSFifoReg/s00_axi_aresetn",
+              "L1_46_Periods_CounterReg/s00_axi_aresetn",
               "statusFlagsVerReg/s00_axi_aresetn"
             ]
           },
@@ -7878,6 +7980,18 @@
           "inBuffers/BUSY_IN_P"
         ]
       },
+      "In1_1": {
+        "ports": [
+          "cmdAndRunCtrl/selfTrgScale",
+          "axiPLRegs/selfScaleIn"
+        ]
+      },
+      "In2_1": {
+        "ports": [
+          "cmdAndRunCtrl/selfTrgPeriod",
+          "axiPLRegs/selfPeriodIn"
+        ]
+      },
       "Op1_1": {
         "ports": [
           "cmdAndRunCtrl/fifoRst",
@@ -7987,13 +8101,20 @@
       "cmdAndRunCtrl_gtuPeriod": {
         "ports": [
           "cmdAndRunCtrl/gtuPeriod",
-          "gtuCtrl_0/gtuPeriod"
+          "gtuCtrl_0/gtuPeriod",
+          "axiPLRegs/gtuPrdIn"
         ]
       },
       "cmdAndRunCtrl_gtu_sel": {
         "ports": [
           "cmdAndRunCtrl/gtu_sel",
           "gtuCtrl_0/gtuSel"
+        ]
+      },
+      "cmdAndRunCtrl_masterSlave": {
+        "ports": [
+          "cmdAndRunCtrl/masterSlave",
+          "axiPLRegs/masterSlaveIn"
         ]
       },
       "cmdAndRunCtrl_ready": {
@@ -8433,7 +8554,7 @@
       "userAccess_0_usrAccessOut": {
         "ports": [
           "userAccess_0/usrAccessOut",
-          "axiPLRegs/registerIn3"
+          "axiPLRegs/usrAccessIn"
         ]
       }
     },
@@ -8469,7 +8590,7 @@
                 "offset_high_param": "C_S00_AXI_HIGHADDR"
               },
               "SEG_L1_47_CounterReg_S00_AXI_reg": {
-                "address_block": "/axiPLRegs/L1_47_CounterReg/S00_AXI/S00_AXI_reg",
+                "address_block": "/axiPLRegs/L1_46_Periods_CounterReg/S00_AXI/S00_AXI_reg",
                 "offset": "0x43C40000",
                 "range": "64K",
                 "offset_base_param": "C_S00_AXI_BASEADDR",
@@ -8498,7 +8619,7 @@
                 "offset_high_param": "C_S00_AXI_HIGHADDR"
               },
               "SEG_ppsCounterReg_S00_AXI_reg": {
-                "address_block": "/axiPLRegs/aliveDeadFifoReg/S00_AXI/S00_AXI_reg",
+                "address_block": "/axiPLRegs/aliveDeadMSFifoReg/S00_AXI/S00_AXI_reg",
                 "offset": "0x43C30000",
                 "range": "64K",
                 "offset_base_param": "C_S00_AXI_BASEADDR",

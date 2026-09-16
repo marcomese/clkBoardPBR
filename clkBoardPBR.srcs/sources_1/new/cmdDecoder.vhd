@@ -50,6 +50,7 @@ port(
     selfTrgScale       : out std_logic_vector(2 downto 0);
     selfTrgPeriod      : out std_logic_vector(12 downto 0);
     xGammaChannel      : out std_logic_vector(zynqNum-1 downto 0);
+    masterSlave        : out std_logic_vector(31 downto 0);
     -- pulse outputs
     release_busy       : out std_logic;
     trg_command        : out std_logic;
@@ -100,8 +101,11 @@ constant ARG_CLKB    : std_logic_vector(7 downto 0) := x"55"; -- trg clkb
 constant ARG_SELF    : std_logic_vector(7 downto 0) := x"AA"; -- trg self
 constant ARG_ALL     : std_logic_vector(7 downto 0) := x"FF"; -- channel "all" (ARG1)
 
-constant STATUS_USED         : integer := 14 + extTrgNum + 2*ppsNum + 4*zynqNum;
-constant STATUS_PAD          : integer := statusLen - STATUS_USED;
+constant STATUS_USED : integer := 14 + extTrgNum + 2*ppsNum + 4*zynqNum;
+constant STATUS_PAD  : integer := statusLen - STATUS_USED;
+
+constant MSTR_STR    : std_logic_vector(31 downto 0) := x"4D_53_54_52";
+constant SLV_STR     : std_logic_vector(31 downto 0) := x"53_4C_56_20";
 
 signal dataRecvFF,
        dataRecvFall,
@@ -123,6 +127,8 @@ signal cmdSig,
        arg1Sig,
        arg2Sig      : std_logic_vector(7 downto 0);
 
+signal mstrSlvSig   : std_logic_vector(31 downto 0);
+
 begin
 
 run           <= run_s;
@@ -135,7 +141,7 @@ ext_trg_en    <= ext_trg_en_s;
 clk40M_sel    <= clk40MSelSig;
 gtu_sel       <= gtuSelSig;
 xGammaChannel <= xGChSig;
-
+masterSlave   <= mstrSlvSig;
 dataRecvFall  <= dataRecvFF and not data_received;
 
 status_register <=  std_logic_vector(to_unsigned(0, STATUS_PAD)) &
@@ -220,6 +226,7 @@ begin
             selfTrgScale  <= (others => '0');
             selfTrgPeriod <= (others => '0');
             xGChSig       <= (others => '0');
+            mstrSlvSig    <= MSTR_STR;
         else
             if cmdReady = '1' then
                 case cmdSig is
@@ -242,46 +249,42 @@ begin
                             send_nack <= '1';
                         end if;
 
-                    when CMD_TRG =>
+                    when CMD_TRG => -- self, pps and external triggers are mutually exclusive
                         scale  := arg1Sig(7 downto 5);
                         period := arg1Sig(4 downto 0) & arg2Sig;
 
                         if arg0Sig = ARG_ON then --trg soft
                             trg_command <= '1';
                         elsif arg0Sig = ARG_OFF and arg1Sig = ARG_ON then -- trg external enable
-                            ext_trg_en_s(0) <= '0';
                             ext_trg_en_s(1) <= '1'; -- (trg from jtrg connector)
                             pps_trg_s       <= '0';
                             selfTrgEn       <= '0';
                         elsif arg0Sig = ARG_OFF and arg1Sig = ARG_OFF then -- trg external disable
                             ext_trg_en_s(1) <= '0';
                         elsif arg0Sig = ARG_PPS and arg1Sig = ARG_ON then -- trg pps enable
-                            ext_trg_en_s <= (others => '0');
-                            pps_trg_s    <= '1';
-                            selfTrgEn    <= '0';
+                            ext_trg_en_s(1) <= '0';
+                            pps_trg_s       <= '1';
+                            selfTrgEn       <= '0';
                         elsif arg0Sig = ARG_PPS and arg1Sig = ARG_OFF then -- trg pps disable
                             pps_trg_s <= '0';
                         elsif arg0Sig = ARG_NORMAL then -- trg normal
-                            ext_trg_en_s <= (others => '0');
-                            pps_trg_s    <= '0';
-                            selfTrgEn    <= '0';
-                        elsif arg0Sig = ARG_CLKB and arg1Sig = ARG_ON then -- trg clkb enable
-                            ext_trg_en_s(0) <= '1'; -- (trg from the other clk board)
                             ext_trg_en_s(1) <= '0';
                             pps_trg_s       <= '0';
                             selfTrgEn       <= '0';
+                        elsif arg0Sig = ARG_CLKB and arg1Sig = ARG_ON then -- trg clkb enable
+                            ext_trg_en_s(0) <= '1'; -- (trg from the other clk board)
+                            mstrSlvSig      <= SLV_STR;
                         elsif arg0Sig = ARG_CLKB and arg1Sig = ARG_OFF then -- trg clkb disable
                             ext_trg_en_s(0) <= '0';
+                            mstrSlvSig      <= MSTR_STR;
                         elsif arg0Sig = ARG_SELF and arg1Sig = x"00" and arg2Sig = x"00" then -- trg self disable
                             selfTrgEn       <= '0';
-                            selfTrgScale  <= (others => '0');
-                            selfTrgPeriod <= (others => '0');
                         elsif arg0Sig = ARG_SELF and unsigned(scale) <= 5 and unsigned(period) /= 0 then -- trg self <scale:period>
-                            ext_trg_en_s  <= (others => '0');
-                            pps_trg_s     <= '0';
-                            selfTrgEn     <= '1';
-                            selfTrgScale  <= scale;
-                            selfTrgPeriod <= period;
+                            ext_trg_en_s(1) <= '0';
+                            pps_trg_s       <= '0';
+                            selfTrgEn       <= '1';
+                            selfTrgScale    <= scale;
+                            selfTrgPeriod   <= period;
                         else
                             send_nack <= '1';
                         end if;
