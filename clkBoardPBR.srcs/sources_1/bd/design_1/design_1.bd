@@ -3352,8 +3352,8 @@
           "command_decoder_0_selfTrgEn": {
             "ports": [
               "command_decoder_0/selfTrgEn",
-              "selfTrigger_0/enable",
-              "run_control_fsm_0/selfTrgEn"
+              "run_control_fsm_0/selfTrgEn",
+              "selfTrigger_0/enable"
             ]
           },
           "command_decoder_0_selfTrgPeriod": {
@@ -3434,8 +3434,8 @@
               "pulseExtender_0/clk",
               "trgFlagBuilder_0/clk",
               "command_decoder_0/clk",
-              "selfTrigger_0/clk",
-              "run_control_fsm_0/clock"
+              "run_control_fsm_0/clock",
+              "selfTrigger_0/clk"
             ]
           },
           "pulseExtender_0_sigOut": {
@@ -3450,8 +3450,8 @@
               "pulseExtender_0/rst",
               "trgFlagBuilder_0/rst",
               "command_decoder_0/rst",
-              "selfTrigger_0/rst",
-              "run_control_fsm_0/reset"
+              "run_control_fsm_0/reset",
+              "selfTrigger_0/rst"
             ]
           },
           "run_control_fsm_0_busy": {
@@ -8292,9 +8292,9 @@
           "processing_system7_0/S_AXI_ACP_ACLK",
           "rst_ps7_0_100M/slowest_sync_clk",
           "dataBuilder_0/clk",
-          "userAccess_0/clk",
           "clk40MCtrl_0/clk",
-          "gtuCtrl_0/clk"
+          "gtuCtrl_0/clk",
+          "userAccess_0/clk"
         ]
       },
       "processing_system7_0_FCLK_CLK1": {
