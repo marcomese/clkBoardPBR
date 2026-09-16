@@ -131,6 +131,10 @@ signal mstrSlvSig   : std_logic_vector(31 downto 0);
 
 begin
 
+assert STATUS_USED <= statusLen
+    report "status_register overflow: reduce extTrgNum/zynqNum/ppsNum"
+    severity failure;
+
 run           <= run_s;
 cmd_busy      <= cmd_busy_s;
 zynq_en       <= zynq_en_s;
@@ -164,9 +168,20 @@ status_register <=  std_logic_vector(to_unsigned(0, STATUS_PAD)) &
                     runCtrlBusy     &   -- 1 bit  -> 1
                     running;            -- 1 bit  -> 0
 
-assert STATUS_USED <= statusLen
-    report "status_register overflow: reduce extTrgNum/zynqNum/ppsNum"
-    severity failure;
+masterSlaveDecodeProc: process(clk)
+begin
+    if rising_edge(clk) then
+        if rst = '1' then
+            mstrSlvSig <= MSTR_STR;
+        elsif ext_trg_en_s(0) = '0' then
+            mstrSlvSig <= MSTR_STR;
+        elsif ext_trg_en_s(0) = '1' then
+            mstrSlvSig <= SLV_STR;
+        else
+            mstrSlvSig <= (others => '0');
+        end if;
+    end if;
+end process;
 
 cmdArgsProc: process(clk)
 begin
@@ -226,7 +241,6 @@ begin
             selfTrgScale  <= (others => '0');
             selfTrgPeriod <= (others => '0');
             xGChSig       <= (others => '0');
-            mstrSlvSig    <= MSTR_STR;
         else
             if cmdReady = '1' then
                 case cmdSig is
@@ -249,7 +263,7 @@ begin
                             send_nack <= '1';
                         end if;
 
-                    when CMD_TRG => -- self, pps and external triggers are mutually exclusive
+                    when CMD_TRG => -- all the triggers can be selected at the same time
                         scale  := arg1Sig(7 downto 5);
                         period := arg1Sig(4 downto 0) & arg2Sig;
 
@@ -257,14 +271,10 @@ begin
                             trg_command <= '1';
                         elsif arg0Sig = ARG_OFF and arg1Sig = ARG_ON then -- trg external enable
                             ext_trg_en_s(1) <= '1'; -- (trg from jtrg connector)
-                            pps_trg_s       <= '0';
-                            selfTrgEn       <= '0';
                         elsif arg0Sig = ARG_OFF and arg1Sig = ARG_OFF then -- trg external disable
                             ext_trg_en_s(1) <= '0';
                         elsif arg0Sig = ARG_PPS and arg1Sig = ARG_ON then -- trg pps enable
-                            ext_trg_en_s(1) <= '0';
                             pps_trg_s       <= '1';
-                            selfTrgEn       <= '0';
                         elsif arg0Sig = ARG_PPS and arg1Sig = ARG_OFF then -- trg pps disable
                             pps_trg_s <= '0';
                         elsif arg0Sig = ARG_NORMAL then -- trg normal
@@ -273,15 +283,11 @@ begin
                             selfTrgEn       <= '0';
                         elsif arg0Sig = ARG_CLKB and arg1Sig = ARG_ON then -- trg clkb enable
                             ext_trg_en_s(0) <= '1'; -- (trg from the other clk board)
-                            mstrSlvSig      <= SLV_STR;
                         elsif arg0Sig = ARG_CLKB and arg1Sig = ARG_OFF then -- trg clkb disable
                             ext_trg_en_s(0) <= '0';
-                            mstrSlvSig      <= MSTR_STR;
                         elsif arg0Sig = ARG_SELF and arg1Sig = x"00" and arg2Sig = x"00" then -- trg self disable
                             selfTrgEn       <= '0';
                         elsif arg0Sig = ARG_SELF and unsigned(scale) <= 5 and unsigned(period) /= 0 then -- trg self <scale:period>
-                            ext_trg_en_s(1) <= '0';
-                            pps_trg_s       <= '0';
                             selfTrgEn       <= '1';
                             selfTrgScale    <= scale;
                             selfTrgPeriod   <= period;
