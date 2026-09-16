@@ -287,6 +287,8 @@ begin
                             ext_trg_en_s(0) <= '0';
                         elsif arg0Sig = ARG_SELF and arg1Sig = x"00" and arg2Sig = x"00" then -- trg self disable
                             selfTrgEn       <= '0';
+                            selfTrgScale  <= (others => '0');
+                            selfTrgPeriod <= (others => '0');
                         elsif arg0Sig = ARG_SELF and unsigned(scale) <= 5 and unsigned(period) /= 0 then -- trg self <scale:period>
                             selfTrgEn       <= '1';
                             selfTrgScale    <= scale;
