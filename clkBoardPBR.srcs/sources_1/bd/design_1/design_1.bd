@@ -27,7 +27,8 @@
         "trgFlagBuilder_0": "",
         "command_decoder_0": "",
         "pulseExtender_0": "",
-        "trgConcat": ""
+        "trgConcat": "",
+        "selfTrigger_0": ""
       },
       "counters": {
         "reg_event_number_0": "",
@@ -111,8 +112,8 @@
       },
       "axi_smc": "",
       "gtuCtrl_0": "",
-      "clk40MCtrl_0": "",
-      "userAccess_0": ""
+      "userAccess_0": "",
+      "clk40MCtrl_0": ""
     },
     "interface_ports": {
       "DDR": {
@@ -694,7 +695,7 @@
         "right": "0",
         "parameters": {
           "CLK_DOMAIN": {
-            "value": "design_1_IBUF_DS_N_0",
+            "value": "design_1_TRIG_L1_IN_N",
             "value_src": "default"
           },
           "FREQ_HZ": {
@@ -722,7 +723,7 @@
         "right": "0",
         "parameters": {
           "CLK_DOMAIN": {
-            "value": "design_1_IBUF_DS_P_0",
+            "value": "design_1_TRIG_L1_IN_P",
             "value_src": "default"
           },
           "FREQ_HZ": {
@@ -750,7 +751,7 @@
         "right": "0",
         "parameters": {
           "CLK_DOMAIN": {
-            "value": "design_1_IBUF_DS_N_0",
+            "value": "design_1_BUSY_IN_N",
             "value_src": "default"
           },
           "FREQ_HZ": {
@@ -778,7 +779,7 @@
         "right": "0",
         "parameters": {
           "CLK_DOMAIN": {
-            "value": "design_1_IBUF_DS_P_0",
+            "value": "design_1_BUSY_IN_P",
             "value_src": "default"
           },
           "FREQ_HZ": {
@@ -2510,10 +2511,6 @@
           "send_nack": {
             "direction": "O"
           },
-          "reset_l1_nr": {
-            "type": "rst",
-            "direction": "O"
-          },
           "run": {
             "direction": "O"
           },
@@ -2570,24 +2567,14 @@
           "acqStatusIn": {
             "direction": "I"
           },
-          "arg0In": {
-            "direction": "I",
-            "left": "31",
+          "reset_l1_nr": {
+            "direction": "O",
+            "left": "6",
             "right": "0"
           },
-          "arg1In": {
-            "direction": "I",
-            "left": "31",
-            "right": "0"
-          },
-          "arg2In": {
-            "direction": "I",
-            "left": "31",
-            "right": "0"
-          },
-          "cmdFlag": {
-            "direction": "I",
-            "left": "3",
+          "gtuPeriod": {
+            "direction": "O",
+            "left": "15",
             "right": "0"
           }
         },
@@ -2695,6 +2682,12 @@
                 "direction": "I",
                 "left": "1",
                 "right": "0"
+              },
+              "selfTrgEn": {
+                "direction": "I"
+              },
+              "selfTrgIn": {
+                "direction": "I"
               },
               "ppsTrgEn": {
                 "direction": "I"
@@ -2925,26 +2918,6 @@
                 "left": "31",
                 "right": "0"
               },
-              "arg0In": {
-                "direction": "I",
-                "left": "31",
-                "right": "0"
-              },
-              "arg1In": {
-                "direction": "I",
-                "left": "31",
-                "right": "0"
-              },
-              "arg2In": {
-                "direction": "I",
-                "left": "31",
-                "right": "0"
-              },
-              "cmdFlag": {
-                "direction": "I",
-                "left": "3",
-                "right": "0"
-              },
               "data_received": {
                 "direction": "I"
               },
@@ -3023,6 +2996,11 @@
               "gtu_sel": {
                 "direction": "O"
               },
+              "gtuPeriod": {
+                "direction": "O",
+                "left": "15",
+                "right": "0"
+              },
               "clk40M_sel": {
                 "direction": "O",
                 "parameters": {
@@ -3035,6 +3013,24 @@
                     "value_src": "ip_prop"
                   }
                 }
+              },
+              "selfTrgEn": {
+                "direction": "O"
+              },
+              "selfTrgScale": {
+                "direction": "O",
+                "left": "2",
+                "right": "0"
+              },
+              "selfTrgPeriod": {
+                "direction": "O",
+                "left": "12",
+                "right": "0"
+              },
+              "xGammaChannel": {
+                "direction": "O",
+                "left": "6",
+                "right": "0"
               },
               "release_busy": {
                 "direction": "O"
@@ -3055,13 +3051,9 @@
                 }
               },
               "reset_l1_nr": {
-                "type": "rst",
                 "direction": "O",
-                "parameters": {
-                  "POLARITY": {
-                    "value": "ACTIVE_HIGH"
-                  }
-                }
+                "left": "6",
+                "right": "0"
               },
               "reset_evt_nr": {
                 "type": "rst",
@@ -3187,14 +3179,71 @@
                 "value": "2"
               }
             }
+          },
+          "selfTrigger_0": {
+            "vlnv": "xilinx.com:module_ref:selfTrigger:1.0",
+            "ip_revision": "1",
+            "xci_name": "design_1_selfTrigger_0_0",
+            "xci_path": "ip\\design_1_selfTrigger_0_0\\design_1_selfTrigger_0_0.xci",
+            "inst_hier_path": "cmdAndRunCtrl/selfTrigger_0",
+            "reference_info": {
+              "ref_type": "hdl",
+              "ref_name": "selfTrigger",
+              "boundary_crc": "0x0"
+            },
+            "ports": {
+              "clk": {
+                "type": "clk",
+                "direction": "I",
+                "parameters": {
+                  "ASSOCIATED_RESET": {
+                    "value": "rst",
+                    "value_src": "constant"
+                  },
+                  "FREQ_HZ": {
+                    "value": "100000000",
+                    "value_src": "user_prop"
+                  },
+                  "CLK_DOMAIN": {
+                    "value": "design_1_processing_system7_0_0_FCLK_CLK0",
+                    "value_src": "default_prop"
+                  }
+                }
+              },
+              "rst": {
+                "type": "rst",
+                "direction": "I",
+                "parameters": {
+                  "POLARITY": {
+                    "value": "ACTIVE_HIGH"
+                  }
+                }
+              },
+              "enable": {
+                "direction": "I"
+              },
+              "scale": {
+                "direction": "I",
+                "left": "2",
+                "right": "0"
+              },
+              "period": {
+                "direction": "I",
+                "left": "12",
+                "right": "0"
+              },
+              "trgOut": {
+                "direction": "O"
+              }
+            }
           }
         },
         "nets": {
           "Net1": {
             "ports": [
               "plToAxiSBusy",
-              "run_control_fsm_0/plToAxiSBusy",
-              "command_decoder_0/plToAxiSBusy"
+              "command_decoder_0/plToAxiSBusy",
+              "run_control_fsm_0/plToAxiSBusy"
             ]
           },
           "acqStatusIn_1": {
@@ -3203,35 +3252,11 @@
               "run_control_fsm_0/acqStatusIn"
             ]
           },
-          "arg0In_1": {
-            "ports": [
-              "arg0In",
-              "command_decoder_0/arg0In"
-            ]
-          },
-          "arg1In_1": {
-            "ports": [
-              "arg1In",
-              "command_decoder_0/arg1In"
-            ]
-          },
-          "arg2In_1": {
-            "ports": [
-              "arg2In",
-              "command_decoder_0/arg2In"
-            ]
-          },
           "axis_data_fifo_0_prog_full": {
             "ports": [
               "fifoFull",
-              "run_control_fsm_0/fifoFull",
-              "command_decoder_0/fifoFull"
-            ]
-          },
-          "cmdFlag_1": {
-            "ports": [
-              "cmdFlag",
-              "command_decoder_0/cmdFlag"
+              "command_decoder_0/fifoFull",
+              "run_control_fsm_0/fifoFull"
             ]
           },
           "command_decoder_0_clk40M_sel": {
@@ -3268,6 +3293,12 @@
             "ports": [
               "command_decoder_0/pps_en",
               "pps_en"
+            ]
+          },
+          "command_decoder_0_gtuPeriod": {
+            "ports": [
+              "command_decoder_0/gtuPeriod",
+              "gtuPeriod"
             ]
           },
           "command_decoder_0_gtu_sel": {
@@ -3316,6 +3347,25 @@
             "ports": [
               "command_decoder_0/run",
               "run_control_fsm_0/run_val"
+            ]
+          },
+          "command_decoder_0_selfTrgEn": {
+            "ports": [
+              "command_decoder_0/selfTrgEn",
+              "selfTrigger_0/enable",
+              "run_control_fsm_0/selfTrgEn"
+            ]
+          },
+          "command_decoder_0_selfTrgPeriod": {
+            "ports": [
+              "command_decoder_0/selfTrgPeriod",
+              "selfTrigger_0/period"
+            ]
+          },
+          "command_decoder_0_selfTrgScale": {
+            "ports": [
+              "command_decoder_0/selfTrgScale",
+              "selfTrigger_0/scale"
             ]
           },
           "command_decoder_0_send_nack": {
@@ -3383,8 +3433,9 @@
               "clk",
               "pulseExtender_0/clk",
               "trgFlagBuilder_0/clk",
-              "run_control_fsm_0/clock",
-              "command_decoder_0/clk"
+              "command_decoder_0/clk",
+              "selfTrigger_0/clk",
+              "run_control_fsm_0/clock"
             ]
           },
           "pulseExtender_0_sigOut": {
@@ -3398,8 +3449,9 @@
               "rst",
               "pulseExtender_0/rst",
               "trgFlagBuilder_0/rst",
-              "run_control_fsm_0/reset",
-              "command_decoder_0/rst"
+              "command_decoder_0/rst",
+              "selfTrigger_0/rst",
+              "run_control_fsm_0/reset"
             ]
           },
           "run_control_fsm_0_busy": {
@@ -3454,11 +3506,17 @@
               "trgFlagBuilder_0/trg_out"
             ]
           },
+          "selfTrigger_0_trgOut": {
+            "ports": [
+              "selfTrigger_0/trgOut",
+              "run_control_fsm_0/selfTrgIn"
+            ]
+          },
           "synchronizers_0_busySync": {
             "ports": [
               "busy",
-              "run_control_fsm_0/busy_in",
-              "command_decoder_0/busy"
+              "command_decoder_0/busy",
+              "run_control_fsm_0/busy_in"
             ]
           },
           "synchronizers_0_extTrgSync": {
@@ -3556,9 +3614,6 @@
             "left": "6",
             "right": "0"
           },
-          "rstTrgN": {
-            "direction": "I"
-          },
           "rstEvtN": {
             "direction": "I"
           },
@@ -3607,6 +3662,11 @@
           "trg6CntOut": {
             "direction": "O",
             "left": "31",
+            "right": "0"
+          },
+          "rstTrg": {
+            "direction": "I",
+            "left": "6",
             "right": "0"
           }
         },
@@ -3867,7 +3927,9 @@
                 }
               },
               "clr": {
-                "direction": "I"
+                "direction": "I",
+                "left": "6",
+                "right": "0"
               },
               "trgIn": {
                 "direction": "I",
@@ -3887,6 +3949,11 @@
             "xci_name": "design_1_counterRstCtrl_0_0",
             "xci_path": "ip\\design_1_counterRstCtrl_0_0\\design_1_counterRstCtrl_0_0.xci",
             "inst_hier_path": "counters/counterRstCtrl_0",
+            "parameters": {
+              "zynqNum": {
+                "value": "7"
+              }
+            },
             "reference_info": {
               "ref_type": "hdl",
               "ref_name": "counterRstCtrl",
@@ -3940,12 +4007,8 @@
               },
               "rstTrg": {
                 "direction": "I",
-                "parameters": {
-                  "POLARITY": {
-                    "value": "ACTIVE_HIGH",
-                    "value_src": "user_prop"
-                  }
-                }
+                "left": "6",
+                "right": "0"
               },
               "rstEvt": {
                 "direction": "I",
@@ -3969,7 +4032,9 @@
                 "direction": "O"
               },
               "rstTrgOut": {
-                "direction": "O"
+                "direction": "O",
+                "left": "6",
+                "right": "0"
               },
               "rstEvtOut": {
                 "direction": "O",
@@ -4155,11 +4220,11 @@
           "processing_system7_0_FCLK_CLK0": {
             "ports": [
               "clk",
-              "trgCounter_0/clk",
               "reg_event_number_0/clock",
               "GTUcounter_0/clk",
               "aliveDeadTCounter_0/clk",
-              "counterRstCtrl_0/clk"
+              "counterRstCtrl_0/clk",
+              "trgCounter_0/clk"
             ]
           },
           "reg_event_number_0_ready": {
@@ -4198,20 +4263,20 @@
               "counterRstCtrl_0/rstGtu"
             ]
           },
-          "rstTrgN_1": {
+          "rstTrg_1": {
             "ports": [
-              "rstTrgN",
+              "rstTrg",
               "counterRstCtrl_0/rstTrg"
             ]
           },
           "rst_ps7_0_100M_peripheral_reset": {
             "ports": [
               "rst",
-              "trgCounter_0/rst",
               "reg_event_number_0/reset",
               "GTUcounter_0/rst",
               "aliveDeadTCounter_0/rst",
-              "counterRstCtrl_0/rst"
+              "counterRstCtrl_0/rst",
+              "trgCounter_0/rst"
             ]
           },
           "run_control_fsm_0_busy": {
@@ -6114,26 +6179,6 @@
             "left": "31",
             "right": "0"
           },
-          "arg0Out": {
-            "direction": "O",
-            "left": "31",
-            "right": "0"
-          },
-          "arg1Out": {
-            "direction": "O",
-            "left": "31",
-            "right": "0"
-          },
-          "arg2Out": {
-            "direction": "O",
-            "left": "31",
-            "right": "0"
-          },
-          "cmdFlagOut": {
-            "direction": "O",
-            "left": "3",
-            "right": "0"
-          },
           "registerIn3": {
             "direction": "I",
             "left": "31",
@@ -6296,30 +6341,6 @@
             "ports": [
               "trgFlagIn",
               "trgFlagPadding/In0"
-            ]
-          },
-          "cmdDecoderReg_registerFlag": {
-            "ports": [
-              "cmdDecoderReg/registerFlag",
-              "cmdFlagOut"
-            ]
-          },
-          "cmdDecoderReg_registerOut1": {
-            "ports": [
-              "cmdDecoderReg/registerOut1",
-              "arg0Out"
-            ]
-          },
-          "cmdDecoderReg_registerOut2": {
-            "ports": [
-              "cmdDecoderReg/registerOut2",
-              "arg1Out"
-            ]
-          },
-          "cmdDecoderReg_registerOut3": {
-            "ports": [
-              "cmdDecoderReg/registerOut3",
-              "arg2Out"
             ]
           },
           "counters_Dout": {
@@ -6740,7 +6761,7 @@
                     "value_src": "ip_prop"
                   },
                   "CLK_DOMAIN": {
-                    "value": "design_1_IBUF_DS_N_0",
+                    "value": "design_1_TRIG_L1_IN_N",
                     "value_src": "ip_prop"
                   }
                 }
@@ -6759,7 +6780,7 @@
                     "value_src": "ip_prop"
                   },
                   "CLK_DOMAIN": {
-                    "value": "design_1_IBUF_DS_N_0",
+                    "value": "design_1_BUSY_IN_N",
                     "value_src": "ip_prop"
                   }
                 }
@@ -7415,14 +7436,6 @@
         "xci_name": "design_1_gtuCtrl_0_0",
         "xci_path": "ip\\design_1_gtuCtrl_0_0\\design_1_gtuCtrl_0_0.xci",
         "inst_hier_path": "gtuCtrl_0",
-        "parameters": {
-          "clkPeriodNs": {
-            "value": "10"
-          },
-          "gtuPeriodNs": {
-            "value": "1050"
-          }
-        },
         "reference_info": {
           "ref_type": "hdl",
           "ref_name": "gtuCtrl",
@@ -7478,11 +7491,49 @@
           "extGtuTick": {
             "direction": "I"
           },
+          "gtuPeriod": {
+            "direction": "I",
+            "left": "15",
+            "right": "0"
+          },
           "gtuClockOut": {
             "direction": "O"
           },
           "gtuTickOut": {
             "direction": "O"
+          }
+        }
+      },
+      "userAccess_0": {
+        "vlnv": "xilinx.com:module_ref:userAccess:1.0",
+        "ip_revision": "1",
+        "xci_name": "design_1_userAccess_0_0",
+        "xci_path": "ip\\design_1_userAccess_0_0\\design_1_userAccess_0_0.xci",
+        "inst_hier_path": "userAccess_0",
+        "reference_info": {
+          "ref_type": "hdl",
+          "ref_name": "userAccess",
+          "boundary_crc": "0x0"
+        },
+        "ports": {
+          "clk": {
+            "type": "clk",
+            "direction": "I",
+            "parameters": {
+              "FREQ_HZ": {
+                "value": "100000000",
+                "value_src": "user_prop"
+              },
+              "CLK_DOMAIN": {
+                "value": "design_1_processing_system7_0_0_FCLK_CLK0",
+                "value_src": "default_prop"
+              }
+            }
+          },
+          "usrAccessOut": {
+            "direction": "O",
+            "left": "31",
+            "right": "0"
           }
         }
       },
@@ -7636,39 +7687,6 @@
             }
           },
           "clk40MCnt": {
-            "direction": "O",
-            "left": "31",
-            "right": "0"
-          }
-        }
-      },
-      "userAccess_0": {
-        "vlnv": "xilinx.com:module_ref:userAccess:1.0",
-        "ip_revision": "1",
-        "xci_name": "design_1_userAccess_0_0",
-        "xci_path": "ip\\design_1_userAccess_0_0\\design_1_userAccess_0_0.xci",
-        "inst_hier_path": "userAccess_0",
-        "reference_info": {
-          "ref_type": "hdl",
-          "ref_name": "userAccess",
-          "boundary_crc": "0x0"
-        },
-        "ports": {
-          "clk": {
-            "type": "clk",
-            "direction": "I",
-            "parameters": {
-              "FREQ_HZ": {
-                "value": "100000000",
-                "value_src": "user_prop"
-              },
-              "CLK_DOMAIN": {
-                "value": "design_1_processing_system7_0_0_FCLK_CLK0",
-                "value_src": "default_prop"
-              }
-            }
-          },
-          "usrAccessOut": {
             "direction": "O",
             "left": "31",
             "right": "0"
@@ -7905,34 +7923,10 @@
           "cmdAndRunCtrl/data_received"
         ]
       },
-      "axiPLRegs_registerFlag": {
-        "ports": [
-          "axiPLRegs/cmdFlagOut",
-          "cmdAndRunCtrl/cmdFlag"
-        ]
-      },
       "axiPLRegs_registerOut0": {
         "ports": [
           "axiPLRegs/cmdRegOut",
           "cmdAndRunCtrl/command_in"
-        ]
-      },
-      "axiPLRegs_registerOut1": {
-        "ports": [
-          "axiPLRegs/arg0Out",
-          "cmdAndRunCtrl/arg0In"
-        ]
-      },
-      "axiPLRegs_registerOut2": {
-        "ports": [
-          "axiPLRegs/arg1Out",
-          "cmdAndRunCtrl/arg1In"
-        ]
-      },
-      "axiPLRegs_registerOut3": {
-        "ports": [
-          "axiPLRegs/arg2Out",
-          "cmdAndRunCtrl/arg2In"
         ]
       },
       "axi_dma_0_s2mm_introut": {
@@ -7990,6 +7984,12 @@
           "interruptConcat/In5"
         ]
       },
+      "cmdAndRunCtrl_gtuPeriod": {
+        "ports": [
+          "cmdAndRunCtrl/gtuPeriod",
+          "gtuCtrl_0/gtuPeriod"
+        ]
+      },
       "cmdAndRunCtrl_gtu_sel": {
         "ports": [
           "cmdAndRunCtrl/gtu_sel",
@@ -8019,9 +8019,9 @@
           "cmdAndRunCtrl/run",
           "counters/run",
           "ppsPresAndCtrl/enable",
-          "gtuCtrl_0/enable",
+          "outBuffers/OBUF_IN",
           "clk40MCtrl_0/enable",
-          "outBuffers/OBUF_IN"
+          "gtuCtrl_0/enable"
         ]
       },
       "command_decoder_0_status_register": {
@@ -8291,10 +8291,10 @@
           "processing_system7_0/M_AXI_GP0_ACLK",
           "processing_system7_0/S_AXI_ACP_ACLK",
           "rst_ps7_0_100M/slowest_sync_clk",
-          "gtuCtrl_0/clk",
-          "clk40MCtrl_0/clk",
           "dataBuilder_0/clk",
-          "userAccess_0/clk"
+          "userAccess_0/clk",
+          "clk40MCtrl_0/clk",
+          "gtuCtrl_0/clk"
         ]
       },
       "processing_system7_0_FCLK_CLK1": {
@@ -8365,7 +8365,7 @@
       "rstTrg_1": {
         "ports": [
           "cmdAndRunCtrl/reset_l1_nr",
-          "counters/rstTrgN"
+          "counters/rstTrg"
         ]
       },
       "rst_ps7_0_100M_peripheral_aresetn": {
@@ -8388,9 +8388,9 @@
           "ppsPresAndCtrl/rst",
           "inBuffers/rst",
           "outBuffers/rst",
-          "gtuCtrl_0/rst",
+          "dataBuilder_0/rst",
           "clk40MCtrl_0/rst",
-          "dataBuilder_0/rst"
+          "gtuCtrl_0/rst"
         ]
       },
       "run_control_fsm_0_busy": {

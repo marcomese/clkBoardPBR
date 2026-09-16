@@ -25,10 +25,6 @@ port(
     clk                : in  std_logic;
     rst                : in  std_logic;
     command_in         : in  std_logic_vector(31 downto 0);
-    arg0In             : in  std_logic_vector(31 downto 0);
-    arg1In             : in  std_logic_vector(31 downto 0);
-    arg2In             : in  std_logic_vector(31 downto 0);
-    cmdFlag            : in  std_logic_vector(3 downto 0);
     data_received      : in  std_logic;
     fsmState           : in  std_logic_vector(3 downto 0);
     ppsPres            : in  std_logic_vector(ppsNum-1 downto 0);
@@ -48,13 +44,18 @@ port(
     pps_trg            : out std_logic;
     ext_trg_en         : out std_logic_vector(extTrgNum-1 downto 0);
     gtu_sel            : out std_logic;
+    gtuPeriod          : out std_logic_vector(15 downto 0);
     clk40M_sel         : out std_logic;
+    selfTrgEn          : out std_logic;
+    selfTrgScale       : out std_logic_vector(2 downto 0);
+    selfTrgPeriod      : out std_logic_vector(12 downto 0);
+    xGammaChannel      : out std_logic_vector(zynqNum-1 downto 0);
     -- pulse outputs
     release_busy       : out std_logic;
     trg_command        : out std_logic;
     configure_GPS      : out std_logic;
     reset_GTU_count    : out std_logic;
-    reset_l1_nr        : out std_logic;
+    reset_l1_nr        : out std_logic_vector(zynqNum-1 downto 0);
     reset_evt_nr       : out std_logic;
     reset_all_counters : out std_logic;
     send_nack          : out std_logic;
@@ -65,67 +66,77 @@ end command_decoder;
 
 architecture Behavioral of command_decoder is
 
-constant MSG_START_RUN       : std_logic_vector(31 downto 0) := X"FFFFFFFF";
-constant MSG_STOP_RUN        : std_logic_vector(31 downto 0) := X"AAAAAAAA";
-constant MSG_RELEASE_BUSY    : std_logic_vector(31 downto 0) := X"55555555";
-constant MSG_SET_BUSY        : std_logic_vector(31 downto 0) := X"CCCCCCCC";
-constant MSG_TRIGGER         : std_logic_vector(31 downto 0) := X"33333333";
-constant MSG_CONFIGURE_GPS   : std_logic_vector(31 downto 0) := X"99999999";
-constant MSG_GPS1_ON         : std_logic_vector(31 downto 0) := X"F0F0F0F0";
-constant MSG_GPS2_ON         : std_logic_vector(31 downto 0) := X"0F0F0F0F";
-constant MSG_CLKPPS_ON       : std_logic_vector(31 downto 0) := X"33CCCC33";
-constant MSG_RESET_GTU_COUNT : std_logic_vector(31 downto 0) := X"5A5A5A5A";
-constant MSG_RESET_L1_COUNT  : std_logic_vector(31 downto 0) := X"A5A5A5A5";
-constant MSG_RESET_EVT_COUNT : std_logic_vector(31 downto 0) := X"3C3C3C3C";
-constant MSG_RESET_ALL_COUNT : std_logic_vector(31 downto 0) := X"C3C3C3C3";
-constant MSG_PPS_TRG_ON      : std_logic_vector(31 downto 0) := X"96969696";
-constant MSG_PPS_TRG_OFF     : std_logic_vector(31 downto 0) := X"69696969";
-constant MSG_MASK_EXT_TRG0   : std_logic_vector(31 downto 0) := X"FF00FF00";
-constant MSG_UNMASK_EXT_TRG0 : std_logic_vector(31 downto 0) := X"00FF00FF";
-constant MSG_MASK_EXT_TRG1   : std_logic_vector(31 downto 0) := X"FF0000FF";
-constant MSG_UNMASK_EXT_TRG1 : std_logic_vector(31 downto 0) := X"00FFFF00";
-constant MSG_NO_ZYNQ0        : std_logic_vector(31 downto 0) := X"33CC33CC";
-constant MSG_NO_ZYNQ1        : std_logic_vector(31 downto 0) := X"CC33CC33";
-constant MSG_NO_ZYNQ2        : std_logic_vector(31 downto 0) := X"99669966";
-constant MSG_NO_ZYNQ3        : std_logic_vector(31 downto 0) := X"66996699";
-constant MSG_ZYNQ0_ON        : std_logic_vector(31 downto 0) := X"0FF00FF0";
-constant MSG_ZYNQ1_ON        : std_logic_vector(31 downto 0) := X"F00FF00F";
-constant MSG_ZYNQ2_ON        : std_logic_vector(31 downto 0) := X"A55AA55A";
-constant MSG_ZYNQ3_ON        : std_logic_vector(31 downto 0) := X"5AA55AA5";
-constant MSG_GPS1_NO         : std_logic_vector(31 downto 0) := X"C33CC33C";
-constant MSG_GPS2_NO         : std_logic_vector(31 downto 0) := X"3CC33CC3";
-constant MSG_CLKPPS_NO       : std_logic_vector(31 downto 0) := X"3333CCCC";
-constant MSG_GPS_AUTO_ON     : std_logic_vector(31 downto 0) := X"69966996";
-constant MSG_GPS_AUTO_NO     : std_logic_vector(31 downto 0) := X"96699669";
-constant MSG_GTU_INTERNAL_ON : std_logic_vector(31 downto 0) := X"FFFF0000";
-constant MSG_GTU_INTERNAL_NO : std_logic_vector(31 downto 0) := X"0000FFFF";
-constant MSG_CLK40_INT_ON    : std_logic_vector(31 downto 0) := X"AAAA5555";
-constant MSG_CLK40_INT_NO    : std_logic_vector(31 downto 0) := X"5555AAAA";
+type codeArr_t is array(natural range <>) of std_logic_vector(7 downto 0);
 
-constant STATUS_USED         : integer := 12 + extTrgNum + 2*ppsNum + 2*zynqNum + zynqNum;
+-- numbers: channel 0..6 (ARG1/ARG2)
+constant NUM : codeArr_t(0 to 6) := (x"0F", x"33", x"55", x"66", x"99", x"AA", x"CC");
+
+function numIdx(code : std_logic_vector(7 downto 0)) return integer is
+begin
+    for i in NUM'range loop
+        if code = NUM(i) then
+            return i;
+        end if;
+    end loop;
+
+    return integer'high;
+end function;
+
+constant CMD_RUN : std_logic_vector(7 downto 0) := x"0F";
+constant CMD_BSY : std_logic_vector(7 downto 0) := x"33";
+constant CMD_TRG : std_logic_vector(7 downto 0) := x"55";
+constant CMD_GPS : std_logic_vector(7 downto 0) := x"66";
+constant CMD_PPS : std_logic_vector(7 downto 0) := x"99";
+constant CMD_GTU : std_logic_vector(7 downto 0) := x"AA";
+constant CMD_40M : std_logic_vector(7 downto 0) := x"CC";
+constant CMD_CNT : std_logic_vector(7 downto 0) := x"F0";
+constant CMD_CHN : std_logic_vector(7 downto 0) := x"3C";
+
+constant ARG_ON      : std_logic_vector(7 downto 0) := x"0F"; -- start, set, enable, on, internal, soft, configure, pps gps, counter l1, gps 1
+constant ARG_OFF     : std_logic_vector(7 downto 0) := x"F0"; -- stop, release, disable, off, external, pps clkb, counter evt, gps 2
+constant ARG_PPS     : std_logic_vector(7 downto 0) := x"33"; -- trg pps, pps auto, counter gtu, ch xgamma
+constant ARG_NORMAL  : std_logic_vector(7 downto 0) := x"CC"; -- trg normal, counter all
+constant ARG_CLKB    : std_logic_vector(7 downto 0) := x"55"; -- trg clkb
+constant ARG_SELF    : std_logic_vector(7 downto 0) := x"AA"; -- trg self
+constant ARG_ALL     : std_logic_vector(7 downto 0) := x"FF"; -- channel "all" (ARG1)
+
+constant STATUS_USED         : integer := 14 + extTrgNum + 2*ppsNum + 4*zynqNum;
 constant STATUS_PAD          : integer := statusLen - STATUS_USED;
 
 signal dataRecvFF,
        dataRecvFall,
+       cmdReady,
        run_s,
        cmd_busy_s,
        pps_auto_s,
-       pps_trg_s    : std_logic;
+       pps_trg_s,
+       clk40MSelSig,
+       gtuSelSig    : std_logic;
 
 signal ext_trg_en_s : std_logic_vector(extTrgNum-1 downto 0) := (others => '0');
-signal zynq_en_s    : std_logic_vector(zynqNum-1 downto 0)   := (others => '0');
+signal zynq_en_s,
+       xGChSig      : std_logic_vector(zynqNum-1 downto 0)   := (others => '0');
 signal pps_en_s     : std_logic_vector(ppsNum-1 downto 0)    := (others => '0');
+
+signal cmdSig,
+       arg0Sig,
+       arg1Sig,
+       arg2Sig      : std_logic_vector(7 downto 0);
 
 begin
 
-run          <= run_s;
-cmd_busy     <= cmd_busy_s;
-zynq_en      <= zynq_en_s;
-pps_en       <= pps_en_s;
-pps_auto     <= pps_auto_s;
-pps_trg      <= pps_trg_s;
-ext_trg_en   <= ext_trg_en_s;
-dataRecvFall <= dataRecvFF and not data_received;
+run           <= run_s;
+cmd_busy      <= cmd_busy_s;
+zynq_en       <= zynq_en_s;
+pps_en        <= pps_en_s;
+pps_auto      <= pps_auto_s;
+pps_trg       <= pps_trg_s;
+ext_trg_en    <= ext_trg_en_s;
+clk40M_sel    <= clk40MSelSig;
+gtu_sel       <= gtuSelSig;
+xGammaChannel <= xGChSig;
+
+dataRecvFall  <= dataRecvFF and not data_received;
 
 status_register <=  std_logic_vector(to_unsigned(0, STATUS_PAD)) &
                     busy            &   -- zynqNum   bit
@@ -134,6 +145,9 @@ status_register <=  std_logic_vector(to_unsigned(0, STATUS_PAD)) &
                     pps_en_s        &   -- ppsNum    bit
                     ext_trg_en_s    &   -- extTrgNum bit
                     timeoutFlag     &   -- zynqNum   bit
+                    xGChSig         &   -- zynqNum   bit
+                    clk40MSelSig    &   -- 1 bit  -> 13
+                    gtuSelSig       &   -- 1 bit  -> 12
                     timeout         &   -- 1 bit  -> 11
                     fsmState        &   -- 4 bit  -> 10..7
                     pps_auto_s      &   -- 1 bit  -> 6
@@ -145,75 +159,220 @@ status_register <=  std_logic_vector(to_unsigned(0, STATUS_PAD)) &
                     running;            -- 1 bit  -> 0
 
 assert STATUS_USED <= statusLen
-    report "status_register overflow: ridurre extTrgNum/zynqNum/ppsNum"
+    report "status_register overflow: reduce extTrgNum/zynqNum/ppsNum"
     severity failure;
 
+cmdArgsProc: process(clk)
+begin
+    if rising_edge(clk) then
+        cmdReady   <= '0';
+
+        if rst = '1' then
+            dataRecvFF <= '0';
+            cmdSig     <= (others => '0');
+            arg0Sig    <= (others => '0');
+            arg1Sig    <= (others => '0');
+            arg2Sig    <= (others => '0');
+        else
+            dataRecvFF <= data_received;
+
+            if dataRecvFall = '1' then
+                cmdSig     <= command_in(31 downto 24);
+                arg0Sig    <= command_in(23 downto 16);
+                arg1Sig    <= command_in(15 downto 8);
+                arg2Sig    <= command_in(7 downto 0);
+                cmdReady   <= '1';
+            end if;
+        end if;
+    end if;
+end process;
+
 decodeProc: process(clk)
+    variable scale  : std_logic_vector(2 downto 0);
+    variable period : std_logic_vector(12 downto 0);
+    variable gtuPrd : std_logic_vector(15 downto 0);
 begin
     if rising_edge(clk) then
         trg_command        <= '0';
         configure_GPS      <= '0';
         release_busy       <= '0';
         reset_GTU_count    <= '0';
-        reset_l1_nr        <= '0';
+        reset_l1_nr        <= (others => '0');
         reset_evt_nr       <= '0';
         reset_all_counters <= '0';
         send_nack          <= '0';
 
         if rst = '1' then
-            dataRecvFF   <= '0';
-            run_s        <= '0';
-            cmd_busy_s   <= '0';
-            zynq_en_s    <= (others => '0');
-            pps_en_s     <= (others => '0');
-            pps_auto_s   <= '0';
-            pps_trg_s    <= '0';
-            ext_trg_en_s <= (others => '0');
-            gtu_sel      <= '0';
-            clk40M_sel   <= '0';
+            scale         := (others => '0');
+            period        := (others => '0');
+            gtuPrd        := (others => '0');
+            run_s         <= '0';
+            cmd_busy_s    <= '0';
+            zynq_en_s     <= (others => '0');
+            pps_en_s      <= (others => '0');
+            pps_auto_s    <= '0';
+            pps_trg_s     <= '0';
+            ext_trg_en_s  <= (others => '0');
+            gtuSelSig     <= '0';
+            gtuPeriod     <= (others => '0');
+            clk40MSelSig  <= '0';
+            selfTrgEn     <= '0';
+            selfTrgScale  <= (others => '0');
+            selfTrgPeriod <= (others => '0');
+            xGChSig       <= (others => '0');
         else
-            dataRecvFF <= data_received;
+            if cmdReady = '1' then
+                case cmdSig is
+                    when CMD_RUN =>
+                        if arg0Sig = ARG_ON then
+                            run_s <= '1';
+                        elsif arg0Sig = ARG_OFF then
+                            run_s <= '0';
+                        else
+                            send_nack <= '1';
+                        end if;
 
-            if dataRecvFall = '1' then
-                case command_in is
-                    when MSG_START_RUN       => run_s              <= '1';
-                    when MSG_STOP_RUN        => run_s              <= '0';
-                    when MSG_SET_BUSY        => cmd_busy_s         <= '1';
-                    when MSG_RELEASE_BUSY    => cmd_busy_s         <= '0';
-                                                release_busy       <= '1';
-                    when MSG_TRIGGER         => trg_command        <= '1';
-                    when MSG_CONFIGURE_GPS   => configure_GPS      <= '1';
-                    when MSG_GPS1_ON         => pps_en_s(1)        <= '1';
-                    when MSG_GPS1_NO         => pps_en_s(1)        <= '0';
-                    when MSG_GPS2_ON         => pps_en_s(2)        <= '1';
-                    when MSG_GPS2_NO         => pps_en_s(2)        <= '0';
-                    when MSG_CLKPPS_ON       => pps_en_s(0)        <= '1';
-                    when MSG_CLKPPS_NO       => pps_en_s(0)        <= '0';
-                    when MSG_GPS_AUTO_ON     => pps_auto_s         <= '1';
-                    when MSG_GPS_AUTO_NO     => pps_auto_s         <= '0';
-                    when MSG_RESET_GTU_COUNT => reset_GTU_count    <= '1';
-                    when MSG_RESET_L1_COUNT  => reset_l1_nr        <= '1';
-                    when MSG_RESET_EVT_COUNT => reset_evt_nr       <= '1';
-                    when MSG_RESET_ALL_COUNT => reset_all_counters <= '1';
-                    when MSG_PPS_TRG_ON      => pps_trg_s          <= '1';
-                    when MSG_PPS_TRG_OFF     => pps_trg_s          <= '0';
-                    when MSG_UNMASK_EXT_TRG0 => ext_trg_en_s(0)    <= '1';
-                    when MSG_MASK_EXT_TRG0   => ext_trg_en_s(0)    <= '0';
-                    when MSG_UNMASK_EXT_TRG1 => ext_trg_en_s(1)    <= '1';
-                    when MSG_MASK_EXT_TRG1   => ext_trg_en_s(1)    <= '0';
-                    when MSG_ZYNQ0_ON        => zynq_en_s(0)       <= '1';
-                    when MSG_NO_ZYNQ0        => zynq_en_s(0)       <= '0';
-                    when MSG_ZYNQ1_ON        => zynq_en_s(1)       <= '1';
-                    when MSG_NO_ZYNQ1        => zynq_en_s(1)       <= '0';
-                    when MSG_ZYNQ2_ON        => zynq_en_s(2)       <= '1';
-                    when MSG_NO_ZYNQ2        => zynq_en_s(2)       <= '0';
-                    when MSG_ZYNQ3_ON        => zynq_en_s(3)       <= '1';
-                    when MSG_NO_ZYNQ3        => zynq_en_s(3)       <= '0';
-                    when MSG_GTU_INTERNAL_ON => gtu_sel            <= '1';
-                    when MSG_GTU_INTERNAL_NO => gtu_sel            <= '0';
-                    when MSG_CLK40_INT_ON    => clk40M_sel         <= '1';
-                    when MSG_CLK40_INT_NO    => clk40M_sel         <= '0';
-                    when others              => send_nack          <= '1';
+                    when CMD_BSY =>
+                        if arg0Sig = ARG_ON then
+                            cmd_busy_s <= '1';
+                        elsif arg0Sig = ARG_OFF then
+                            cmd_busy_s   <= '0';
+                            release_busy <= '1';
+                        else
+                            send_nack <= '1';
+                        end if;
+
+                    when CMD_TRG =>
+                        scale  := arg1Sig(7 downto 5);
+                        period := arg1Sig(4 downto 0) & arg2Sig;
+
+                        if arg0Sig = ARG_ON then --trg soft
+                            trg_command <= '1';
+                        elsif arg0Sig = ARG_OFF and arg1Sig = ARG_ON then -- trg external enable
+                            ext_trg_en_s(0) <= '0';
+                            ext_trg_en_s(1) <= '1'; -- (trg from jtrg connector)
+                            pps_trg_s       <= '0';
+                            selfTrgEn       <= '0';
+                        elsif arg0Sig = ARG_OFF and arg1Sig = ARG_OFF then -- trg external disable
+                            ext_trg_en_s(1) <= '0';
+                        elsif arg0Sig = ARG_PPS and arg1Sig = ARG_ON then -- trg pps enable
+                            ext_trg_en_s <= (others => '0');
+                            pps_trg_s    <= '1';
+                            selfTrgEn    <= '0';
+                        elsif arg0Sig = ARG_PPS and arg1Sig = ARG_OFF then -- trg pps disable
+                            pps_trg_s <= '0';
+                        elsif arg0Sig = ARG_NORMAL then -- trg normal
+                            ext_trg_en_s <= (others => '0');
+                            pps_trg_s    <= '0';
+                            selfTrgEn    <= '0';
+                        elsif arg0Sig = ARG_CLKB and arg1Sig = ARG_ON then -- trg clkb enable
+                            ext_trg_en_s(0) <= '1'; -- (trg from the other clk board)
+                            ext_trg_en_s(1) <= '0';
+                            pps_trg_s       <= '0';
+                            selfTrgEn       <= '0';
+                        elsif arg0Sig = ARG_CLKB and arg1Sig = ARG_OFF then -- trg clkb disable
+                            ext_trg_en_s(0) <= '0';
+                        elsif arg0Sig = ARG_SELF and arg1Sig = x"00" and arg2Sig = x"00" then -- trg self disable
+                            selfTrgEn       <= '0';
+                            selfTrgScale  <= (others => '0');
+                            selfTrgPeriod <= (others => '0');
+                        elsif arg0Sig = ARG_SELF and unsigned(scale) <= 5 and unsigned(period) /= 0 then -- trg self <scale:period>
+                            ext_trg_en_s  <= (others => '0');
+                            pps_trg_s     <= '0';
+                            selfTrgEn     <= '1';
+                            selfTrgScale  <= scale;
+                            selfTrgPeriod <= period;
+                        else
+                            send_nack <= '1';
+                        end if;
+
+                    when CMD_GPS =>
+                        if arg0Sig = ARG_ON then -- gps configure <hi:lo>
+                            configure_GPS <= '1';
+                        else
+                            send_nack <= '1';
+                        end if;
+
+                    when CMD_PPS =>
+                        if arg0Sig = ARG_ON and arg1Sig = ARG_ON then -- pps gps 1
+                            pps_en_s(2) <= '0';
+                            pps_en_s(1) <= '1';
+                            pps_en_s(0) <= '0';
+                            pps_auto_s  <= '0';
+                        elsif arg0Sig = ARG_ON and arg1Sig = ARG_OFF then -- pps gps 2
+                            pps_en_s(2) <= '1';
+                            pps_en_s(1) <= '0';
+                            pps_en_s(0) <= '0';
+                            pps_auto_s  <= '0';
+                        elsif arg0Sig = ARG_OFF then -- pps clkb
+                            pps_en_s(2) <= '0';
+                            pps_en_s(1) <= '0';
+                            pps_en_s(0) <= '1';
+                            pps_auto_s  <= '0';
+                        elsif arg0Sig = ARG_PPS then -- pps auto
+                            pps_en_s   <= (others => '0');
+                            pps_auto_s <= '1';
+                        else
+                            send_nack <= '1';
+                        end if;
+
+                    when CMD_GTU =>
+                        gtuPrd := arg1Sig & arg2Sig;
+
+                        if arg0Sig = ARG_ON and unsigned(gtuPrd) >= 2 then -- gtu internal <periodHi:periodLo>
+                            gtuSelSig <= '1';
+                            gtuPeriod <= gtuPrd;
+                        elsif arg0Sig = ARG_OFF then -- gtu external
+                            gtuSelSig <= '0';
+                            gtuPeriod <= (others => '0');
+                        else
+                            send_nack <= '1';
+                        end if;
+
+                    when CMD_40M =>
+                        if arg0Sig = ARG_ON then -- clk40m internal
+                            clk40MSelSig <= '1';
+                        elsif arg0Sig = ARG_OFF then -- clk40m external
+                            clk40MSelSig <= '0';
+                        else
+                            send_nack <= '1';
+                        end if;
+
+                    when CMD_CNT =>
+                        if arg0Sig = ARG_ON and numIdx(arg1Sig) < zynqNum and arg2Sig = ARG_ON  then -- counter l1 <ch> reset
+                            reset_l1_nr(numIdx(arg1Sig)) <= '1';
+                        elsif arg0Sig = ARG_ON and arg1Sig = ARG_ALL and arg2Sig = ARG_ON  then -- counter l1 all 
+                            reset_l1_nr <= (others => '1');
+                        elsif arg0Sig = ARG_OFF and arg1Sig = ARG_ON then -- counter evt reset
+                            reset_evt_nr <= '1';
+                        elsif arg0Sig = ARG_PPS and arg1Sig = ARG_ON then -- counter gtu reset
+                            reset_GTU_count <= '1';
+                        elsif arg0Sig = ARG_NORMAL and arg1Sig = ARG_ON then -- counter all reset
+                            reset_all_counters <= '1';
+                        else
+                            send_nack <= '1';
+                        end if;
+
+                    when CMD_CHN =>
+                        if arg0Sig = ARG_ON and numIdx(arg1Sig) < zynqNum then -- ch enable <n>
+                            zynq_en_s(numIdx(arg1Sig)) <= '1';
+                        elsif arg0Sig = ARG_ON and arg1Sig = ARG_ALL then -- ch enable all
+                            zynq_en_s <= (others => '1');
+                        elsif arg0Sig = ARG_OFF and numIdx(arg1Sig) < zynqNum then -- ch disable <n>
+                            zynq_en_s(numIdx(arg1Sig)) <= '0';
+                        elsif arg0Sig = ARG_OFF and arg1Sig = ARG_ALL then -- ch disable <n>
+                            zynq_en_s <= (others => '0');
+                        elsif arg0Sig = ARG_PPS and arg1Sig = ARG_ON and numIdx(arg2Sig) < zynqNum then -- ch xgamma on <n>
+                            xGChSig                  <= (others => '0');
+                            xGChSig(numIdx(arg2Sig)) <= '1';
+                        elsif arg0Sig = ARG_PPS and arg1Sig = ARG_OFF then -- ch xgamma off
+                            xGChSig <= (others => '0'); 
+                        else
+                            send_nack <= '1';
+                        end if;
+
+                    when others =>
+                        send_nack <= '1';
                 end case;
             end if;
         end if;

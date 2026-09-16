@@ -16,35 +16,29 @@ use IEEE.NUMERIC_STD.ALL;
 use IEEE.MATH_REAL.ALL;
 
 entity gtuGenerator is
-generic(
-    clkPeriodNs : positive; -- clock period in nanoseconds
-    gtuPeriodNs : positive  -- gtu period in nanoseconds
-);
 port(
-    clk      : in  std_logic;
-    rst      : in  std_logic;
-    enable   : in  std_logic;
-    gtuClock : out std_logic;
-    gtuTick  : out std_logic
+    clk       : in  std_logic;
+    rst       : in  std_logic;
+    enable    : in  std_logic;
+    gtuPeriod : in std_logic_vector(15 downto 0);
+    gtuClock  : out std_logic;
+    gtuTick   : out std_logic
 );
 end gtuGenerator;
 
 architecture Behavioral of gtuGenerator is
 
-constant clkPeriodReal : real := real(clkPeriodNs)*1.0e-9;
-constant gtuPeriodReal : real := real(gtuPeriodNs)*1.0e-9;
-
 begin
 
 glkGenInst: entity work.clockGenerator
 generic map(
-    clkInPeriod  => clkPeriodReal,
-    clkOutPeriod => gtuPeriodReal
+    periodLen    => gtuPeriod'length
 )
 port map(
     clk            => clk,
     rst            => rst,
     enable         => enable,
+    period         => gtuPeriod,
     clkOut         => gtuClock,
     clkRisingEdge  => gtuTick,
     clkFallingEdge => open

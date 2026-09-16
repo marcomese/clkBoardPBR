@@ -13,18 +13,16 @@
 library IEEE;
 use IEEE.STD_LOGIC_1164.ALL;
 use IEEE.NUMERIC_STD.ALL;
-use IEEE.MATH_REAL.ALL;
-use work.utilsPkg.all;
 
 entity clockGenerator is
 generic(
-    clkInPeriod    : real;
-    clkOutPeriod   : real
+    periodLen   : integer
 );
 port(
     clk            : in  std_logic;
     rst            : in  std_logic;
     enable         : in  std_logic;
+    period         : in  std_logic_vector(periodLen-1 downto 0); -- output period in clk cycles, >= 2
     clkOut         : out std_logic;
     clkRisingEdge  : out std_logic;
     clkFallingEdge : out std_logic
@@ -33,28 +31,34 @@ end clockGenerator;
 
 architecture Behavioral of clockGenerator is
 
-constant cntMax : integer := integer(clkOutPeriod/clkInPeriod);
-constant cntHlf : integer := integer(ceil(real(cntMax)/2.0));
-constant cntLen : integer :=  bitsNum(cntMax);
+signal clkCnt,
+       cntMax,
+       cntHlf,
+       cntMaxIn,
+       cntHlfIn : unsigned(periodLen-1 downto 0);
 
-signal clkSig : std_logic;
-
-signal clkCnt : unsigned(cntLen-1 downto 0);
+signal clkSig   : std_logic;
 
 begin
 
-clkOut <= clkSig;
+clkOut   <= clkSig;
+cntMaxIn <= unsigned(period) - 1;
+cntHlfIn <= shift_right(unsigned(period), 1) + resize(unsigned(period(0 downto 0)), periodLen); -- ceil(period/2)
 
 clkCntInst: process(clk)
 begin
     if rising_edge(clk) then
         if rst = '1' or enable = '0' then
-            clkCnt         <= to_unsigned(cntMax-1, clkCnt'length);
+            cntMax         <= cntMaxIn;
+            cntHlf         <= cntHlfIn;
+            clkCnt         <= cntMaxIn;
             clkSig         <= '0';
             clkRisingEdge  <= '0';
             clkFallingEdge <= '0';
         elsif clkCnt = 0 then
-            clkCnt         <= to_unsigned(cntMax-1, clkCnt'length);
+            cntMax         <= cntMaxIn;   -- a new period takes effect here
+            cntHlf         <= cntHlfIn;
+            clkCnt         <= cntMaxIn;
             clkSig         <= '1';
             clkRisingEdge  <= not clkSig;
         elsif clkCnt = cntHlf then

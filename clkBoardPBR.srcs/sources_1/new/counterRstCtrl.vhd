@@ -15,16 +15,19 @@ use IEEE.STD_LOGIC_1164.ALL;
 use IEEE.NUMERIC_STD.ALL;
 
 entity counterRstCtrl is
+generic(
+    zynqNum    : integer
+);
 port(
     clk        : in  std_logic;
     rst        : in  std_logic;
     rstAll     : in  std_logic;
     rstGtu     : in  std_logic;
-    rstTrg     : in  std_logic;
+    rstTrg     : in  std_logic_vector(zynqNum-1 downto 0);
     rstEvt     : in  std_logic;
     rstFromRun : in  std_logic;
     rstGtuOut  : out std_logic;
-    rstTrgOut  : out std_logic;
+    rstTrgOut  : out std_logic_vector(zynqNum-1 downto 0);
     rstEvtOut  : out std_logic
 );
 end counterRstCtrl;
@@ -38,12 +41,17 @@ begin
     if rising_edge(clk) then
         if rst = '1' then
             rstGtuOut <= '0';
-            rstTrgOut <= '0';
+            rstTrgOut <= (others => '0');
             rstEvtOut <= '0';
         else
             rstGtuOut <= rstAll or rstFromRun or rstGtu;
-            rstTrgOut <= rstAll or rstFromRun or rstTrg;
             rstEvtOut <= rstAll or rstFromRun or rstEvt;
+
+            if rstAll = '1' or rstFromRun = '1' then
+                rstTrgOut <= (others => '1');
+            else
+                rstTrgOut <= rstTrg;
+            end if;
         end if;
     end if;
 end process;

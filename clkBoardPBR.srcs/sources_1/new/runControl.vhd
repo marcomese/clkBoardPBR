@@ -51,6 +51,8 @@ port(
     trigger_command : in  std_logic;
     trigger_ext     : in  std_logic_vector(extTrgNum-1 downto 0);
     triggerExtMask  : in  std_logic_vector(extTrgNum-1 downto 0);
+    selfTrgEn       : in  std_logic;
+    selfTrgIn       : in  std_logic;
     ppsTrgEn        : in  std_logic;
     PPS             : in  std_logic;
     N_gtu           : in  std_logic_vector(nGtuLen-1 downto 0);
@@ -263,7 +265,7 @@ begin
 end process;
 
 COMB_PROC: process(pres_state, triggerOr, busy_zynq, N_gtu,
-                   runActiveSig, cmd_busy, trigger_command,
+                   runActiveSig, cmd_busy, trigger_command, selfTrgEn, selfTrgIn,
                    GTU_count, trigger_ext, PPS, extTrgMasked, fifoFull, ppsTrgEn, plToAxiSBusy,
                    release_busy, mstrAcqStatus)
 begin
@@ -298,6 +300,8 @@ begin
             elsif runActiveSig = '1' and mstrAcqStatus = '1' and unsigned(extTrgMasked) /= 0 and fifoFull = '0' then
                     next_state <= trg_ext_state;
             elsif runActiveSig = '1' and mstrAcqStatus = '1' and trigger_command = '1' and fifoFull = '0' then
+                    next_state <= trg_cpu_state;
+            elsif runActiveSig = '1' and mstrAcqStatus = '1' and selfTrgEn = '1' and selfTrgIn = '1' and fifoFull = '0' then
                     next_state <= trg_cpu_state;
             elsif runActiveSig = '1' and mstrAcqStatus = '1' and PPS = '1' and ppsTrgEn = '1' and fifoFull = '0' then
                     next_state <= trg_PPS_state;

@@ -22,7 +22,7 @@ generic(
 port(
     clk      : in  std_logic;
     rst      : in  std_logic;
-    clr      : in  std_logic;
+    clr      : in  std_logic_vector(trgNum-1 downto 0);
     trgIn    : in  std_logic_vector(trgNum-1 downto 0);
     trgCount : out std_logic_vector((trgNum*32)-1 downto 0)
 );
@@ -57,7 +57,7 @@ begin
     trgCntN: process(clk)
     begin
         if rising_edge (clk) then
-            if rst = '1' or clr = '1' then
+            if rst = '1' or clr(n) = '1' then
                 trgCountSig(32*(n+1)-1 downto 32*n) <= (others => '0');
             elsif trgEdge(n) = '1' then
                 trgCountSig(32*(n+1)-1 downto 32*n) <= trgCountSig(32*(n+1)-1 downto 32*n) + 1;

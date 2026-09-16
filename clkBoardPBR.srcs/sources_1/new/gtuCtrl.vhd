@@ -15,10 +15,6 @@ use IEEE.STD_LOGIC_1164.ALL;
 use IEEE.NUMERIC_STD.ALL;
 
 entity gtuCtrl is
-generic(
-    clkPeriodNs : positive; -- clock period in nanoseconds
-    gtuPeriodNs : positive  -- gtu period in nanoseconds
-);
 port(
     clk         : in  std_logic;
     rst         : in  std_logic;
@@ -26,6 +22,7 @@ port(
     gtuSel      : in  std_logic;
     extGtuClock : in  std_logic;
     extGtuTick  : in  std_logic;
+    gtuPeriod   : in  std_logic_vector(15 downto 0);
     gtuClockOut : out std_logic;
     gtuTickOut  : out std_logic
 );
@@ -57,16 +54,13 @@ begin
 end process;
 
 gtuGenInst: entity work.gtuGenerator
-generic map(
-    clkPeriodNs => clkPeriodNs,
-    gtuPeriodNs => gtuPeriodNs
-)
 port map(
-    clk      => clk,
-    rst      => rst,
-    enable   => enable,
-    gtuClock => gtuClock,
-    gtuTick  => gtuTick
+    clk       => clk,
+    rst       => rst,
+    enable    => enable,
+    gtuPeriod => gtuPeriod,
+    gtuClock  => gtuClock,
+    gtuTick   => gtuTick
 );
 
 end Behavioral;
