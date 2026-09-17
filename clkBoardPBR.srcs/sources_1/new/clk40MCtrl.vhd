@@ -36,6 +36,7 @@ port(
     trgIn         : in  std_logic;
     ready         : out std_logic;
     clk40MOut     : out std_logic;
+    clk40MTick    : out std_logic;
     clk40MCnt     : out std_logic_vector(31 downto 0)
 );
 end clk40MCtrl;
@@ -45,7 +46,10 @@ architecture Behavioral of clk40MCtrl is
 signal clk40MSig,
        clk40MSelReg,
        notClk40MSelReg,
-       clk40MSmpl      : std_logic;
+       clk40MSmpl,
+       clk40MTgl,
+       clk40MTglSync,
+       clk40MTglFF      : std_logic;
 
 begin
 
@@ -90,6 +94,40 @@ port map (
     src_in   => clk40MSig,
     dest_out => clk40MSmpl
 );
+
+tglProc: process(clk40MSig)
+begin
+    if rising_edge(clk40MSig) then
+        clk40MTgl <= not clk40MTgl;
+    end if;
+end process;
+
+tglSyncInst: xpm_cdc_single
+generic map(
+    DEST_SYNC_FF   => 2,
+    INIT_SYNC_FF   => 1,
+    SIM_ASSERT_CHK => 0,
+    SRC_INPUT_REG  => 0
+)
+port map(
+    src_clk  => clkSmpl,
+    src_in   => clk40MTgl,
+    dest_clk => clk,
+    dest_out => clk40MTglSync
+);
+
+tickProc: process(clk)
+begin
+    if rising_edge(clk) then
+        if rst = '1' then
+            clk40MTglFF <= '0';
+            clk40MTick  <= '0';
+        else
+            clk40MTglFF <= clk40MTglSync;
+            clk40MTick  <= clk40MTglSync xor clk40MTglFF;
+        end if;
+    end if;
+end process;
 
 clk40MCntInst: entity work.clk40MCounter
 generic map(
