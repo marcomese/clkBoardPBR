@@ -11,3 +11,4 @@ clkBoardPBR.srcs/sim_1/new/tb_ppsControl.vhd lib=xil_defaultlib
 clkBoardPBR.srcs/sim_1/new/tb_pulseExtender.vhd lib=xil_defaultlib
 clkBoardPBR.srcs/sim_1/new/tb_runControl.vhd lib=xil_defaultlib
 clkBoardPBR.srcs/sim_1/new/tb_trgFlagBuilder.vhd lib=xil_defaultlib
+clkBoardPBR.srcs/sim_1/new/tb_rateMeters.vhd lib=xil_defaultlib
