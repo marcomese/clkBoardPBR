@@ -49,7 +49,7 @@ signal clk40MSig,
        clk40MSmpl,
        clk40MTgl,
        clk40MTglSync,
-       clk40MTglFF      : std_logic;
+       clk40MTglFF      : std_logic := '0';
 
 begin
 
@@ -110,7 +110,7 @@ generic map(
     SRC_INPUT_REG  => 0
 )
 port map(
-    src_clk  => clkSmpl,
+    src_clk  => '0',
     src_in   => clk40MTgl,
     dest_clk => clk,
     dest_out => clk40MTglSync
