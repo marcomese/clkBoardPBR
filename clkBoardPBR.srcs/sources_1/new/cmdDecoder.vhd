@@ -51,6 +51,7 @@ port(
     selfTrgPeriod      : out std_logic_vector(12 downto 0);
     xGammaChannel      : out std_logic_vector(zynqNum-1 downto 0);
     masterSlave        : out std_logic_vector(31 downto 0);
+    runTimeout         : out std_logic_vector(15 downto 0);
     -- pulse outputs
     release_busy       : out std_logic;
     trg_command        : out std_logic;
@@ -83,29 +84,33 @@ begin
     return integer'high;
 end function;
 
-constant CMD_RUN : std_logic_vector(7 downto 0) := x"0F";
-constant CMD_BSY : std_logic_vector(7 downto 0) := x"33";
-constant CMD_TRG : std_logic_vector(7 downto 0) := x"55";
-constant CMD_GPS : std_logic_vector(7 downto 0) := x"66";
-constant CMD_PPS : std_logic_vector(7 downto 0) := x"99";
-constant CMD_GTU : std_logic_vector(7 downto 0) := x"AA";
-constant CMD_40M : std_logic_vector(7 downto 0) := x"CC";
-constant CMD_CNT : std_logic_vector(7 downto 0) := x"F0";
-constant CMD_CHN : std_logic_vector(7 downto 0) := x"3C";
+constant CMD_RUN      : std_logic_vector(7 downto 0) := x"0F";
+constant CMD_BSY      : std_logic_vector(7 downto 0) := x"33";
+constant CMD_TRG      : std_logic_vector(7 downto 0) := x"55";
+constant CMD_GPS      : std_logic_vector(7 downto 0) := x"66";
+constant CMD_PPS      : std_logic_vector(7 downto 0) := x"99";
+constant CMD_GTU      : std_logic_vector(7 downto 0) := x"AA";
+constant CMD_40M      : std_logic_vector(7 downto 0) := x"CC";
+constant CMD_CNT      : std_logic_vector(7 downto 0) := x"F0";
+constant CMD_CHN      : std_logic_vector(7 downto 0) := x"3C";
 
-constant ARG_ON      : std_logic_vector(7 downto 0) := x"0F"; -- start, set, enable, on, internal, soft, configure, pps gps, counter l1, gps 1
-constant ARG_OFF     : std_logic_vector(7 downto 0) := x"F0"; -- stop, release, disable, off, external, pps clkb, counter evt, gps 2
-constant ARG_PPS     : std_logic_vector(7 downto 0) := x"33"; -- trg pps, pps auto, counter gtu, ch xgamma
-constant ARG_NORMAL  : std_logic_vector(7 downto 0) := x"CC"; -- trg normal, counter all
-constant ARG_CLKB    : std_logic_vector(7 downto 0) := x"55"; -- trg clkb
-constant ARG_SELF    : std_logic_vector(7 downto 0) := x"AA"; -- trg self
-constant ARG_ALL     : std_logic_vector(7 downto 0) := x"FF"; -- channel "all" (ARG1)
+constant ARG_ON       : std_logic_vector(7 downto 0) := x"0F"; -- start, set, enable, on, internal, soft, configure, pps gps, counter l1, gps 1
+constant ARG_OFF      : std_logic_vector(7 downto 0) := x"F0"; -- stop, release, disable, off, external, pps clkb, counter evt, gps 2
+constant ARG_PPS      : std_logic_vector(7 downto 0) := x"33"; -- trg pps, pps auto, counter gtu, ch xgamma
+constant ARG_NORMAL   : std_logic_vector(7 downto 0) := x"CC"; -- trg normal, counter all
+constant ARG_CLKB     : std_logic_vector(7 downto 0) := x"55"; -- trg clkb
+constant ARG_SELF     : std_logic_vector(7 downto 0) := x"AA"; -- trg self
+constant ARG_ALL      : std_logic_vector(7 downto 0) := x"FF"; -- channel "all" (ARG1)
 
-constant STATUS_USED : integer := 14 + extTrgNum + 2*ppsNum + 4*zynqNum;
-constant STATUS_PAD  : integer := statusLen - STATUS_USED;
+constant STATUS_USED  : integer := 14 + extTrgNum + 2*ppsNum + 4*zynqNum;
+constant STATUS_PAD   : integer := statusLen - STATUS_USED;
 
-constant MSTR_STR    : std_logic_vector(31 downto 0) := x"4D_53_54_52";
-constant SLV_STR     : std_logic_vector(31 downto 0) := x"53_4C_56_20";
+constant MSTR_STR     : std_logic_vector(31 downto 0) := x"4D_53_54_52";
+constant SLV_STR      : std_logic_vector(31 downto 0) := x"53_4C_56_20";
+
+constant TOUT_DEFAULT : std_logic_vector(15 downto 0) := std_logic_vector(to_unsigned(15, 16));
+
+signal   runTOutSig   : std_logic_vector(15 downto 0);
 
 signal dataRecvFF,
        dataRecvFall,
@@ -115,19 +120,19 @@ signal dataRecvFF,
        pps_auto_s,
        pps_trg_s,
        clk40MSelSig,
-       gtuSelSig    : std_logic;
+       gtuSelSig     : std_logic;
 
-signal ext_trg_en_s : std_logic_vector(extTrgNum-1 downto 0) := (others => '0');
+signal ext_trg_en_s  : std_logic_vector(extTrgNum-1 downto 0) := (others => '0');
 signal zynq_en_s,
-       xGChSig      : std_logic_vector(zynqNum-1 downto 0)   := (others => '0');
-signal pps_en_s     : std_logic_vector(ppsNum-1 downto 0)    := (others => '0');
+       xGChSig       : std_logic_vector(zynqNum-1 downto 0)   := (others => '0');
+signal pps_en_s      : std_logic_vector(ppsNum-1 downto 0)    := (others => '0');
 
 signal cmdSig,
        arg0Sig,
        arg1Sig,
-       arg2Sig      : std_logic_vector(7 downto 0);
+       arg2Sig       : std_logic_vector(7 downto 0);
 
-signal mstrSlvSig   : std_logic_vector(31 downto 0);
+signal mstrSlvSig    : std_logic_vector(31 downto 0);
 
 begin
 
@@ -135,38 +140,38 @@ assert STATUS_USED <= statusLen
     report "status_register overflow: reduce extTrgNum/zynqNum/ppsNum"
     severity failure;
 
-run           <= run_s;
-cmd_busy      <= cmd_busy_s;
-zynq_en       <= zynq_en_s;
-pps_en        <= pps_en_s;
-pps_auto      <= pps_auto_s;
-pps_trg       <= pps_trg_s;
-ext_trg_en    <= ext_trg_en_s;
-clk40M_sel    <= clk40MSelSig;
-gtu_sel       <= gtuSelSig;
-xGammaChannel <= xGChSig;
-masterSlave   <= mstrSlvSig;
-dataRecvFall  <= dataRecvFF and not data_received;
-
-status_register <=  std_logic_vector(to_unsigned(0, STATUS_PAD)) &
-                    busy            &   -- zynqNum   bit
-                    zynq_en_s       &   -- zynqNum   bit
-                    ppsPres         &   -- ppsNum    bit
-                    pps_en_s        &   -- ppsNum    bit
-                    ext_trg_en_s    &   -- extTrgNum bit
-                    timeoutFlag     &   -- zynqNum   bit
-                    xGChSig         &   -- zynqNum   bit
-                    clk40MSelSig    &   -- 1 bit  -> 13
-                    gtuSelSig       &   -- 1 bit  -> 12
-                    timeout         &   -- 1 bit  -> 11
-                    fsmState        &   -- 4 bit  -> 10..7
-                    pps_auto_s      &   -- 1 bit  -> 6
-                    pps_trg_s       &   -- 1 bit  -> 5
-                    cmd_busy_s      &   -- 1 bit  -> 4
-                    fifoFull        &   -- 1 bit  -> 3
-                    plToAxiSBusy    &   -- 1 bit  -> 2
-                    runCtrlBusy     &   -- 1 bit  -> 1
-                    running;            -- 1 bit  -> 0
+run             <= run_s;
+cmd_busy        <= cmd_busy_s;
+zynq_en         <= zynq_en_s;
+pps_en          <= pps_en_s;
+pps_auto        <= pps_auto_s;
+pps_trg         <= pps_trg_s;
+ext_trg_en      <= ext_trg_en_s;
+clk40M_sel      <= clk40MSelSig;
+gtu_sel         <= gtuSelSig;
+xGammaChannel   <= xGChSig;
+masterSlave     <= mstrSlvSig;
+dataRecvFall    <= dataRecvFF and not data_received;
+runTimeout      <= runTOutSig;
+status_register <= std_logic_vector(to_unsigned(0, STATUS_PAD)) &
+                   busy            &   -- zynqNum   bit
+                   zynq_en_s       &   -- zynqNum   bit
+                   ppsPres         &   -- ppsNum    bit
+                   pps_en_s        &   -- ppsNum    bit
+                   ext_trg_en_s    &   -- extTrgNum bit
+                   timeoutFlag     &   -- zynqNum   bit
+                   xGChSig         &   -- zynqNum   bit
+                   clk40MSelSig    &   -- 1 bit  -> 13
+                   gtuSelSig       &   -- 1 bit  -> 12
+                   timeout         &   -- 1 bit  -> 11
+                   fsmState        &   -- 4 bit  -> 10..7
+                   pps_auto_s      &   -- 1 bit  -> 6
+                   pps_trg_s       &   -- 1 bit  -> 5
+                   cmd_busy_s      &   -- 1 bit  -> 4
+                   fifoFull        &   -- 1 bit  -> 3
+                   plToAxiSBusy    &   -- 1 bit  -> 2
+                   runCtrlBusy     &   -- 1 bit  -> 1
+                   running;            -- 1 bit  -> 0
 
 masterSlaveDecodeProc: process(clk)
 begin
@@ -241,6 +246,7 @@ begin
             selfTrgScale  <= (others => '0');
             selfTrgPeriod <= (others => '0');
             xGChSig       <= (others => '0');
+            runTOutSig    <= TOUT_DEFAULT;
         else
             if cmdReady = '1' then
                 case cmdSig is
@@ -249,6 +255,8 @@ begin
                             run_s <= '1';
                         elsif arg0Sig = ARG_OFF then
                             run_s <= '0';
+                        elsif arg0Sig = ARG_PPS and (arg1Sig /= x"00" or arg2Sig /= x"00") then
+                            runTOutSig <= arg1Sig & arg2Sig;
                         else
                             send_nack <= '1';
                         end if;

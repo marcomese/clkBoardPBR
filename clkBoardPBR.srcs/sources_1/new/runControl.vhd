@@ -33,8 +33,8 @@ generic(
     extTrgNum : positive;
     zynqNum   : positive;
     gpsNum    : positive;
-    nGtuLen   : positive;
-    nClkTOut  : positive;
+    N_gtu     : positive;
+    nClkTick  : positive;
     nClkRst   : positive
 );
 port(
@@ -55,7 +55,6 @@ port(
     selfTrgIn       : in  std_logic;
     ppsTrgEn        : in  std_logic;
     PPS             : in  std_logic;
-    N_gtu           : in  std_logic_vector(nGtuLen-1 downto 0);
     plToAxiSBusy    : in  std_logic;
     fifoFull        : in  std_logic;
     acqStatusIn     : in  std_logic;
@@ -63,6 +62,7 @@ port(
     busy            : out std_logic;
     reset_counters  : out std_logic;
     fifoRst         : out std_logic;
+    tOutUnits       : in  std_logic_vector(15 downto 0);
     timeout         : out std_logic;
     timeoutFlag     : out std_logic_vector(zynqNum-1 downto 0);
     running         : out std_logic
@@ -81,7 +81,6 @@ type state_values is(
     trg_PPS_state,
     busy_cpu_state,
     busy_zynq_state,
-    busy_zynq_managed, -- unexpected zynq busy, watched by the timeout
     busy_state       -- system is busy during run
 );
 
@@ -98,7 +97,6 @@ begin
         when busy_cpu_state   => return x"7";
         when busy_zynq_state  => return x"8";
         when busy_state       => return x"9";
-        when busy_zynq_managed => return x"A";
     end case;
 end function;
 
@@ -133,7 +131,9 @@ signal fsmStateSig      : std_logic_vector(3 downto 0);
 
 signal GTU_count        : unsigned(7 downto 0);
 
-signal tOutCnt          : unsigned(bitsNum(nClkTOut)-1 downto 0);
+signal tOutTick         : unsigned(bitsNum(nClkTick)-1 downto 0);
+signal tOutCnt          : unsigned(15 downto 0);
+signal tOutExp          : std_logic;
 
 signal idleCnt          : integer range 0 to nClkRst-1;
 
@@ -170,13 +170,15 @@ fifoRst        <= fifoRstSig;
 
 mstrAcqStatus  <= acqStatusIn or not triggerExtMask(0);
 
-busyZynqMng    <= '1' when pres_state = busy_zynq_managed else '0';
+busyZynqMng    <= '1' when pres_state = busy_zynq_state else '0';
 
 reset_counters_i <= runActiveSig and not runningSig;
 
 tOutEn         <= ((run_val and not runningSig) or busyZynqMng) and mstrAcqStatus;
 
 tOutEnRise     <= tOutEn and not tOutEnFF;
+
+tOutExp <= '1' when tOutEn = '1' and timeoutSig = '0' and tOutCnt = 0 and tOutTick = 0 else '0';
 
 runningProc: process(clock)
 begin
@@ -200,19 +202,27 @@ tOutCntProc: process(clock)
 begin
     if rising_edge(clock) then
         if reset = '1' then
-            timeoutSig     <= '0';
-            tOutCnt     <= to_unsigned(nClkTOut-1, tOutCnt'length);
+            timeoutSig  <= '0';
+            tOutTick    <= to_unsigned(nClkTick-1, tOutTick'length);
+            tOutCnt     <= (others => '0');
             timeoutFlag <= (others => '0');
+            tOutEnFF    <= '0';
         else
             tOutEnFF <= tOutEn;
 
-            if tOutEn = '0' or tOutCnt = 0 then
-                tOutCnt     <= to_unsigned(nClkTOut-1, tOutCnt'length);
+            if tOutEn = '0' or tOutExp = '1' then -- units * nClkTick cycles in total
+                tOutTick <= to_unsigned(nClkTick-1, tOutTick'length);
+                tOutCnt  <= unsigned(tOutUnits) - 1;
             elsif timeoutSig = '0' then
-                tOutCnt     <= tOutCnt - 1;
+                if tOutTick = 0 then
+                    tOutTick <= to_unsigned(nClkTick-1, tOutTick'length);
+                    tOutCnt  <= tOutCnt - 1;
+                else
+                    tOutTick <= tOutTick - 1;
+                end if;
             end if;
 
-            if tOutCnt = 0 then
+            if tOutExp = '1' then
                 timeoutSig  <= '1';
                 timeoutFlag <= busyAndZynq;
             elsif tOutEnRise = '1' then
@@ -264,7 +274,7 @@ begin
     end if;
 end process;
 
-COMB_PROC: process(pres_state, triggerOr, busy_zynq, N_gtu,
+COMB_PROC: process(pres_state, triggerOr, busy_zynq,
                    runActiveSig, cmd_busy, trigger_command, selfTrgEn, selfTrgIn,
                    GTU_count, trigger_ext, PPS, extTrgMasked, fifoFull, ppsTrgEn, plToAxiSBusy,
                    release_busy, mstrAcqStatus)
@@ -285,7 +295,7 @@ begin
             elsif runActiveSig = '1' and cmd_busy = '1' then
                 next_state <= busy_CPU_state;
             elsif runActiveSig = '1' and busy_zynq = '1' then
-                next_state <= busy_zynq_managed;
+                next_state <= busy_zynq_state;
             else
                 next_state <= wait_trg_state;
             end if;
@@ -294,7 +304,7 @@ begin
             if runActiveSig = '0' then
                     next_state <= idle_state;
             elsif runActiveSig = '1' and busy_zynq = '1' then
-                    next_state <= busy_zynq_managed;
+                    next_state <= busy_zynq_state;
             elsif runActiveSig = '1' and mstrAcqStatus = '1' and triggerOr = '1' and fifoFull = '0' then
                     next_state <= trgOr_state;
             elsif runActiveSig = '1' and mstrAcqStatus = '1' and unsigned(extTrgMasked) /= 0 and fifoFull = '0' then
@@ -361,7 +371,7 @@ begin
                 next_state <= idle_state;
             elsif release_busy = '1' then
                 next_state <= wait_trg_state;
-            elsif GTU_count = unsigned(N_GTU)-1 then
+            elsif GTU_count = N_gtu-1 then
                 next_state <= busy_zynq_state;
             else
                 next_state <= busy_state;
@@ -376,17 +386,6 @@ begin
                 next_state <= wait_trg_state;
             else
                 next_state <= busy_zynq_state;
-            end if;
-
-        when busy_zynq_managed =>
-            if runActiveSig = '0' then
-                next_state <= idle_state;
-            elsif release_busy = '1' then
-                next_state <= wait_trg_state;
-            elsif (busy_zynq = '0') and (plToAxiSBusy = '0') then
-                next_state <= wait_trg_state;
-            else
-                next_state <= busy_zynq_managed;
             end if;
 
         when others =>
@@ -440,12 +439,7 @@ begin
         busy_i           <= '1' ;
         trigger_out_i    <= '0' ;
         busy_trg_i       <= '0';
-    
-    elsif next_state = busy_zynq_managed then
-        busy_i           <= '1' ;
-        trigger_out_i    <= '0' ;
-        busy_trg_i       <= '0';
-    
+
     elsif next_state = busy_state then
         busy_i           <= '1' ;
         trigger_out_i    <= '0' ;
@@ -465,7 +459,7 @@ begin
         if reset= '1' or triggerOutSig = '1' then
             GTU_count <= (others => '0');
         elsif gtuTick = '1' and busy_trg = '1' then -- the counter is enabled only if the trigger has been received from one of the zynq boards
-            if GTU_count < unsigned(N_GTU)-1  then
+            if GTU_count < N_gtu-1  then
                 GTU_count <= GTU_count + 1;
             end if;
         end if;
