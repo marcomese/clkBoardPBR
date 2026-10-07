@@ -32,7 +32,7 @@ port(
     busyIn        : in  std_logic_vector(zynqNum-1 downto 0);
     ppsIn         : in  std_logic_vector(ppsNum-1 downto 0);
     extTrgIn      : in  std_logic_vector(extTrgNum-1 downto 0);
-    extGtuSync    : out std_logic;
+    extGtuSmpl    : out std_logic;
     acqStatusSync : out std_logic;
     trgSync       : out std_logic_vector(zynqNum-1 downto 0);
     busySync      : out std_logic_vector(zynqNum-1 downto 0);
@@ -50,13 +50,12 @@ signal ppsSampled       : std_logic_vector(ppsNum-1 downto 0);
 
 signal extTrgSampled    : std_logic_vector(extTrgNum-1 downto 0);
 
-signal extGtuSampled,
-       extClk40MSampled,
+signal extClk40MSampled,
        acqStatusSampled : std_logic;
 
 begin
 
-extGtuSmplInst: xpm_cdc_single
+extGtuSyncInst: xpm_cdc_single
 generic map (
     DEST_SYNC_FF   => 2,
     INIT_SYNC_FF   => 1,
@@ -67,21 +66,7 @@ port map (
     src_clk  => '0',
     dest_clk => clkSmpl,
     src_in   => extGtuIn,
-    dest_out => extGtuSampled
-);
-
-extGtuSyncInst: xpm_cdc_single
-generic map (
-    DEST_SYNC_FF   => 2,
-    INIT_SYNC_FF   => 1,
-    SIM_ASSERT_CHK => 0,
-    SRC_INPUT_REG  => 0
-)
-port map (
-    src_clk  => clkSmpl,
-    dest_clk => clk,
-    src_in   => extGtuSampled,
-    dest_out => extGtuSync
+    dest_out => extGtuSmpl
 );
 
 acqStatusSmplInst: xpm_cdc_single

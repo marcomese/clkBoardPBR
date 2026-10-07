@@ -21,8 +21,7 @@ port(
     rst       : in  std_logic;
     enable    : in  std_logic;
     gtuPeriod : in std_logic_vector(15 downto 0);
-    gtuClock  : out std_logic;
-    gtuTick   : out std_logic
+    gtuClock  : out std_logic
 );
 end gtuGenerator;
 
@@ -40,7 +39,7 @@ port map(
     enable         => enable,
     period         => gtuPeriod,
     clkOut         => gtuClock,
-    clkRisingEdge  => gtuTick,
+    clkRisingEdge  => open,
     clkFallingEdge => open
 );
 
