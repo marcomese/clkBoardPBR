@@ -2,7 +2,7 @@
 --Copyright 2022-2025 Advanced Micro Devices, Inc. All Rights Reserved.
 ----------------------------------------------------------------------------------
 --Tool Version: Vivado v.2024.2.2 (win64) Build 6060944 Thu Mar 06 19:10:01 MST 2025
---Date        : Wed Oct  7 14:37:00 2026
+--Date        : Tue Nov  3 13:50:44 2026
 --Host        : MARCOMPUTER running 64-bit major release  (build 9200)
 --Command     : generate_target design_1_wrapper.bd
 --Design      : design_1_wrapper
@@ -56,6 +56,8 @@ entity design_1_wrapper is
     GTU_CLK_IN_P : in STD_LOGIC_VECTOR ( 0 to 0 );
     GTU_CLK_OUT_N : out STD_LOGIC_VECTOR ( 6 downto 0 );
     GTU_CLK_OUT_P : out STD_LOGIC_VECTOR ( 6 downto 0 );
+    HLED_OUT_N : out STD_LOGIC_VECTOR ( 1 downto 0 );
+    HLED_OUT_P : out STD_LOGIC_VECTOR ( 1 downto 0 );
     PPS_IN_N : in STD_LOGIC_VECTOR ( 0 to 0 );
     PPS_IN_P : in STD_LOGIC_VECTOR ( 0 to 0 );
     PPS_OUT_N : out STD_LOGIC_VECTOR ( 6 downto 0 );
@@ -125,7 +127,9 @@ architecture STRUCTURE of design_1_wrapper is
     CLK40_OUT_N : out STD_LOGIC_VECTOR ( 6 downto 0 );
     CLK40_OUT_P : out STD_LOGIC_VECTOR ( 6 downto 0 );
     ACQ_STATUS_OUT_N : out STD_LOGIC_VECTOR ( 6 downto 0 );
-    ACQ_STATUS_OUT_P : out STD_LOGIC_VECTOR ( 6 downto 0 )
+    ACQ_STATUS_OUT_P : out STD_LOGIC_VECTOR ( 6 downto 0 );
+    HLED_OUT_N : out STD_LOGIC_VECTOR ( 1 downto 0 );
+    HLED_OUT_P : out STD_LOGIC_VECTOR ( 1 downto 0 )
   );
   end component design_1;
 begin
@@ -173,6 +177,8 @@ design_1_i: component design_1
       GTU_CLK_IN_P(0) => GTU_CLK_IN_P(0),
       GTU_CLK_OUT_N(6 downto 0) => GTU_CLK_OUT_N(6 downto 0),
       GTU_CLK_OUT_P(6 downto 0) => GTU_CLK_OUT_P(6 downto 0),
+      HLED_OUT_N(1 downto 0) => HLED_OUT_N(1 downto 0),
+      HLED_OUT_P(1 downto 0) => HLED_OUT_P(1 downto 0),
       PPS_IN_N(0) => PPS_IN_N(0),
       PPS_IN_P(0) => PPS_IN_P(0),
       PPS_OUT_N(6 downto 0) => PPS_OUT_N(6 downto 0),
