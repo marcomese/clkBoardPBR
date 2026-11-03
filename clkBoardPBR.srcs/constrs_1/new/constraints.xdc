@@ -9,6 +9,22 @@ set_property DIFF_TERM TRUE [get_ports {EXT_TRIG_IN_P[1]}]
 set_property DIFF_TERM TRUE [get_ports {EXT_TRIG_IN_N[1]}]
 
 ##############################################################################
+# HLED1 - Connettore JLED1&2B
+##############################################################################
+set_property PACKAGE_PIN P17 [get_ports {HLED_OUT_P[0]}]
+set_property PACKAGE_PIN P18 [get_ports {HLED_OUT_N[0]}]
+set_property IOSTANDARD LVDS_25 [get_ports {HLED_OUT_P[0]}]
+set_property IOSTANDARD LVDS_25 [get_ports {HLED_OUT_N[0]}]
+
+##############################################################################
+# HLED2 - Connettore JLED1&2A
+##############################################################################
+set_property PACKAGE_PIN J15 [get_ports {HLED_OUT_P[1]}]
+set_property PACKAGE_PIN K15 [get_ports {HLED_OUT_N[1]}]
+set_property IOSTANDARD LVDS_25 [get_ports {HLED_OUT_P[1]}]
+set_property IOSTANDARD LVDS_25 [get_ports {HLED_OUT_N[1]}]
+
+##############################################################################
 # GPS1 - Connettore JGPS1&2B
 ##############################################################################
 

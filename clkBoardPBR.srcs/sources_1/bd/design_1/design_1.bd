@@ -1,7 +1,7 @@
 {
   "design": {
     "design_info": {
-      "boundary_crc": "0x8E55FE43EA5F2979",
+      "boundary_crc": "0x104C04E980E1D446",
       "device": "xc7z020clg484-2",
       "gen_directory": "../../../../clkBoardPBR.gen/sources_1/bd/design_1",
       "name": "design_1",
@@ -78,7 +78,9 @@
         "acqStatusOutConcat": "",
         "clk40Out_OBUFDS4": "",
         "clk40Out_OBUFDS5": "",
-        "clk40Out_OBUFDS6": ""
+        "clk40Out_OBUFDS6": "",
+        "hLedOut_OBUFDS": "",
+        "testHledOutConcat": ""
       },
       "fifoDMA": {
         "axi_dma_0": "",
@@ -1034,6 +1036,54 @@
         "type": "clk",
         "direction": "O",
         "left": "6",
+        "right": "0",
+        "parameters": {
+          "FREQ_HZ": {
+            "value": "100000000",
+            "value_src": "default"
+          },
+          "FREQ_TOLERANCE_HZ": {
+            "value": "0",
+            "value_src": "default"
+          },
+          "INSERT_VIP": {
+            "value": "0",
+            "value_src": "default"
+          },
+          "PHASE": {
+            "value": "0.0",
+            "value_src": "default"
+          }
+        }
+      },
+      "HLED_OUT_N": {
+        "type": "clk",
+        "direction": "O",
+        "left": "1",
+        "right": "0",
+        "parameters": {
+          "FREQ_HZ": {
+            "value": "100000000",
+            "value_src": "default"
+          },
+          "FREQ_TOLERANCE_HZ": {
+            "value": "0",
+            "value_src": "default"
+          },
+          "INSERT_VIP": {
+            "value": "0",
+            "value_src": "default"
+          },
+          "PHASE": {
+            "value": "0.0",
+            "value_src": "default"
+          }
+        }
+      },
+      "HLED_OUT_P": {
+        "type": "clk",
+        "direction": "O",
+        "left": "1",
         "right": "0",
         "parameters": {
           "FREQ_HZ": {
@@ -3782,6 +3832,9 @@
             "direction": "O",
             "left": "31",
             "right": "0"
+          },
+          "clkSmpl": {
+            "direction": "I"
           }
         },
         "components": {
@@ -4581,6 +4634,11 @@
               "rateClk40M"
             ]
           },
+          "clkSmpl_1": {
+            "ports": [
+              "clkSmpl"
+            ]
+          },
           "clkbTrg_Dout": {
             "ports": [
               "clkbTrg/Dout",
@@ -4590,8 +4648,8 @@
           "command_decoder_0_run": {
             "ports": [
               "run",
-              "GTUcounter_0/run",
-              "aliveDeadTCounter_0/running"
+              "aliveDeadTCounter_0/running",
+              "GTUcounter_0/run"
             ]
           },
           "counterRstCtrl_0_rstEvtOut": {
@@ -4627,8 +4685,8 @@
           "gtuGenerator_0_gtuTick": {
             "ports": [
               "gtuTick",
-              "GTUcounter_0/gtuTick",
-              "cL10L16extTclkbTToutGTUCLK40/In3"
+              "cL10L16extTclkbTToutGTUCLK40/In3",
+              "GTUcounter_0/gtuTick"
             ]
           },
           "gtu_Dout": {
@@ -4647,11 +4705,11 @@
             "ports": [
               "clk",
               "reg_event_number_0/clock",
-              "GTUcounter_0/clk",
               "aliveDeadTCounter_0/clk",
               "counterRstCtrl_0/clk",
               "trgCounter_0/clk",
-              "rateMetersTrgGtuClk40M/clk"
+              "rateMetersTrgGtuClk40M/clk",
+              "GTUcounter_0/clk"
             ]
           },
           "rateL10_Dout": {
@@ -4759,11 +4817,11 @@
             "ports": [
               "rst",
               "reg_event_number_0/reset",
-              "GTUcounter_0/rst",
               "aliveDeadTCounter_0/rst",
               "counterRstCtrl_0/rst",
               "trgCounter_0/rst",
-              "rateMetersTrgGtuClk40M/rst"
+              "rateMetersTrgGtuClk40M/rst",
+              "GTUcounter_0/rst"
             ]
           },
           "run_control_fsm_0_busy": {
@@ -4776,9 +4834,9 @@
             "ports": [
               "trgIn",
               "reg_event_number_0/load",
-              "GTUcounter_0/trigger",
               "aliveDeadTCounter_0/trgIn",
-              "cL10L16extTclkbTToutGTUCLK40/In2"
+              "cL10L16extTclkbTToutGTUCLK40/In2",
+              "GTUcounter_0/trigger"
             ]
           },
           "synchronizers_0_trgSync": {
@@ -4978,6 +5036,18 @@
             "type": "clk",
             "direction": "O",
             "left": "6",
+            "right": "0"
+          },
+          "HLED_OUT_N": {
+            "type": "clk",
+            "direction": "O",
+            "left": "1",
+            "right": "0"
+          },
+          "HLED_OUT_P": {
+            "type": "clk",
+            "direction": "O",
+            "left": "1",
             "right": "0"
           }
         },
@@ -5480,6 +5550,36 @@
                 "value": "OBUFDS"
               }
             }
+          },
+          "hLedOut_OBUFDS": {
+            "vlnv": "xilinx.com:ip:util_ds_buf:2.2",
+            "ip_revision": "7",
+            "xci_name": "design_1_util_ds_buf_0_12",
+            "xci_path": "ip\\design_1_util_ds_buf_0_12\\design_1_util_ds_buf_0_12.xci",
+            "inst_hier_path": "outBuffers/hLedOut_OBUFDS",
+            "parameters": {
+              "C_BUF_TYPE": {
+                "value": "OBUFDS"
+              },
+              "C_SIZE": {
+                "value": "2"
+              }
+            }
+          },
+          "testHledOutConcat": {
+            "vlnv": "xilinx.com:inline_hdl:ilconcat:1.0",
+            "parameters": {
+              "IN0_WIDTH": {
+                "value": "1",
+                "value_src": "propagated",
+                "value_mode": "auto"
+              },
+              "IN1_WIDTH": {
+                "value": "1",
+                "value_src": "propagated",
+                "value_mode": "auto"
+              }
+            }
           }
         },
         "nets": {
@@ -5720,7 +5820,9 @@
               "ppsOutConcat/In0",
               "ppsOutConcat/In4",
               "ppsOutConcat/In5",
-              "ppsOutConcat/In6"
+              "ppsOutConcat/In6",
+              "testHledOutConcat/In1",
+              "testHledOutConcat/In0"
             ]
           },
           "ppsOut_OBUFDS_OBUF_DS_N": {
@@ -5752,6 +5854,24 @@
             "ports": [
               "rst",
               "pulseExtender_0/rst"
+            ]
+          },
+          "testHLed_OBUF_DS_N": {
+            "ports": [
+              "hLedOut_OBUFDS/OBUF_DS_N",
+              "HLED_OUT_N"
+            ]
+          },
+          "testHLed_OBUF_DS_P": {
+            "ports": [
+              "hLedOut_OBUFDS/OBUF_DS_P",
+              "HLED_OUT_P"
+            ]
+          },
+          "testHledOutConcat_dout": {
+            "ports": [
+              "testHledOutConcat/dout",
+              "hLedOut_OBUFDS/OBUF_IN"
             ]
           },
           "util_ds_buf_0_OBUF_DS_N": {
@@ -9022,6 +9142,12 @@
           "ACQ_STATUS_OUT_N"
         ]
       },
+      "outBuffers_OBUF_DS_N_3": {
+        "ports": [
+          "outBuffers/HLED_OUT_N",
+          "HLED_OUT_N"
+        ]
+      },
       "outBuffers_OBUF_DS_N_4": {
         "ports": [
           "outBuffers/PPS_OUT_N",
@@ -9056,6 +9182,12 @@
         "ports": [
           "outBuffers/ACQ_STATUS_OUT_P",
           "ACQ_STATUS_OUT_P"
+        ]
+      },
+      "outBuffers_OBUF_DS_P_3": {
+        "ports": [
+          "outBuffers/HLED_OUT_P",
+          "HLED_OUT_P"
         ]
       },
       "outBuffers_OBUF_DS_P_4": {
@@ -9147,6 +9279,7 @@
           "processing_system7_0/FCLK_CLK2",
           "inBuffers/clkSmpl",
           "clk40MCtrl_0/clkSmpl",
+          "counters/clkSmpl",
           "gtuCtrl_0/clkSmpl"
         ]
       },
