@@ -49,6 +49,7 @@ port(
     selfTrgEn          : out std_logic;
     selfTrgScale       : out std_logic_vector(2 downto 0);
     selfTrgPeriod      : out std_logic_vector(12 downto 0);
+    ledTrgEn           : out std_logic_vector(1 downto 0);
     xGammaChannel      : out std_logic_vector(zynqNum-1 downto 0);
     masterSlave        : out std_logic_vector(31 downto 0);
     runTimeout         : out std_logic_vector(15 downto 0);
@@ -94,13 +95,14 @@ constant CMD_40M      : std_logic_vector(7 downto 0) := x"CC";
 constant CMD_CNT      : std_logic_vector(7 downto 0) := x"F0";
 constant CMD_CHN      : std_logic_vector(7 downto 0) := x"3C";
 
-constant ARG_ON       : std_logic_vector(7 downto 0) := x"0F"; -- start, set, enable, on, internal, soft, configure, pps gps, counter l1, gps 1
-constant ARG_OFF      : std_logic_vector(7 downto 0) := x"F0"; -- stop, release, disable, off, external, pps clkb, counter evt, gps 2
+constant ARG_ON       : std_logic_vector(7 downto 0) := x"0F"; -- start, set, enable, on, internal, soft, configure, pps gps, counter l1, gps 1, led 1
+constant ARG_OFF      : std_logic_vector(7 downto 0) := x"F0"; -- stop, release, disable, off, external, pps clkb, counter evt, gps 2, led 2
 constant ARG_PPS      : std_logic_vector(7 downto 0) := x"33"; -- trg pps, pps auto, counter gtu, ch xgamma
 constant ARG_NORMAL   : std_logic_vector(7 downto 0) := x"CC"; -- trg normal, counter all
 constant ARG_CLKB     : std_logic_vector(7 downto 0) := x"55"; -- trg clkb
 constant ARG_SELF     : std_logic_vector(7 downto 0) := x"AA"; -- trg self
 constant ARG_ALL      : std_logic_vector(7 downto 0) := x"FF"; -- channel "all" (ARG1)
+constant ARG_HLED     : std_logic_vector(7 downto 0) := x"66"; -- trg hled
 
 constant STATUS_USED  : integer := 14 + extTrgNum + 2*ppsNum + 4*zynqNum;
 constant STATUS_PAD   : integer := statusLen - STATUS_USED;
@@ -245,6 +247,7 @@ begin
             selfTrgEn     <= '0';
             selfTrgScale  <= (others => '0');
             selfTrgPeriod <= (others => '0');
+            ledTrgEn      <= (others => '0');
             xGChSig       <= (others => '0');
             runTOutSig    <= TOUT_DEFAULT;
         else
@@ -301,6 +304,14 @@ begin
                             selfTrgEn       <= '1';
                             selfTrgScale    <= scale;
                             selfTrgPeriod   <= period;
+                        elsif arg0Sig = ARG_HLED and arg1Sig = ARG_ON and arg2Sig = ARG_OFF then -- trg hled 1 off
+                            ledTrgEn(0)     <= '0';
+                        elsif arg0Sig = ARG_HLED and arg1Sig = ARG_ON and arg2Sig = ARG_ON then -- trg hled 1 on
+                            ledTrgEn(0)     <= '1';
+                        elsif arg0Sig = ARG_HLED and arg1Sig = ARG_OFF and arg2Sig = ARG_OFF then -- trg hled 2 off
+                            ledTrgEn(1)     <= '0';
+                        elsif arg0Sig = ARG_HLED and arg1Sig = ARG_OFF and arg2Sig = ARG_ON then -- trg hled 2 on
+                            ledTrgEn(1)     <= '1';
                         else
                             send_nack <= '1';
                         end if;

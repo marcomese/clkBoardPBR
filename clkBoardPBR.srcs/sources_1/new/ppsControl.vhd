@@ -27,6 +27,7 @@ port(
     enable     : in  std_logic;
     clear      : in  std_logic;
     trgIn      : in  std_logic;
+    ledTrgEnIn : in  std_logic_vector(1 downto 0);
     ppsAuto    : in  std_logic;
     ppsSel     : in  std_logic_vector(ppsNum-1 downto 0);
     ppsPres    : in  std_logic_vector(ppsNum-1 downto 0);
@@ -41,7 +42,8 @@ architecture Behavioral of ppsControl is
 
 signal   secCounter    : integer range 0 to clkFreq-1;
 
-signal   enableFF,
+signal   enableSig,
+         enableFF,
          runStarted,
          internalPPS,
          ppsEdgeSig,
@@ -54,6 +56,8 @@ signal   ppsOutSig,
 signal   ppsCntSig     : unsigned(31 downto 0);
 
 begin
+
+enableSig     <= enable or or_reduce(ledTrgEnIn);
 
 runStarted    <= enable and not enableFF;
 
@@ -86,12 +90,12 @@ end process;
 ppsMuxInst: process(clk)
 begin
     if rising_edge(clk) then
-        if rst = '1' or enable = '0' then
+        if rst = '1' or enableSig = '0' then
             ppsEdgeSig    <= '0';
             ppsEdgeOut    <= '0';
             secCounterEn  <= '0';
             secCounterRst <= '1';
-        elsif enable = '1' then
+        elsif enableSig = '1' then
             ppsEdgeOut <= ppsEdgeSig;
 
             if ppsAuto = '1' then
@@ -147,7 +151,7 @@ begin
         else
             if clear = '1' or enable = '0' then
                 ppsCntSig <= (others => '0');
-            elsif enable = '1' and ppsEdgeSig = '1' then
+            elsif ppsEdgeSig = '1' then
                 ppsCntSig <= ppsCntSig + 1;
             end if;
         end if;
